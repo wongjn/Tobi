@@ -9,6 +9,13 @@ Simple lightbox script without dependencies.
 
 ![.flex__*](https://rqrauhvmra.com/tobi/snapshot.png)
 
+## Features
+
+- No dependencies
+- Simple and light-weight
+- Keyboard support: Prev/Next keys allows to navigate through items, close the lightbox with the escape key
+- Touch gestures: Drag/Swipe to navigate through items, close the lightbox with a vertical drag/swipe
+
 ## Install
 
 ### Download
@@ -79,12 +86,24 @@ var tobi = new Tobi({
 tobi.open(2)  // Opens the lightbox on image 3 (first is 0)
 tobi.next()   // Shows the next image in the lightbox
 tobi.prev()   // Shows the previous image in the lightbox
-tobi.close()  // Close the lightbox
+tobi.close()  // Closes the lightbox
 
 // Adds an element dynamically
 var newElement = document.querySelector('.new-image')
 tobi.add(newElement)
 ```
+
+## Browser support
+
+Tobi has been tested in the following browsers (all the latest versions):
+
+- Firefox
+- Firefox on Android
+- Chrome
+- Chrome on Android
+- Safari
+- Internet Explorer
+- Edge
 
 ## Missing stuff
 
