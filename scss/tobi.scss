@@ -1,12 +1,14 @@
 /* Link */
 .tobi {
-  border: 0;
-  box-shadow: none;
-  display: block;
-  text-decoration: none;
+
 
   &--zoom {
+    border: 0;
+    box-shadow: none;
+    display: block;
     position: relative;
+    text-decoration: none;
+
 
     & img {
       display: block;
@@ -194,8 +196,8 @@
   &::before {
     animation: spin 1s infinite;
     border-radius: 100%;
-    border-top-color: #0437fd;
     border: .5em solid #f2f2f2;
+    border-top-color: #0437fd;
     bottom: 0;
     content: "";
     left: 0;
