@@ -1,14 +1,11 @@
 /* Link */
-.tobi {
+.tobi--zoom {
   border: 0;
   -webkit-box-shadow: none;
           box-shadow: none;
   display: block;
-  text-decoration: none;
-}
-
-.tobi--zoom {
   position: relative;
+  text-decoration: none;
 }
 
 .tobi--zoom img {
@@ -226,8 +223,8 @@
   -webkit-animation: spin 1s infinite;
           animation: spin 1s infinite;
   border-radius: 100%;
-  border-top-color: #0437fd;
   border: .5em solid #f2f2f2;
+  border-top-color: #0437fd;
   bottom: 0;
   content: "";
   left: 0;
