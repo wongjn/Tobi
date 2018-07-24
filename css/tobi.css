@@ -37,11 +37,6 @@
   overflow-y: hidden;
 }
 
-/* Hide elements */
-.hide {
-  display: none !important;
-}
-
 /* Overlay */
 .tobi-overlay {
   background-color: rgba(0, 0, 0, 0.8);
@@ -188,6 +183,10 @@
   top: 1em;
 }
 
+.tobi-overlay button[aria-hidden="true"] {
+  display: none;
+}
+
 /* Counter */
 .tobi-counter {
   -webkit-box-align: center;
@@ -205,6 +204,10 @@
   left: 1em;
   position: absolute;
   top: 1em;
+}
+
+.tobi-counter[aria-hidden="true"] {
+  display: none;
 }
 
 /* Loader */
