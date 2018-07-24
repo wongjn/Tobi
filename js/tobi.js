@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.5.1
+ * @version 1.5.2
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -259,16 +259,14 @@
      *
      */
     var createOverlay = function createOverlay (element) {
-      var figureWrapper = null,
+      var sliderElement = null,
+        figureWrapper = null,
         figure = null,
         image = null,
-        figuresIds = [],
-        figcaption = null,
-        figcaptionsIds = []
+        figcaption = null
 
-      var sliderElement = document.createElement('div')
+      sliderElement = document.createElement('div')
       sliderElement.classList.add('tobi-slide')
-      sliderElement.id = 'tobi-slide-' + x
 
       // Create figure wrapper
       figureWrapper = document.createElement('div')
@@ -311,9 +309,7 @@
           figcaption.id = 'tobi-figcaption-' + x
           figure.appendChild(figcaption)
 
-          figuresIds.push('tobi-figure-' + x)
-          figcaptionsIds.push('tobi-figcaption-' + x)
-          ++x
+          image.setAttribute('aria-labelledby', figcaption.id)
         }
       }
 
@@ -327,37 +323,7 @@
       slider.appendChild(sliderElement)
       sliderElements.push(sliderElement)
 
-      if (x !== 0) {
-        overlay.setAttribute('aria-labelledby', figuresIds.join(' '))
-        overlay.setAttribute('aria-describedby', figcaptionsIds.join(' '))
-      }
-
-      // Hide buttons if necessary
-      if (!config.nav || elementsLength === 1 || (config.nav === 'auto' && 'ontouchstart' in window)) {
-        prevButton.classList.add('hide')
-        nextButton.classList.add('hide')
-      } else {
-        prevButton.classList.remove('hide')
-        nextButton.classList.remove('hide')
-        prevButton.innerHTML = config.navText[0]
-        nextButton.innerHTML = config.navText[1]
-      }
-
-      // Hide counter if necessary
-      if (!config.counter || elementsLength === 1) {
-        counter.classList.add('hide')
-      }
-
-      // Hide close if necessary
-      if (!config.close) {
-        closeButton.classList.add('hide')
-      } else {
-        closeButton.innerHTML = config.closeText
-      }
-
-      if (config.draggable) {
-        slider.style.cursor = '-webkit-grab'
-      }
+      ++x
     }
 
     /**
@@ -729,6 +695,33 @@
       [].forEach.call(elements, function (element) {
         initElement(element)
       })
+
+      // Hide buttons if necessary
+      if (!config.nav || elementsLength === 1 || (config.nav === 'auto' && 'ontouchstart' in window)) {
+        prevButton.classList.add('hide')
+        nextButton.classList.add('hide')
+      } else {
+        prevButton.classList.remove('hide')
+        nextButton.classList.remove('hide')
+        prevButton.innerHTML = config.navText[0]
+        nextButton.innerHTML = config.navText[1]
+      }
+
+      // Hide counter if necessary
+      if (!config.counter || elementsLength === 1) {
+        counter.classList.add('hide')
+      }
+
+      // Hide close if necessary
+      if (!config.close) {
+        closeButton.classList.add('hide')
+      } else {
+        closeButton.innerHTML = config.closeText
+      }
+
+      if (config.draggable) {
+        slider.style.cursor = '-webkit-grab'
+      }
     }
 
     /**
