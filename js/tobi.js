@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.5.2
+ * @version 1.5.3
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -195,9 +195,9 @@
           prevButton.disabled = true
         }
 
-        if (direction === 'none' && !nextButton.disabled) {
+        if (!direction && !nextButton.disabled) {
           nextButton.focus()
-        } else if (direction === 'none' && nextButton.disabled && !prevButton.disabled) {
+        } else if (!direction && nextButton.disabled && !prevButton.disabled) {
           prevButton.focus()
         } else if (!nextButton.disabled && direction === 'right') {
           nextButton.focus()
@@ -271,10 +271,10 @@
       // Create figure wrapper
       figureWrapper = document.createElement('div')
       figureWrapper.classList.add('tobi-figure-wrapper')
-      figureWrapper.id = 'tobi-figure-wrapper-' + x
 
       // Create figure
       figure = document.createElement('figure')
+      figure.classList.add('tobi-figure')
       figure.innerHTML = '<div class="tobi-loader"></div>'
 
       // Create image
@@ -305,7 +305,6 @@
         }
 
         if (figcaption.innerHTML) {
-          figure.id = 'tobi-figure-' + x
           figcaption.id = 'tobi-figcaption-' + x
           figure.appendChild(figcaption)
 
@@ -324,6 +323,35 @@
       sliderElements.push(sliderElement)
 
       ++x
+
+      // Hide buttons if necessary
+      if (!config.nav || elementsLength === 1 || (config.nav === 'auto' && 'ontouchstart' in window)) {
+        prevButton.setAttribute('aria-hidden', 'true')
+        nextButton.setAttribute('aria-hidden', 'true')
+      } else {
+        prevButton.setAttribute('aria-hidden', 'false')
+        nextButton.setAttribute('aria-hidden', 'false')
+        prevButton.innerHTML = config.navText[0]
+        nextButton.innerHTML = config.navText[1]
+      }
+
+      // Hide counter if necessary
+      if (!config.counter || elementsLength === 1) {
+        counter.setAttribute('aria-hidden', 'true')
+      } else {
+        counter.setAttribute('aria-hidden', 'false')
+      }
+
+      // Hide close if necessary
+      if (!config.close) {
+        closeButton.setAttribute('aria-hidden', 'true')
+      } else {
+        closeButton.innerHTML = config.closeText
+      }
+
+      if (config.draggable) {
+        slider.style.cursor = '-webkit-grab'
+      }
     }
 
     /**
@@ -363,7 +391,7 @@
       updateCounter()
       overlay.setAttribute('aria-hidden', 'false')
 
-      updateFocus('none')
+      updateFocus()
     }
 
     /**
@@ -426,15 +454,15 @@
      *
      */
     var clickHandler = function clickHandler (event) {
-      if (this === prevButton) {
+      if (event.target === prevButton) {
         prev()
-      } else if (this === nextButton) {
+      } else if (event.target === nextButton) {
         next()
-      } else if (this === closeButton || (this === overlay && event.target.id.indexOf('tobi-figure-wrapper') !== -1)) {
+      } else if (event.target === closeButton || (event.target.classList.contains('tobi-figure-wrapper') && !event.target.classList.contains('tobi-figure'))) {
         closeOverlay()
       }
 
-      event.preventDefault()
+      event.stopPropagation()
     }
 
     /**
@@ -567,7 +595,7 @@
     var trapFocus = function trapFocus (event) {
       if (overlay.getAttribute('aria-hidden') === 'false' && !overlay.contains(event.target)) {
         event.stopPropagation()
-        updateFocus('none')
+        updateFocus()
       }
     }
 
@@ -695,33 +723,6 @@
       [].forEach.call(elements, function (element) {
         initElement(element)
       })
-
-      // Hide buttons if necessary
-      if (!config.nav || elementsLength === 1 || (config.nav === 'auto' && 'ontouchstart' in window)) {
-        prevButton.classList.add('hide')
-        nextButton.classList.add('hide')
-      } else {
-        prevButton.classList.remove('hide')
-        nextButton.classList.remove('hide')
-        prevButton.innerHTML = config.navText[0]
-        nextButton.innerHTML = config.navText[1]
-      }
-
-      // Hide counter if necessary
-      if (!config.counter || elementsLength === 1) {
-        counter.classList.add('hide')
-      }
-
-      // Hide close if necessary
-      if (!config.close) {
-        closeButton.classList.add('hide')
-      } else {
-        closeButton.innerHTML = config.closeText
-      }
-
-      if (config.draggable) {
-        slider.style.cursor = '-webkit-grab'
-      }
     }
 
     /**
