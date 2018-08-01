@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.5.3
+ * @version 1.5.4
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -541,6 +541,7 @@
 
       pointerDown = true
       drag.startX = event.pageX
+      slider.style.cursor = '-webkit-grabbing'
     }
 
     /**

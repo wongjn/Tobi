@@ -40,6 +40,7 @@
   background-color: rgba(0, 0, 0, .8);
   bottom: 0;
   box-sizing: border-box;
+  contain: strict;
   left: 0;
   overflow: hidden;
   position: fixed;
@@ -67,6 +68,7 @@
   top: 0;
   transition: transform .3s linear;
   white-space: nowrap;
+  will-change: transform;
 }
 
 .tobi-slide {
@@ -207,6 +209,7 @@
     position: absolute;
     right: 0;
     top: 0;
+    will-change: transform;
     z-index: 1;
   }
 }

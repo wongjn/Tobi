@@ -43,6 +43,7 @@
   bottom: 0;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
+  contain: strict;
   left: 0;
   overflow: hidden;
   position: fixed;
@@ -74,6 +75,7 @@
   transition: transform .3s linear;
   transition: transform .3s linear, -webkit-transform .3s linear;
   white-space: nowrap;
+  will-change: transform;
 }
 
 .tobi-slide {
@@ -234,6 +236,7 @@
   position: absolute;
   right: 0;
   top: 0;
+  will-change: transform;
   z-index: 1;
 }
 
