@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/license-MIT-0437fd.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
 ![Dependecies](https://img.shields.io/badge/dependencies-none-0437fd.svg)
 
-Simple lightbox script without dependencies.
+Simple lightbox script without dependencies. Also include Youtube.com videos support.
 
 [Play on CodePen](https://codepen.io/collection/nbqJVV)
 
