@@ -129,33 +129,67 @@
      *
      * @param {number} index - Item index to load
      * @param {function} callback - Optional callback function
+     * @param {bool} current - If true, means preloading current item (required for videos, but not for images)
      */
-    var load = function load (index, callback) {
+    var load = function load (index, callback, current) {
       if (typeof gallery[index] === 'undefined' || typeof sliderElements[index] === 'undefined') {
         return
-      } else if (!sliderElements[index].getElementsByTagName('img')[0].hasAttribute('data-src')) {
+      }
+			else if (sliderElements[index].getElementsByTagName('iframe').length > 0) {
+        //youtube
+				if(index != currentIndex){
+					//disable preload
+					return;
+				}
+				if(!sliderElements[index].getElementsByTagName('iframe')[0].hasAttribute('data-src')){
+					//already loaded
+					return;
+				}
+      }
+			else if (!sliderElements[index].getElementsByTagName('img')[0].hasAttribute('data-src')) {
         if (callback) {
           callback()
         }
         return
       }
+			
+			//dont preload current image
+			if (sliderElements[index].getElementsByTagName('img').length > 0 && index == currentIndex && current == true) {
+			 return;
+			}
+			
+			var figure = sliderElements[index].getElementsByTagName('figure')[0];
+			var figcaption = figure.getElementsByTagName('figcaption')[0];
+			
+			if(sliderElements[index].getElementsByTagName('iframe').length > 0){
+				//youtube
+				var iframe = figure.getElementsByTagName('iframe')[0];
 
-      var figure = sliderElements[index].getElementsByTagName('figure')[0],
-        image = figure.getElementsByTagName('img')[0],
-        figcaption = figure.getElementsByTagName('figcaption')[0]
+				iframe.style.opacity = '1';
 
-      image.onload = function () {
-        var loader = figure.querySelector('.tobi-loader')
-        figure.removeChild(loader)
-        image.style.opacity = '1'
+				if (figcaption) {
+					figcaption.style.opacity = '1';
+				}					
 
-        if (figcaption) {
-          figcaption.style.opacity = '1'
-        }
-      }
+				iframe.setAttribute('src', iframe.getAttribute('data-src'));
+			}
+			else{
+				//image
+				var image = figure.getElementsByTagName('img')[0];
 
-      image.setAttribute('src', image.getAttribute('data-src'))
-      image.removeAttribute('data-src')
+				image.onload = function () {
+					var loader = figure.querySelector('.tobi-loader')
+					figure.removeChild(loader)
+					image.style.opacity = '1'
+
+					if (figcaption) {
+						figcaption.style.opacity = '1'
+					}
+				}
+
+				image.setAttribute('src', image.getAttribute('data-src'))
+				image.removeAttribute('data-src')
+			}
 
       if (callback) {
         callback()
@@ -218,8 +252,10 @@
      *
      * @param {number} index - Item index to preload
      */
-    var preload = function preload (index) {
-      load(index)
+    var preload = function preload (index, current) {
+			if(current == undefined)
+				current = false;
+      load(index, false, current)
     }
 
     /**
@@ -227,6 +263,11 @@
      *
      */
     var next = function next () {
+			//if not last
+			if(currentIndex != sliderElements.length - 1){
+				onElemenstLeave();
+			}
+			
       if (currentIndex < elementsLength - 1) {
         currentIndex++
 
@@ -234,6 +275,7 @@
         updateCounter()
         updateFocus('right')
 
+				preload(currentIndex, true) //maybe video
         preload(currentIndex + 1)
       }
     }
@@ -243,6 +285,11 @@
      *
      */
     var prev = function prev () {
+			//if not first
+			if(currentIndex > 0){
+				onElemenstLeave();
+			}
+			
       if (currentIndex > 0) {
         currentIndex--
 
@@ -250,9 +297,30 @@
         updateCounter()
         updateFocus('left')
 
+				preload(currentIndex, true) //maybe video
         preload(currentIndex - 1)
       }
     }
+		
+		/**
+		 * extract host name from url
+		 */
+		var extractHostname = function (url) {
+			var hostname;
+			if (url.indexOf("//") > -1) {
+				hostname = url.split('/')[2];
+			}
+			else {
+				hostname = url.split('/')[0];
+			}
+
+			//find & remove port number
+			hostname = hostname.split(':')[0];
+			//find & remove "?"
+			hostname = hostname.split('?')[0];
+
+			return hostname;
+		}
 
     /**
      * Create overlay
@@ -275,23 +343,65 @@
       // Create figure
       figure = document.createElement('figure')
       figure.classList.add('tobi-figure')
-      figure.innerHTML = '<div class="tobi-loader"></div>'
+			
+			var targetDomain = extractHostname(element.href);
+			
+			if(targetDomain == 'www.youtube.com'){
+				//create youtube video
+				var iframe = document.createElement('iframe');
+				var href = element.href;
+				if(href.indexOf('?') === -1)
+					href = href + '?param=false';
+				href = href + '&enablejsapi=1';
+				
+				//find iframe dimensions
+				var w_screen = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+				var h_screen = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+				
+				var w = 1280;
+				if(element.hasAttribute('data-width'))
+					w = element.getAttribute('data-width');
+				if(w > w_screen)
+					w = w_screen;
+				
+				var h = 720;
+				if(element.hasAttribute('data-height'))
+					h = element.getAttribute('data-height');
+				if(h > h_screen)
+					h = h_screen;
+				
+				iframe.setAttribute('width', w);
+				iframe.setAttribute('height', h);
+				iframe.setAttribute('frameborder', '0');
+				iframe.setAttribute('allow', 'autoplay; encrypted-media');
+				iframe.setAttribute('allowfullscreen', '');
+			
+				iframe.style.opacity = '0';
+				iframe.setAttribute('src', '');
+				iframe.setAttribute('data-src', href);
 
-      // Create image
-      image = document.createElement('img')
-      image.style.opacity = '0'
+				// Add image to figure
+				figure.appendChild(iframe);
+			}
+			else{
+				// Create image
+				image = document.createElement('img')
+				image.style.opacity = '0'
+				
+				figure.innerHTML = '<div class="tobi-loader"></div>'
 
-      if (element.getElementsByTagName('img')[0] && element.getElementsByTagName('img')[0].alt) {
-        image.alt = element.getElementsByTagName('img')[0].alt
-      } else {
-        image.alt = ''
-      }
+				if (element.getElementsByTagName('img')[0] && element.getElementsByTagName('img')[0].alt) {
+					image.alt = element.getElementsByTagName('img')[0].alt
+				} else {
+					image.alt = ''
+				}
 
-      image.setAttribute('src', '')
-      image.setAttribute('data-src', element.href)
+				image.setAttribute('src', '')
+				image.setAttribute('data-src', element.href)
 
-      // Add image to figure
-      figure.appendChild(image)
+				// Add image to figure
+				figure.appendChild(image)
+			}
 
       // Create figcaption
       if (config.captions) {
@@ -664,7 +774,24 @@
       }
 
       document.removeEventListener('focus', trapFocus)
+			
+			onElemenstLeave();
     }
+		
+		/**
+		 * will be called when closing lightbox or moving index
+		 */
+		var onElemenstLeave = function onElemenstLeave () {
+			//stop all youtube videos
+			for(var index=0; index < sliderElements.length; index++){
+				var container = sliderElements[index];
+				if(container.getElementsByTagName('iframe').length > 0){
+					//video
+					var video = container.getElementsByTagName('iframe')[0];
+					video.setAttribute('src', '');
+				}
+			}
+		}
 
     /**
      * Init element
