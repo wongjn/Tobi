@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html style="background-color: #005a8033;">
+	<head>
+		<title>Tobi lightbox demo</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link id="css" rel="stylesheet" type="text/css" media="all" href="../css/tobi.css" />
+	</head>
+	<body>
+		<a href="https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png" class="lightbox">
+			Image (PNG)
+		</a>
+		<br />
+		<a href="https://upload.wikimedia.org/wikipedia/commons/1/12/%D0%9F%D1%80%D0%B8%D0%BC%D0%B5%D1%80_%D1%87%D0%B5%D1%80%D1%82%D0%B5%D0%B6%D0%B0_%D0%B2_SVG_%D1%84%D0%BE%D1%80%D0%BC%D0%B0%D1%82%D0%B5.svg" class="lightbox">
+			Image (SVG)
+		</a>
+		<br />
+		<a href="https://www.youtube.com/embed/9vWolANcZDI" class="lightbox">
+			Youtube
+		</a>
+		<br />
+		<a href="https://www.youtube.com/embed/9vWolANcZDI?autoplay=true" class="lightbox">
+			Youtube (autoplay)
+		</a>
+		<br />
+		<a href="https://www.youtube.com/embed/9vWolANcZDI?autoplay=true" data-width="400" data-height="200" class="lightbox">
+			Youtube (custom size)
+		</a>
+		<br />
+		
+<!--	<iframe width="560" 
+				height="315" 
+				src="https://www.youtube.com/embed/9vWolANcZDI" 
+				frameborder="0" 
+				allow="autoplay; encrypted-media" 
+				allowfullscreen>
+		</iframe>-->
+		
+		<script id="js" src="../js/tobi.js"></script>
+		<script>
+			var tobi = new Tobi({
+				docClose: true,
+			});
+		</script>	
+	</body>
+</html>
