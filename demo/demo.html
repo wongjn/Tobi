@@ -5,8 +5,12 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link id="css" rel="stylesheet" type="text/css" media="all" href="../css/tobi.css" />
+		<!--<link id="css" rel="stylesheet" type="text/css" media="all" href="../css/tobi.min.css" />-->
 	</head>
 	<body>
+		
+		<!-- elements BEGIN -->
+		
 		<a href="https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png" class="lightbox">
 			Image (PNG)
 		</a>
@@ -27,20 +31,34 @@
 			Youtube (custom size)
 		</a>
 		<br />
+		<a href="https://en.wikipedia.org/wiki/Image" data-width="800" data-height="400" data-type="iframe" class="lightbox">
+			Iframe (wikipedia)
+		</a>
+		<br />
+		<a href="#" data-type="html" data-target="#selector" class="lightbox">
+			HTML
+		</a>
+		<div style="display:none;" id="selector">
+				<div style="background-color:#fff;padding:10px;width:400px;height: 200px;">
+				Hello <b>World</b>, this is <a href="#">HTML</a>.
+			</div>
+		</div>
+		<br />
+		<a href="#" data-type="html" data-target="#selectorVideo" class="lightbox">
+			Video (HTML5)
+		</a>
+		<div style="display:none;" id="selectorVideo">
+				<video controls src="https://interactive-examples.mdn.mozilla.net/media/examples/stream_of_water.webm">
+				</video>
+			</div>
+		</div>
 		
-<!--	<iframe width="560" 
-				height="315" 
-				src="https://www.youtube.com/embed/9vWolANcZDI" 
-				frameborder="0" 
-				allow="autoplay; encrypted-media" 
-				allowfullscreen>
-		</iframe>-->
-		
+		<!-- elements END -->		
+
 		<script id="js" src="../js/tobi.js"></script>
+		<!--<script id="js" src="../js/tobi.min.js"></script>-->
 		<script>
-			var tobi = new Tobi({
-				docClose: true,
-			});
+			var tobi = new Tobi();
 		</script>	
 	</body>
 </html>
