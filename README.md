@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/license-MIT-0437fd.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
 ![Dependecies](https://img.shields.io/badge/dependencies-none-0437fd.svg)
 
-Simple lightbox script without dependencies. Also include Youtube.com videos support.
+Simple lightbox script without dependencies.
 
 [Play on CodePen](https://codepen.io/collection/nbqJVV)
 
@@ -15,6 +15,7 @@ Simple lightbox script without dependencies. Also include Youtube.com videos sup
 - Simple and light-weight
 - Keyboard support: Prev/Next keys allows to navigate through items, close the lightbox with the escape key
 - Touch gestures: Drag/Swipe to navigate through items, close the lightbox with a vertical drag/swipe
+- Support for images, youtube videos, HTML5 videos, iframes, inline HTML
 
 ## Install
 
