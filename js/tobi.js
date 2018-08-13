@@ -172,7 +172,7 @@
         },
 
         init: function (element, container) {
-          // Create youtube video
+          // Create YouTube video
           var iframe = document.createElement('iframe')
           var href = element.href
 
@@ -216,7 +216,7 @@
           iframe.setAttribute('src', '')
           iframe.setAttribute('data-src', href)
 
-          // Add image to figure
+          // Add iframe to figure
           container.appendChild(iframe)
 
           // Register type
@@ -294,7 +294,7 @@
           iframe.setAttribute('src', '')
           iframe.setAttribute('data-src', href)
 
-          // Add image to figure
+          // Add iframe to figure
           container.appendChild(iframe)
 
           // Register type
@@ -343,15 +343,17 @@
           var targetSelector = element.getAttribute('data-target')
           var target = document.querySelector(targetSelector)
 
-          if (target === undefined) {
+          if (target == null) {
             console.log('Ups, I can\'t find the target ' + targetSelector + '.')
             return
           }
 
+          target.style.display = 'none'
+
           div.style.opacity = '0'
           div.innerHTML = target.innerHTML
 
-          // Add image to figure
+          // Add content to figure
           container.appendChild(div)
 
           // Register type
