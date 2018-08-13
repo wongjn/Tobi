@@ -1,5 +1,5 @@
 # Tobi
-[![Version](https://img.shields.io/badge/version-1.5.4-0437fd.svg)](https://github.com/rqrauhvmra/Tobi/releases)
+[![Version](https://img.shields.io/badge/version-1.6.0-0437fd.svg)](https://github.com/rqrauhvmra/Tobi/releases)
 [![License](https://img.shields.io/badge/license-MIT-0437fd.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
 ![Dependecies](https://img.shields.io/badge/dependencies-none-0437fd.svg)
 
@@ -15,7 +15,7 @@ Simple lightbox script without dependencies.
 - Simple and light-weight
 - Keyboard support: Prev/Next keys allows to navigate through items, close the lightbox with the escape key
 - Touch gestures: Drag/Swipe to navigate through items, close the lightbox with a vertical drag/swipe
-- Support for images, youtube videos, HTML5 videos, iframes, inline HTML
+- Support for images, YouTube videos, HTML5 videos, iframes, inline HTML
 
 ## Install
 
@@ -51,7 +51,7 @@ You can pass an object with custom options as an argument.
 
 ```js
 var tobi = new Tobi({
-  docClose: true
+  captions: false
 })
 ```
 
@@ -71,7 +71,7 @@ The following options are available:
 | keyboard | bool | true | Allow keyboard navigation. |
 | zoom | bool | true | Display zoom icon. |
 | zoomText | string | "&amp;plus;" | Text or HTML for the zoom icon |
-| docClose | bool | false | Closes the lightbox when clicking outside |
+| docClose | bool | true | Closes the lightbox when clicking outside |
 | swipeClose | bool | true | Swipe up to close lightbox |
 | scroll | bool | false | Hide scrollbars if lightbox is displayed |
 | draggable | bool | true | Use dragging and touch swiping |
