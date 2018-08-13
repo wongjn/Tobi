@@ -4,6 +4,9 @@
   "description": "A light-weight and open source lightbox script with no dependencies.",
   "main": "js/tobi.js",
   "style": "css/tobi.css",
+  "devDependencies": {
+    "standard": "*"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
