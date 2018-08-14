@@ -82,6 +82,7 @@
         checkSupport: function (element) {
           return (element.href.match(/\.(png|jpg|tiff|tif|gif|bmp|webp|svg|ico)$/) != null)
         },
+
         init: function (element, container) {
           var image = document.createElement('img')
 
@@ -172,7 +173,7 @@
         },
 
         init: function (element, container) {
-          // Create YouTube video
+          // Create iframe
           var iframe = document.createElement('iframe')
           var href = element.href
 
@@ -335,7 +336,7 @@
         },
 
         init: function (element, container) {
-          // Create content
+          // Create HTML
           var div = document.createElement('div')
 
           div.classList.add('tobi-html')
@@ -353,7 +354,7 @@
           div.style.opacity = '0'
           div.innerHTML = target.innerHTML
 
-          // Add content to figure
+          // Add HTML to figure
           container.appendChild(div)
 
           // Register type
@@ -525,7 +526,7 @@
      *
      * @param {number} index - Item index to load
      */
-    var openOverlay = function openOverlay (index) {
+    var openOverlay = function openOverlay (index = 0) {
       if (overlay.getAttribute('aria-hidden') === 'false') {
         return
       }
@@ -583,7 +584,8 @@
     }
 
     /**
-     * Load resource
+     * Preload resource
+     *
      */
     var preload = function preload (index, callback, current) {
       if (sliderElements[index] === undefined) {
@@ -597,7 +599,8 @@
     }
 
     /**
-     * preload resource
+     * Load resource
+     *
      */
     var load = function load (index, callback, current) {
       if (sliderElements[index] === undefined) {
@@ -611,7 +614,8 @@
     }
 
     /**
-     * will be called when closing lightbox or moving index
+     * Will be called when closing lightbox or moving index
+     *
      */
     var onElemenstLeave = function onElemenstLeave () {
       // Call leave action
@@ -726,7 +730,7 @@
     }
 
     /**
-     * Go to next image
+     * Go to next element
      *
      */
     var next = function next () {
@@ -748,7 +752,7 @@
     }
 
     /**
-     * Go to previous image
+     * Go to previous element
      *
      */
     var prev = function prev () {
@@ -824,7 +828,7 @@
     }
 
     /**
-     * click event handler
+     * Click event handler
      *
      */
     var clickHandler = function clickHandler (event) {
@@ -840,7 +844,7 @@
     }
 
     /**
-     * keydown event handler
+     * Keydown event handler
      *
      */
     var keydownHandler = function keydownHandler (event) {
@@ -850,12 +854,12 @@
           prev()
           break
 
-          // Right arrow
+        // Right arrow
         case 39:
           next()
           break
 
-          // Esc
+        // Esc
         case 27:
           closeOverlay()
           break
@@ -863,7 +867,7 @@
     }
 
     /**
-     * touchstart event handler
+     * Touchstart event handler
      *
      */
     var touchstartHandler = function touchstartHandler (event) {
@@ -876,7 +880,7 @@
     }
 
     /**
-     * touchmove event handler
+     * Touchmove event handler
      *
      */
     var touchmoveHandler = function touchmoveHandler (event) {
@@ -890,7 +894,7 @@
     }
 
     /**
-     * touchend event handler
+     * Touchend event handler
      *
      */
     var touchendHandler = function touchendHandler (event) {
@@ -906,7 +910,7 @@
     }
 
     /**
-     * mousedown event handler
+     * Mousedown event handler
      *
      */
     var mousedownHandler = function mousedownHandler (event) {
@@ -919,7 +923,7 @@
     }
 
     /**
-     * mouseup event handler
+     * Mouseup event handler
      *
      */
     var mouseupHandler = function mouseupHandler (event) {
@@ -936,7 +940,7 @@
     }
 
     /**
-     * mousemove event handler
+     * Mousemove event handler
      *
      */
     var mousemoveHandler = function mousemoveHandler (event) {
@@ -949,7 +953,7 @@
     }
 
     /**
-     * mouseleave event handler
+     * Mouseleave event handler
      *
      */
     var mouseleaveHandler = function mouseleaveHandler (event) {
