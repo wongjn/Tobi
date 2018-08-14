@@ -343,7 +343,7 @@
           var targetSelector = element.getAttribute('data-target')
           var target = document.querySelector(targetSelector)
 
-          if (target == null) {
+          if (target === null) {
             console.log('Ups, I can\'t find the target ' + targetSelector + '.')
             return
           }
@@ -637,9 +637,9 @@
         captionsSelector: 'img',
         captionAttribute: 'alt',
         nav: 'auto',
-        navText: ['&lsaquo;', '&rsaquo;'],
+        navText: ['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" /></svg>', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6" /></svg>'],
         close: true,
-        closeText: '&times;',
+        closeText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>',
         counter: true,
         keyboard: true,
         zoom: true,

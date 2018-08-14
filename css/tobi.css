@@ -44,6 +44,7 @@
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   contain: strict;
+  font-size: 18px;
   left: 0;
   overflow: hidden;
   position: fixed;
@@ -140,22 +141,28 @@
      -moz-appearance: none;
           appearance: none;
   background-color: transparent;
-  border: 0;
+  border: .056em solid transparent;
   color: #fff;
   cursor: pointer;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   font: inherit;
-  height: 1.6em;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  line-height: 1.6;
+  line-height: 1;
   margin: 0;
-  padding: 0;
+  padding-top: .222em;
+  padding-left: .222em;
+  padding-right: .222em;
+  padding-bottom: .222em;
   position: absolute;
-  width: 1.6em;
+}
+
+.tobi-overlay button svg {
+  width: 1.5em;
+  height: 1.5em;
 }
 
 .tobi-overlay button:focus {
@@ -169,7 +176,7 @@
 
 .tobi-overlay button[aria-label="Previous"], .tobi-overlay button[aria-label="Next"] {
   top: 50%;
-  top: calc(50% - (1.6em / 2));
+  top: calc(50% - (1.5em / 2));
 }
 
 .tobi-overlay button[aria-label="Previous"] {
@@ -199,7 +206,8 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  height: 1.6em;
+  font-size: 1.111em;
+  height: 1.5em;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;

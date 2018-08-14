@@ -41,6 +41,7 @@
   bottom: 0;
   box-sizing: border-box;
   contain: strict;
+  font-size: 18px;
   left: 0;
   overflow: hidden;
   position: fixed;
@@ -124,18 +125,25 @@
   align-items: center;
   appearance: none;
   background-color: transparent;
-  border: 0;
+  border: .056em solid transparent;
   color: #fff;
   cursor: pointer;
   display: flex;
   font: inherit;
-  height: 1.6em;
   justify-content: center;
-  line-height: 1.6;
+  line-height: 1;
   margin: 0;
-  padding: 0;
+  padding-top: .222em;
+  padding-left: .222em;
+  padding-right: .222em;
+  padding-bottom: .222em;
   position: absolute;
-  width: 1.6em;
+
+
+  & svg {
+    width: 1.5em;
+    height: 1.5em;
+  }
 
   &:focus {
     border: .056em solid #fff;
@@ -149,7 +157,7 @@
   &[aria-label="Previous"],
   &[aria-label="Next"] {
     top: 50%;
-    top: calc(50% - (1.6em / 2));
+    top: calc(50% - (1.5em / 2));
   }
 
   &[aria-label="Previous"] {
@@ -163,6 +171,7 @@
   &[aria-label="Close"] {
     right: 1em;
     top: 1em;
+
   }
 
   &[aria-hidden="true"] {
@@ -176,7 +185,8 @@
   background-color: transparent;
   color: #fff;
   display: flex;
-  height: 1.6em;
+  font-size: 1.111em;
+  height: 1.5em;
   justify-content: center;
   left: 1em;
   position: absolute;
