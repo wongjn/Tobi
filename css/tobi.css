@@ -31,13 +31,13 @@
 }
 
 .tobi__zoom-icon svg {
-  height: 1.5em;
-  padding-top: .222em;
+  height: 1.111em;
+  padding-bottom: .222em;
   padding-left: .222em;
   padding-right: .222em;
-  padding-bottom: .222em;
+  padding-top: .222em;
+  pointer-events: none;
   width: 1.111em;
-  height: 1.111em;
 }
 
 /* Hide scrollbars if lightbox is displayed */
@@ -169,8 +169,9 @@
 }
 
 .tobi-overlay button svg {
-  width: 1.5em;
   height: 1.5em;
+  pointer-events: none;
+  width: 1.5em;
 }
 
 .tobi-overlay button:focus {
