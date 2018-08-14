@@ -163,9 +163,7 @@
 
       youtube: {
         checkSupport: function (element) {
-          var targetDomain = extractHostname(element.href)
-
-          if (targetDomain === 'www.youtube.com') {
+          if (element.hasAttribute('data-type') && element.getAttribute('data-type') === 'youtube') {
             return true
           } else {
             return false
@@ -775,28 +773,6 @@
         load(currentIndex)
         preload(currentIndex - 1)
       }
-    }
-
-    /**
-     * Extract host name from url
-     *
-     */
-    var extractHostname = function (url) {
-      var hostname
-
-      if (url.indexOf('//') > -1) {
-        hostname = url.split('/')[2]
-      } else {
-        hostname = url.split('/')[0]
-      }
-
-      // Find & remove port number
-      hostname = hostname.split(':')[0]
-
-      // Find & remove "?"
-      hostname = hostname.split('?')[0]
-
-      return hostname
     }
 
     /**
