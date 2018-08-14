@@ -526,7 +526,7 @@
      *
      * @param {number} index - Item index to load
      */
-    var openOverlay = function openOverlay (index = 0) {
+    var openOverlay = function openOverlay (index) {
       if (overlay.getAttribute('aria-hidden') === 'false') {
         return
       }
@@ -534,6 +534,10 @@
       if (!config.scroll) {
         document.documentElement.classList.add('tobi--is-open')
         document.body.classList.add('tobi--is-open')
+      }
+
+      if (!index) {
+        index = 0
       }
 
       // Save last focused element
