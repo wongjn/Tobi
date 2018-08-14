@@ -21,12 +21,21 @@
     bottom: 0;
     color: #fff;
     display: flex;
-    height: 1.6em;
     justify-content: center;
     line-height: 1;
     position: absolute;
     right: 0;
-    width: 1.6em;
+
+
+    & svg {
+      height: 1.5em;
+      padding-top: .222em;
+      padding-left: .222em;
+      padding-right: .222em;
+      padding-bottom: .222em;
+      width: 1.111em;
+      height: 1.111em;
+    }
   }
 }
 
