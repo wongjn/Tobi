@@ -15,7 +15,7 @@ Simple lightbox script without dependencies.
 - Simple and light-weight
 - Keyboard support: Prev/Next keys allows to navigate through items, close the lightbox with the escape key
 - Touch gestures: Drag/Swipe to navigate through items, close the lightbox with a vertical drag/swipe
-- Support for images, YouTube videos, HTML5 videos, iframes, inline HTML
+- Support for images, iframes and inline HTML
 
 ## Install
 
@@ -45,6 +45,34 @@ The HTML code may look like this:
 </a>
 ```
 
+or
+
+```html
+<a href="path/to/image.jpg" class="lightbox">
+  Open image
+</a>
+```
+
+For inline HTML the HTML code may look like this:
+
+```html
+<a href="#" data-type="html" data-target="#selector" class="lightbox">
+  Open HTML content / video or something else
+</a>
+
+<div id="selector">
+  // ...
+</div>
+```
+
+For iframes the HTML code may look like this:
+
+```html
+<a href="https://www.wikipedia.org/" data-type="iframe" class="lightbox">
+  Open Wikipedia
+</a>
+```
+
 ## Options
 
 You can pass an object with custom options as an argument.
@@ -64,13 +92,13 @@ The following options are available:
 | captionsSelector | "self", "img" | "img" | Set the element where the caption is. Set it to "self" for the `a` tag itself |
 | captionAttribute | string | "alt" | Get the caption from given attribute. |
 | nav | bool, "auto" | "auto" | Display navigation buttons. "auto" hides buttons on touch-enabled devices. |
-| navText | string | ["&amp;lsaquo;", "&amp;rsaquo;"] | Text or HTML for the navigation buttons. |
+| navText | string | ["inline svg", "inline svg"] | Text or HTML for the navigation buttons. |
 | close | bool | true | Display close button. |
-| closeText | string | "&amp;times;" | Text or HTML for the close button. |
+| closeText | string | "inline svg" | Text or HTML for the close button. |
 | counter | bool | true | Display current image index |
 | keyboard | bool | true | Allow keyboard navigation. |
 | zoom | bool | true | Display zoom icon. |
-| zoomText | string | "&amp;plus;" | Text or HTML for the zoom icon |
+| zoomText | string | "inline svg" | Text or HTML for the zoom icon |
 | docClose | bool | true | Closes the lightbox when clicking outside |
 | swipeClose | bool | true | Swipe up to close lightbox |
 | scroll | bool | false | Hide scrollbars if lightbox is displayed |
@@ -108,7 +136,7 @@ Tobi has been tested in the following browsers (all the latest versions):
 
 ## Missing stuff
 
-- Possibility to group images
+- Possibility to group
 - Better dragging / swiping
 
 ## Contributing

@@ -79,10 +79,10 @@
   position: absolute;
   right: 0;
   top: 0;
-  -webkit-transition: -webkit-transform .3s linear;
-  transition: -webkit-transform .3s linear;
-  transition: transform .3s linear;
-  transition: transform .3s linear, -webkit-transform .3s linear;
+  -webkit-transition: -webkit-transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: -webkit-transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1), -webkit-transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   white-space: nowrap;
   will-change: transform;
 }
@@ -114,7 +114,13 @@
 
 .tobi-figure-wrapper figure {
   margin: 0;
+  max-width: 100%;
   position: relative;
+}
+
+.tobi-figure-wrapper figure > * {
+  max-height: 85vh;
+  max-width: 85vw;
 }
 
 .tobi-figure-wrapper img {
@@ -123,6 +129,15 @@
   max-height: 85vh;
   max-width: 85vw;
   width: auto;
+}
+
+.tobi-figure-wrapper iframe {
+  height: 85vh;
+  width: 85vw;
+}
+
+.tobi-figure-wrapper video {
+  max-width: 100%;
 }
 
 .tobi-figure-wrapper figcaption {
@@ -161,22 +176,26 @@
           justify-content: center;
   line-height: 1;
   margin: 0;
+  opacity: .5;
   padding-top: .222em;
   padding-left: .222em;
   padding-right: .222em;
   padding-bottom: .222em;
   position: absolute;
+  -webkit-transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  will-change: opacity;
 }
 
 .tobi-overlay button svg {
-  height: 1.5em;
   pointer-events: none;
-  width: 1.5em;
 }
 
-.tobi-overlay button:focus {
-  border: .056em solid #fff;
-  outline: 0;
+.tobi-overlay button:hover {
+  opacity: 1;
+  -webkit-transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  will-change: opacity;
 }
 
 .tobi-overlay button:disabled {
@@ -185,20 +204,30 @@
 
 .tobi-overlay button[aria-label="Previous"], .tobi-overlay button[aria-label="Next"] {
   top: 50%;
-  top: calc(50% - (1.5em / 2));
+  top: calc(50% - (4em / 2));
+}
+
+.tobi-overlay button[aria-label="Previous"] svg, .tobi-overlay button[aria-label="Next"] svg {
+  height: 4em;
+  width: 4em;
 }
 
 .tobi-overlay button[aria-label="Previous"] {
-  left: 1em;
+  left: 0;
 }
 
 .tobi-overlay button[aria-label="Next"] {
-  right: 1em;
+  right: 0;
 }
 
 .tobi-overlay button[aria-label="Close"] {
   right: 1em;
   top: 1em;
+}
+
+.tobi-overlay button[aria-label="Close"] svg {
+  height: 2em;
+  width: 2em;
 }
 
 .tobi-overlay button[aria-hidden="true"] {
@@ -216,7 +245,7 @@
   display: -ms-flexbox;
   display: flex;
   font-size: 1.111em;
-  height: 1.5em;
+  height: 2em;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;

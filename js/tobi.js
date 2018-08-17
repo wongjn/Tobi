@@ -106,6 +106,7 @@
           // Create figcaption
           if (config.captions) {
             var figcaption = document.createElement('figcaption')
+
             figcaption.style.opacity = '0'
 
             if (config.captionsSelector === 'self' && element.getAttribute(config.captionAttribute)) {
@@ -171,55 +172,7 @@
         },
 
         init: function (element, container) {
-          // Create iframe
-          var iframe = document.createElement('iframe')
-          var href = element.href
-
-          if (href.indexOf('?') === -1) {
-            href = href + '?param=false'
-          }
-
-          href = href + '&enablejsapi=1'
-
-          // Find iframe dimensions
-          var wScreen = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-          var hScreen = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
-
-          var w = 1280
-
-          if (element.hasAttribute('data-width')) {
-            w = element.getAttribute('data-width')
-          }
-
-          if (w > wScreen) {
-            w = wScreen
-          }
-
-          var h = 720
-
-          if (element.hasAttribute('data-height')) {
-            h = element.getAttribute('data-height')
-          }
-
-          if (h > hScreen) {
-            h = hScreen
-          }
-
-          iframe.setAttribute('width', w)
-          iframe.setAttribute('height', h)
-          iframe.setAttribute('frameborder', '0')
-          iframe.setAttribute('allow', 'autoplay; encrypted-media')
-          iframe.setAttribute('allowfullscreen', '')
-
-          iframe.style.opacity = '0'
-          iframe.setAttribute('src', '')
-          iframe.setAttribute('data-src', href)
-
-          // Add iframe to figure
-          container.appendChild(iframe)
-
-          // Register type
-          container.setAttribute('data-type', 'youtube')
+          // To do
         },
 
         onPreload: function (container) {
@@ -227,23 +180,11 @@
         },
 
         onLoad: function (container) {
-          var iframe = container.getElementsByTagName('iframe')[0]
-
-          iframe.style.opacity = '1'
-
-          var figcaption = container.getElementsByTagName('figcaption')[0]
-
-          if (figcaption) {
-            figcaption.style.opacity = '1'
-          }
-
-          iframe.setAttribute('src', iframe.getAttribute('data-src'))
+          // To do
         },
 
         onLeave: function (container) {
-          var video = container.getElementsByTagName('iframe')[0]
-
-          video.setAttribute('src', '')
+          // To do
         }
       },
 
@@ -261,35 +202,7 @@
           var iframe = document.createElement('iframe')
           var href = element.href
 
-          // Find iframe dimensions
-          var wScreen = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
-          var hScreen = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
-
-          var w = 1280
-
-          if (element.hasAttribute('data-width')) {
-            w = element.getAttribute('data-width')
-          }
-
-          if (w > wScreen) {
-            w = wScreen
-          }
-
-          var h = 720
-
-          if (element.hasAttribute('data-height')) {
-            h = element.getAttribute('data-height')
-          }
-
-          if (h > hScreen) {
-            h = hScreen
-          }
-
-          iframe.setAttribute('width', w)
-          iframe.setAttribute('height', h)
           iframe.setAttribute('frameborder', '0')
-
-          iframe.style.opacity = '0'
           iframe.setAttribute('src', '')
           iframe.setAttribute('data-src', href)
 
@@ -307,20 +220,11 @@
         onLoad: function (container) {
           var iframe = container.getElementsByTagName('iframe')[0]
 
-          iframe.style.opacity = '1'
-
-          var figcaption = container.getElementsByTagName('figcaption')[0]
-
-          if (figcaption) {
-            figcaption.style.opacity = '1'
-          }
-
           iframe.setAttribute('src', iframe.getAttribute('data-src'))
         },
 
         onLeave: function (container) {
-          var video = container.getElementsByTagName('iframe')[0]
-          video.setAttribute('src', '')
+          // Nothing
         }
       },
 
@@ -347,10 +251,11 @@
             return
           }
 
-          target.style.display = 'none'
-
-          div.style.opacity = '0'
+          // Copy content
           div.innerHTML = target.innerHTML
+
+          // Hide original content
+          target.style.display = 'none'
 
           // Add HTML to figure
           container.appendChild(div)
@@ -364,15 +269,7 @@
         },
 
         onLoad: function (container) {
-          var div = container.querySelector('.tobi-html')
-
-          div.style.opacity = '1'
-
-          var figcaption = container.getElementsByTagName('figcaption')[0]
-
-          if (figcaption) {
-            figcaption.style.opacity = '1'
-          }
+          // Nothing
         },
 
         onLeave: function (container) {
@@ -643,7 +540,7 @@
         captionsSelector: 'img',
         captionAttribute: 'alt',
         nav: 'auto',
-        navText: ['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" /></svg>', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6" /></svg>'],
+        navText: ['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" /></svg>', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6" /></svg>'],
         close: true,
         closeText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>',
         counter: true,
