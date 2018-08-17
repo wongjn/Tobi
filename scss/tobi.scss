@@ -1,3 +1,20 @@
+$zoomIconBackground: #0437fd;
+$zoomIconColor: #fff;
+
+$overlayBackground: rgba(0, 0, 0, .8);
+
+$figcaptionBackground: rgba(0, 0, 0, .8);
+$figcaptionColor: #fff;
+
+$counterBackground: transparent;
+$counterColor: #fff;
+
+$loaderColor: #0437fd;
+
+$iframeHeight: 85vh;
+$iframeWidth: 85vw;
+
+
 /* Link */
 .tobi {
 
@@ -17,9 +34,9 @@
 
   &__zoom-icon {
     align-items: center;
-    background-color: #0437fd;
+    background-color: $zoomIconBackground;
     bottom: 0;
-    color: #fff;
+    color: $zoomIconColor;
     display: flex;
     justify-content: center;
     line-height: 1;
@@ -46,7 +63,7 @@
 
 /* Overlay */
 .tobi-overlay {
-  background-color: rgba(0, 0, 0, .8);
+  background-color: $overlayBackground;
   bottom: 0;
   box-sizing: border-box;
   contain: strict;
@@ -76,7 +93,7 @@
   position: absolute;
   right: 0;
   top: 0;
-  transition: transform .3s linear;
+  transition: transform .3s cubic-bezier(.19, 1, .22, 1);
   white-space: nowrap;
   will-change: transform;
 }
@@ -100,9 +117,17 @@
   right: 0;
   top: 0;
 
+
   & figure {
     margin: 0;
+    max-width: 100%;
     position: relative;
+
+
+    & > * {
+      max-height: 85vh;
+      max-width: 85vw;
+    }
   }
 
   & img {
@@ -113,10 +138,19 @@
     width: auto;
   }
 
+  & iframe {
+    height: $iframeHeight;
+    width: $iframeWidth;
+  }
+
+  & video {
+    max-width: 100%;
+  }
+
   & figcaption {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: $figcaptionBackground;
     bottom: 0;
-    color: #fff;
+    color: $figcaptionColor;
     display: block;
     left: 0;
     padding-bottom: .25em;
@@ -142,22 +176,28 @@
   justify-content: center;
   line-height: 1;
   margin: 0;
+  opacity: .5;
   padding-top: .222em;
   padding-left: .222em;
   padding-right: .222em;
   padding-bottom: .222em;
   position: absolute;
+  transition: opacity .5s cubic-bezier(.19, 1, .22, 1);
+  will-change: opacity;
 
 
   & svg {
-    height: 1.5em;
     pointer-events: none;
-    width: 1.5em;
   }
 
   &:focus {
-    border: .056em solid #fff;
-    outline: 0;
+
+  }
+
+  &:hover {
+    opacity: 1;
+    transition: opacity .5s cubic-bezier(.19, 1, .22, 1);
+    will-change: opacity;
   }
 
   &:disabled {
@@ -167,21 +207,32 @@
   &[aria-label="Previous"],
   &[aria-label="Next"] {
     top: 50%;
-    top: calc(50% - (1.5em / 2));
+    top: calc(50% - (4em / 2));
+
+
+    & svg {
+      height: 4em;
+      width: 4em;
+    }
   }
 
   &[aria-label="Previous"] {
-    left: 1em;
+    left: 0;
   }
 
   &[aria-label="Next"] {
-    right: 1em;
+    right: 0;
   }
 
   &[aria-label="Close"] {
     right: 1em;
     top: 1em;
 
+
+    & svg {
+      height: 2em;
+      width: 2em;
+    }
   }
 
   &[aria-hidden="true"] {
@@ -192,11 +243,11 @@
 /* Counter */
 .tobi-counter {
   align-items: center;
-  background-color: transparent;
-  color: #fff;
+  background-color: $counterBackground;
+  color: $counterColor;
   display: flex;
   font-size: 1.111em;
-  height: 1.5em;
+  height: 2em;
   justify-content: center;
   left: 1em;
   position: absolute;
@@ -222,7 +273,7 @@
     animation: spin 1s infinite;
     border-radius: 100%;
     border: .5em solid #f2f2f2;
-    border-top-color: #0437fd;
+    border-top-color: $loaderColor;
     bottom: 0;
     content: "";
     left: 0;
