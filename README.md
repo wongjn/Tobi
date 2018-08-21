@@ -1,5 +1,5 @@
 # Tobi
-[![Version](https://img.shields.io/badge/version-1.6.1-0437fd.svg)](https://github.com/rqrauhvmra/Tobi/releases)
+[![Version](https://img.shields.io/badge/version-1.6.2-0437fd.svg)](https://github.com/rqrauhvmra/Tobi/releases)
 [![License](https://img.shields.io/badge/license-MIT-0437fd.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
 ![Dependecies](https://img.shields.io/badge/dependencies-none-0437fd.svg)
 
@@ -137,7 +137,6 @@ Tobi has been tested in the following browsers (all the latest versions):
 ## Missing stuff
 
 - Possibility to group
-- Better dragging / swiping
 
 ## Contributing
 

@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.6.1
+ * @version 1.6.2
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -38,7 +38,8 @@
       currentIndex = 0,
       drag = {},
       pointerDown = false,
-      lastFocus = null
+      lastFocus = null,
+      offset = null
 
     /**
      * Create lightbox components
@@ -582,9 +583,10 @@
      *
      */
     var updateOffset = function updateOffset () {
-      var offset = -currentIndex * 100 + '%'
+      offset = -currentIndex * window.innerWidth
 
-      slider.style[transformProperty] = 'translate3d(' + offset + ', 0, 0)'
+      slider.style[transformProperty] = 'translate3d(' + offset + 'px, 0, 0)'
+      slider.setAttribute('data-offset', offset)
     }
 
     /**
@@ -695,12 +697,16 @@
         movementXDistance = Math.abs(movementX),
         movementYDistance = Math.abs(movementY)
 
-      if (movementX > 0 && movementXDistance > config.threshold) {
+      if (movementX > 0 && movementXDistance > config.threshold && currentIndex > 0) {
         prev()
-      } else if (movementX < 0 && movementXDistance > config.threshold) {
+      } else if (movementX < 0 && movementXDistance > config.threshold && currentIndex !== sliderElements.length - 1) {
         next()
       } else if (movementY < 0 && movementYDistance > config.threshold && config.swipeClose) {
         closeOverlay()
+      } else {
+        offset = slider.getAttribute('data-offset')
+
+        slider.style[transformProperty] = 'translate3d(' + offset + 'px, 0, 0)'
       }
     }
 
@@ -767,6 +773,10 @@
       if (pointerDown) {
         drag.endX = event.touches[0].pageX
         drag.endY = event.touches[0].pageY
+
+        offset = slider.getAttribute('data-offset')
+
+        slider.style[transformProperty] = 'translate3d(' + (offset - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
       }
     }
 
@@ -826,6 +836,10 @@
       if (pointerDown) {
         drag.endX = event.pageX
         slider.style.cursor = '-webkit-grabbing'
+
+        offset = slider.getAttribute('data-offset')
+
+        slider.style[transformProperty] = 'translate3d(' + (offset - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
       }
     }
 
