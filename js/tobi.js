@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.6.2
+ * @version 1.6.3
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -477,6 +477,8 @@
       // Unbind events
       unbindEvents()
 
+      leave()
+
       overlay.setAttribute('aria-hidden', 'true')
 
       // Focus
@@ -487,7 +489,7 @@
      * Preload resource
      *
      */
-    var preload = function preload (index, callback, current) {
+    var preload = function preload (index) {
       if (sliderElements[index] === undefined) {
         return
       }
@@ -502,7 +504,7 @@
      * Load resource
      *
      */
-    var load = function load (index, callback, current) {
+    var load = function load (index) {
       if (sliderElements[index] === undefined) {
         return
       }
@@ -514,12 +516,12 @@
     }
 
     /**
+     * Leave resource
      * Will be called when closing lightbox or moving index
      *
      */
-    var onElemenstLeave = function onElemenstLeave () {
-      // Call leave action
-      for (var index = 0; index < sliderElements.length; index++) {
+    var leave = function leave () {
+      for (var index = 0; index < elementsLength; index++) {
         var container = sliderElements[index].querySelector('figure')
         var type = container.getAttribute('data-type')
 
@@ -636,8 +638,8 @@
      */
     var next = function next () {
       // If not last
-      if (currentIndex !== sliderElements.length - 1) {
-        onElemenstLeave()
+      if (currentIndex !== elementsLength - 1) {
+        leave()
       }
 
       if (currentIndex < elementsLength - 1) {
@@ -659,7 +661,7 @@
     var prev = function prev () {
       // If not first
       if (currentIndex > 0) {
-        onElemenstLeave()
+        leave()
       }
 
       if (currentIndex > 0) {
@@ -699,7 +701,7 @@
 
       if (movementX > 0 && movementXDistance > config.threshold && currentIndex > 0) {
         prev()
-      } else if (movementX < 0 && movementXDistance > config.threshold && currentIndex !== sliderElements.length - 1) {
+      } else if (movementX < 0 && movementXDistance > config.threshold && currentIndex !== elementsLength - 1) {
         next()
       } else if (movementY < 0 && movementYDistance > config.threshold && config.swipeClose) {
         closeOverlay()
@@ -844,21 +846,6 @@
     }
 
     /**
-     * Mouseleave event handler
-     *
-     */
-    var mouseleaveHandler = function mouseleaveHandler (event) {
-      if (pointerDown) {
-        pointerDown = false
-        slider.style.cursor = '-webkit-grab'
-        drag.endX = event.pageX
-
-        updateAfterDrag()
-        clearDrag()
-      }
-    }
-
-    /**
      * Keep focus inside the lightbox
      *
      */
@@ -895,7 +882,6 @@
         // Mouse events
         overlay.addEventListener('mousedown', mousedownHandler)
         overlay.addEventListener('mouseup', mouseupHandler)
-        overlay.addEventListener('mouseleave', mouseleaveHandler)
         overlay.addEventListener('mousemove', mousemoveHandler)
       }
 
@@ -928,13 +914,10 @@
         // Mouse events
         overlay.removeEventListener('mousedown', mousedownHandler)
         overlay.removeEventListener('mouseup', mouseupHandler)
-        overlay.removeEventListener('mouseleave', mouseleaveHandler)
         overlay.removeEventListener('mousemove', mousemoveHandler)
       }
 
       document.removeEventListener('focus', trapFocus)
-
-      onElemenstLeave()
     }
 
     /**
