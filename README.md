@@ -1,9 +1,9 @@
 # Tobi
-[![Version](https://img.shields.io/badge/version-1.6.3-0437fd.svg)](https://github.com/rqrauhvmra/Tobi/releases)
+[![Version](https://img.shields.io/badge/version-1.6.4-0437fd.svg)](https://github.com/rqrauhvmra/Tobi/releases)
 [![License](https://img.shields.io/badge/license-MIT-0437fd.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
 ![Dependecies](https://img.shields.io/badge/dependencies-none-0437fd.svg)
 
-Simple lightbox script without dependencies.
+An accessible, simple and light-weight open source lightbox script with no dependencies.
 
 [Play on CodePen](https://codepen.io/collection/nbqJVV)
 
@@ -13,8 +13,15 @@ Simple lightbox script without dependencies.
 
 - No dependencies
 - Simple and light-weight
-- Keyboard support: Prev/Next keys allows to navigate through items, close the lightbox with the escape key
-- Touch gestures: Drag/Swipe to navigate through items, close the lightbox with a vertical drag/swipe
+- Accessible:
+  - ARIA roles
+  - Keyboard navigation:
+    - `Prev`/`Next` Keys: Navigate through items
+    - `ESCAPE` Key: Close the lightbox
+    - `TAB` Key: Focus elements within the lightbox, not outside
+  - When the lightbox opens, focus is set to the first focusable element in the lightbox
+  - When the lightbox closes, focus returns to what was in focus before the lightbox opened
+  - Touch gestures: Drag/Swipe to navigate through items, close the lightbox with a vertical drag/swipe
 - Support for images, iframes and inline HTML
 
 ## Install
@@ -93,8 +100,10 @@ The following options are available:
 | captionAttribute | string | "alt" | Get the caption from given attribute. |
 | nav | bool, "auto" | "auto" | Display navigation buttons. "auto" hides buttons on touch-enabled devices. |
 | navText | string | ["inline svg", "inline svg"] | Text or HTML for the navigation buttons. |
+| navLabel | string | ["Previous", "Next"] | ARIA label for screen readers |
 | close | bool | true | Display close button. |
 | closeText | string | "inline svg" | Text or HTML for the close button. |
+| closeLabel | string | "Close" | ARIA label for screen readers. |
 | counter | bool | true | Display current image index |
 | keyboard | bool | true | Allow keyboard navigation. |
 | zoom | bool | true | Display zoom icon. |

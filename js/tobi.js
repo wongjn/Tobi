@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.6.3
+ * @version 1.6.4
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -39,6 +39,9 @@
       drag = {},
       pointerDown = false,
       lastFocus = null,
+      focusableEls = null,
+      firstFocusableEl = null,
+      lastFocusableEl = null,
       offset = null
 
     /**
@@ -57,17 +60,14 @@
 
     var prevButton = document.createElement('button')
     prevButton.setAttribute('type', 'button')
-    prevButton.setAttribute('aria-label', 'Previous')
     overlay.appendChild(prevButton)
 
     var nextButton = document.createElement('button')
     nextButton.setAttribute('type', 'button')
-    nextButton.setAttribute('aria-label', 'Next')
     overlay.appendChild(nextButton)
 
     var closeButton = document.createElement('button')
     closeButton.setAttribute('type', 'button')
-    closeButton.setAttribute('aria-label', 'Close')
     overlay.appendChild(closeButton)
 
     var counter = document.createElement('div')
@@ -393,8 +393,11 @@
         nextButton.setAttribute('aria-hidden', 'true')
       } else {
         prevButton.setAttribute('aria-hidden', 'false')
-        nextButton.setAttribute('aria-hidden', 'false')
+        prevButton.setAttribute('aria-label', config.navLabel[0])
         prevButton.innerHTML = config.navText[0]
+
+        nextButton.setAttribute('aria-hidden', 'false')
+        nextButton.setAttribute('aria-label', config.navLabel[1])
         nextButton.innerHTML = config.navText[1]
       }
 
@@ -409,6 +412,7 @@
       if (!config.close) {
         closeButton.setAttribute('aria-hidden', 'true')
       } else {
+        closeButton.setAttribute('aria-label', config.closeLabel)
         closeButton.innerHTML = config.closeText
       }
 
@@ -438,6 +442,10 @@
 
       // Save last focused element
       lastFocus = document.activeElement
+
+      focusableEls = overlay.querySelectorAll('button')
+      firstFocusableEl = focusableEls[0]
+      lastFocusableEl = focusableEls[focusableEls.length - 1]
 
       // Set current index
       currentIndex = index
@@ -544,8 +552,10 @@
         captionAttribute: 'alt',
         nav: 'auto',
         navText: ['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" /></svg>', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6" /></svg>'],
+        navLabel: ['Previous', 'Next'],
         close: true,
         closeText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>',
+        closeLabel: 'Close',
         counter: true,
         keyboard: true,
         zoom: true,
@@ -633,7 +643,7 @@
     }
 
     /**
-     * Go to next element
+     * Navigate to the next slide
      *
      */
     var next = function next () {
@@ -655,7 +665,7 @@
     }
 
     /**
-     * Go to previous element
+     * Navigate to the previous slide
      *
      */
     var prev = function prev () {
@@ -733,21 +743,33 @@
      *
      */
     var keydownHandler = function keydownHandler (event) {
-      switch (event.keyCode) {
-        // Left arrow
-        case 37:
-          prev()
-          break
-
-        // Right arrow
-        case 39:
-          next()
-          break
-
-        // Esc
-        case 27:
-          closeOverlay()
-          break
+      if (event.keyCode === 9) {
+        // `TAB` Key: Navigate to the next/previous focusable element
+        if (event.shiftKey) {
+          // Step backwards in the tab-order
+          if (document.activeElement === firstFocusableEl) {
+            lastFocusableEl.focus()
+            event.preventDefault()
+          }
+        } else {
+          // Step forward in the tab-order
+          if (document.activeElement === lastFocusableEl) {
+            firstFocusableEl.focus()
+            event.preventDefault()
+          }
+        }
+      } else if (event.keyCode === 27) {
+        // `ESC` Key: Close the lightbox
+        event.preventDefault()
+        closeOverlay()
+      } else if (event.keyCode === 37) {
+        // `PREV` Key: Navigate to the previous slide
+        event.preventDefault()
+        prev()
+      } else if (event.keyCode === 39) {
+        // `NEXT` Key: Navigate to the next slide
+        event.preventDefault()
+        next()
       }
     }
 
@@ -846,17 +868,6 @@
     }
 
     /**
-     * Keep focus inside the lightbox
-     *
-     */
-    var trapFocus = function trapFocus (event) {
-      if (overlay.getAttribute('aria-hidden') === 'false' && !overlay.contains(event.target)) {
-        event.stopPropagation()
-        updateFocus()
-      }
-    }
-
-    /**
      * Bind events
      *
      */
@@ -884,8 +895,6 @@
         overlay.addEventListener('mouseup', mouseupHandler)
         overlay.addEventListener('mousemove', mousemoveHandler)
       }
-
-      document.addEventListener('focus', trapFocus, true)
     }
 
     /**
@@ -916,8 +925,6 @@
         overlay.removeEventListener('mouseup', mouseupHandler)
         overlay.removeEventListener('mousemove', mousemoveHandler)
       }
-
-      document.removeEventListener('focus', trapFocus)
     }
 
     /**
@@ -936,7 +943,8 @@
       next: next,
       open: openOverlay,
       close: closeOverlay,
-      add: add
+      add: add,
+      version: '1.6.4'
     }
   }
 
