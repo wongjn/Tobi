@@ -1,6 +1,6 @@
 {
   "name": "rqrauhvmra__tobi",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "description": "An accessible, simple and light-weight open source lightbox script with no dependencies.",
   "main": "js/tobi.js",
   "style": "css/tobi.css",

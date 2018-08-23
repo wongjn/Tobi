@@ -1,5 +1,6 @@
 # Tobi
-[![Version](https://img.shields.io/badge/version-1.6.4-0437fd.svg)](https://github.com/rqrauhvmra/Tobi/releases)
+
+[![Version](https://img.shields.io/badge/version-1.6.5-0437fd.svg)](https://github.com/rqrauhvmra/Tobi/releases)
 [![License](https://img.shields.io/badge/license-MIT-0437fd.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
 ![Dependecies](https://img.shields.io/badge/dependencies-none-0437fd.svg)
 
@@ -24,7 +25,7 @@ An accessible, simple and light-weight open source lightbox script with no depen
   - Touch gestures: Drag/Swipe to navigate through items, close the lightbox with a vertical drag/swipe
 - Support for images, iframes and inline HTML
 
-## Install
+## Get Tobi
 
 ### Download
 
@@ -34,9 +35,33 @@ JavaScript: `js/tobi.min.js` minified, or `js/tobi.js` un-minified
 
 ### Package managers
 
-npm: `npm install rqrauhvmra__tobi --save`
+Tobi is also available on npm.
+
+`npm install rqrauhvmra__tobi --save`
 
 ## Usage
+
+You can install Tobi by linking the `.css` and `.js` files to your html file. The HTML code may look like this:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your page title</title>
+
+  <!-- CSS -->
+  <link href="tobi.min.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Your HTML content -->
+
+  <!-- JS -->
+  <script src="tobi.min.js"></script>
+</body>
+</html>
+```
 
 Initialize the script by running:
 
@@ -44,7 +69,11 @@ Initialize the script by running:
 var tobi = new Tobi()
 ```
 
-The HTML code may look like this:
+## Media types
+
+### Images
+
+The standard way of using Tobi is a linked thumbnail image with the class name `lightbox` to a larger image:
 
 ```html
 <a href="path/to/image.jpg" class="lightbox">
@@ -52,7 +81,7 @@ The HTML code may look like this:
 </a>
 ```
 
-or
+Instead of a thumbnail, you can also refer to a larger image with a textlink:
 
 ```html
 <a href="path/to/image.jpg" class="lightbox">
@@ -60,25 +89,55 @@ or
 </a>
 ```
 
-For inline HTML the HTML code may look like this:
+[Play on CodePen](https://codepen.io/rqrauhvmra/pen/ZRZdwG)
+
+### Inline HTML
+
+For inline HTML, create an element with a unique ID:
 
 ```html
-<a href="#" data-type="html" data-target="#selector" class="lightbox">
-  Open HTML content / video or something else
-</a>
-
 <div id="selector">
-  // ...
+  <!-- Your HTML content -->
 </div>
 ```
 
-For iframes the HTML code may look like this:
+Then create a link with the class name `lightbox` and a `href` attribute that matches the ID of the element:
 
 ```html
-<a href="https://www.wikipedia.org/" data-type="iframe" class="lightbox">
+<a href="#selector" data-type="html" class="lightbox">
+  Open HTML content / video or something else
+</a>
+```
+
+or a button with the class name `lightbox` and a `data-target` attribute that matches the ID of the element:
+
+```html
+<button type="button" data-type="html" data-target="#selector" class="lightbox">
+  Open HTML content / video or something else
+</button>
+```
+
+In any case, the attribute `data-type` with the value `html` must be added.
+
+### Iframe
+
+For an iframe simply create a link with the class name `lightbox`:
+
+```html
+<a href="https://www.wikipedia.org" data-type="iframe" class="lightbox">
   Open Wikipedia
 </a>
 ```
+
+or a button with the class name `lightbox` and a `data-target` attribute:
+
+```html
+<button type="button" data-type="iframe" data-target="https://www.wikipedia.org" class="lightbox">
+  Open Wikipedia
+</button>
+```
+
+In any case, the attribute `data-type` with the value `iframe` must be added. The iframe dimensions can be controlled by CSS.
 
 ## Options
 
@@ -89,6 +148,8 @@ var tobi = new Tobi({
   captions: false
 })
 ```
+
+[Play on CodePen](https://codepen.io/rqrauhvmra/pen/MBYEog)
 
 The following options are available:
 
@@ -121,9 +182,10 @@ var tobi = new Tobi({
   // Options
 })
 
-tobi.open(2)  // Opens the lightbox on image 3 (first is 0)
-tobi.next()   // Shows the next image in the lightbox
-tobi.prev()   // Shows the previous image in the lightbox
+tobi.open()   // Opens the lightbox
+tobi.open(2)  // Opens the lightbox on slide 3 (first is 0)
+tobi.next()   // Shows the next slide in the lightbox
+tobi.prev()   // Shows the previous slide in the lightbox
 tobi.close()  // Closes the lightbox
 
 // Adds an element dynamically
@@ -135,13 +197,11 @@ tobi.add(newElement)
 
 Tobi has been tested in the following browsers (all the latest versions):
 
-- Firefox
-- Firefox on Android
 - Chrome
-- Chrome on Android
-- Safari
+- Firefox
 - Internet Explorer
 - Edge
+- Safari
 
 ## Missing stuff
 
