@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.6.4
+ * @version 1.6.5
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -81,7 +81,9 @@
     var supportedElements = {
       image: {
         checkSupport: function (element) {
-          return (element.href.match(/\.(png|jpg|tiff|tif|gif|bmp|webp|svg|ico)$/) != null)
+          if (!element.hasAttribute('data-type')) {
+            return (element.href.match(/\.(png|jpg|tiff|tif|gif|bmp|webp|svg|ico)$/) != null)
+          }
         },
 
         init: function (element, container) {
@@ -200,8 +202,14 @@
 
         init: function (element, container) {
           // Create iframe
-          var iframe = document.createElement('iframe')
-          var href = element.href
+          var iframe = document.createElement('iframe'),
+            href
+
+          if (element.hasAttribute('href')) {
+            href = element.getAttribute('href')
+          } else {
+            href = element.getAttribute('data-target')
+          }
 
           iframe.setAttribute('frameborder', '0')
           iframe.setAttribute('src', '')
@@ -240,12 +248,19 @@
 
         init: function (element, container) {
           // Create HTML
-          var div = document.createElement('div')
+          var div = document.createElement('div'),
+            targetSelector,
+            target
 
           div.classList.add('tobi-html')
 
-          var targetSelector = element.getAttribute('data-target')
-          var target = document.querySelector(targetSelector)
+          if (element.hasAttribute('href')) {
+            targetSelector = element.getAttribute('href')
+          } else {
+            targetSelector = element.getAttribute('data-target')
+          }
+
+          target = document.querySelector(targetSelector)
 
           if (target === null) {
             console.log('Ups, I can\'t find the target ' + targetSelector + '.')
@@ -557,6 +572,9 @@
         closeText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>',
         closeLabel: 'Close',
         counter: true,
+        download: false,
+        downloadText: '',
+        downloadLabel: 'Download',
         keyboard: true,
         zoom: true,
         zoomText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>',
