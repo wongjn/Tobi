@@ -1,6 +1,6 @@
 # Tobi
 
-[![Version](https://img.shields.io/badge/version-1.6.5-0437fd.svg)](https://github.com/rqrauhvmra/Tobi/releases)
+[![Version](https://img.shields.io/badge/version-1.7.0-0437fd.svg)](https://github.com/rqrauhvmra/Tobi/releases)
 [![License](https://img.shields.io/badge/license-MIT-0437fd.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
 ![Dependecies](https://img.shields.io/badge/dependencies-none-0437fd.svg)
 
@@ -71,7 +71,7 @@ var tobi = new Tobi()
 
 ## Media types
 
-### Images
+### Image
 
 The standard way of using Tobi is a linked thumbnail image with the class name `lightbox` to a larger image:
 
@@ -173,7 +173,7 @@ The following options are available:
 | swipeClose | bool | true | Swipe up to close lightbox |
 | scroll | bool | false | Hide scrollbars if lightbox is displayed |
 | draggable | bool | true | Use dragging and touch swiping |
-| threshold | number | 20 | Touch and mouse dragging threshold (in px) |
+| threshold | number | 100 | Touch and mouse dragging threshold (in px) |
 
 ## API
 
