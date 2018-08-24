@@ -29,20 +29,18 @@
      *
      */
     var config = {},
-      transformProperty = null,
+      transformProperty,
       gallery = [],
-      x = 0,
-      elements = null,
-      elementsLength = null,
+      figcaptionId = 0,
+      elementsLength,
       sliderElements = [],
-      currentIndex = 0,
+      currentIndex,
       drag = {},
-      pointerDown = false,
-      lastFocus = null,
-      focusableEls = null,
-      firstFocusableEl = null,
-      lastFocusableEl = null,
-      offset = null
+      pointerDown,
+      lastFocus,
+      firstFocusableEl,
+      lastFocusableEl,
+      offset
 
     /**
      * Create lightbox components
@@ -52,19 +50,15 @@
     overlay.setAttribute('role', 'dialog')
     overlay.setAttribute('aria-hidden', 'true')
     overlay.classList.add('tobi-overlay')
-    document.getElementsByTagName('body')[0].appendChild(overlay)
-
-    var slider = document.createElement('div')
-    slider.classList.add('tobi-slider')
-    overlay.appendChild(slider)
+    document.body.appendChild(overlay)
 
     var prevButton = document.createElement('button')
     prevButton.setAttribute('type', 'button')
     overlay.appendChild(prevButton)
 
-    var nextButton = document.createElement('button')
-    nextButton.setAttribute('type', 'button')
-    overlay.appendChild(nextButton)
+    var slider = document.createElement('div')
+    slider.classList.add('tobi-slider')
+    overlay.appendChild(slider)
 
     var closeButton = document.createElement('button')
     closeButton.setAttribute('type', 'button')
@@ -74,6 +68,10 @@
     counter.classList.add('tobi-counter')
     overlay.appendChild(counter)
 
+    var nextButton = document.createElement('button')
+    nextButton.setAttribute('type', 'button')
+    overlay.appendChild(nextButton)
+
     /**
      * types - you can add new type to support something new
      *
@@ -81,9 +79,7 @@
     var supportedElements = {
       image: {
         checkSupport: function (element) {
-          if (!element.hasAttribute('data-type')) {
-            return (element.href.match(/\.(png|jpg|tiff|tif|gif|bmp|webp|svg|ico)$/) != null)
-          }
+          return !element.hasAttribute('data-type') && element.href.match(/\.(png|jpg|tiff|tif|gif|bmp|webp|svg|ico)$/)
         },
 
         init: function (element, container) {
@@ -91,11 +87,8 @@
 
           image.style.opacity = '0'
 
-          if (element.getElementsByTagName('img')[0] && element.getElementsByTagName('img')[0].alt) {
-            image.alt = element.getElementsByTagName('img')[0].alt
-          } else {
-            image.alt = ''
-          }
+          var thumbnail = element.querySelector('img')
+          image.alt = thumbnail && thumbnail.alt ? thumbnail.alt : ''
 
           image.setAttribute('src', '')
           image.setAttribute('data-src', element.href)
@@ -113,13 +106,13 @@
             figcaption.style.opacity = '0'
 
             if (config.captionsSelector === 'self' && element.getAttribute(config.captionAttribute)) {
-              figcaption.innerHTML = element.getAttribute(config.captionAttribute)
-            } else if (config.captionsSelector === 'img' && element.getElementsByTagName('img')[0] && element.getElementsByTagName('img')[0].getAttribute(config.captionAttribute)) {
-              figcaption.innerHTML = element.getElementsByTagName('img')[0].getAttribute(config.captionAttribute)
+              figcaption.textContent = element.getAttribute(config.captionAttribute)
+            } else if (config.captionsSelector === 'img' && thumbnail && thumbnail.getAttribute(config.captionAttribute)) {
+              figcaption.textContent = thumbnail.getAttribute(config.captionAttribute)
             }
 
-            if (figcaption.innerHTML) {
-              figcaption.id = 'tobi-figcaption-' + x
+            if (figcaption.textContent) {
+              figcaption.id = 'tobi-figcaption-' + figcaptionId
               container.appendChild(figcaption)
 
               image.setAttribute('aria-labelledby', figcaption.id)
@@ -133,13 +126,13 @@
         },
 
         onLoad: function (container) {
-          var image = container.getElementsByTagName('img')[0]
+          var image = container.querySelector('img')
 
           if (!image.hasAttribute('data-src')) {
             return
           }
 
-          var figcaption = container.getElementsByTagName('figcaption')[0]
+          var figcaption = container.querySelector('figcaption')
           var loaderHtml = document.createElement('div')
 
           loaderHtml.classList.add('tobi-loader')
@@ -167,11 +160,7 @@
 
       youtube: {
         checkSupport: function (element) {
-          if (element.hasAttribute('data-type') && element.getAttribute('data-type') === 'youtube') {
-            return true
-          } else {
-            return false
-          }
+          return checkType(element, 'youtube')
         },
 
         init: function (element, container) {
@@ -193,23 +182,14 @@
 
       iframe: {
         checkSupport: function (element) {
-          if (element.hasAttribute('data-type') && element.getAttribute('data-type') === 'iframe') {
-            return true
-          } else {
-            return false
-          }
+          return checkType(element, 'iframe')
         },
 
         init: function (element, container) {
           // Create iframe
-          var iframe = document.createElement('iframe'),
-            href
+          var iframe = document.createElement('iframe')
 
-          if (element.hasAttribute('href')) {
-            href = element.getAttribute('href')
-          } else {
-            href = element.getAttribute('data-target')
-          }
+          var href = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target')
 
           iframe.setAttribute('frameborder', '0')
           iframe.setAttribute('src', '')
@@ -227,7 +207,7 @@
         },
 
         onLoad: function (container) {
-          var iframe = container.getElementsByTagName('iframe')[0]
+          var iframe = container.querySelector('iframe')
 
           iframe.setAttribute('src', iframe.getAttribute('data-src'))
         },
@@ -239,33 +219,20 @@
 
       html: {
         checkSupport: function (element) {
-          if (element.hasAttribute('data-type') && element.getAttribute('data-type') === 'html') {
-            return true
-          } else {
-            return false
-          }
+          return checkType(element, 'html')
         },
 
         init: function (element, container) {
           // Create HTML
           var div = document.createElement('div'),
-            targetSelector,
-            target
+            targetSelector = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target'),
+            target = document.querySelector(targetSelector)
 
+          if (!target) {
+            return console.log('Ups, I can\'t find the target ' + targetSelector + '.')
+          }
+          
           div.classList.add('tobi-html')
-
-          if (element.hasAttribute('href')) {
-            targetSelector = element.getAttribute('href')
-          } else {
-            targetSelector = element.getAttribute('data-target')
-          }
-
-          target = document.querySelector(targetSelector)
-
-          if (target === null) {
-            console.log('Ups, I can\'t find the target ' + targetSelector + '.')
-            return
-          }
 
           // Copy content
           div.innerHTML = target.innerHTML
@@ -291,7 +258,7 @@
         onLeave: function (container) {
           var video = container.querySelector('video')
 
-          if (video !== null) {
+          if (video) {
             // Stop if video was found
             video.pause()
           }
@@ -311,14 +278,13 @@
       transformProperty = transformSupport()
 
       // Get a list of all elements within the document
-      elements = document.querySelectorAll(config.selector)
+      var elements = document.querySelectorAll(config.selector)
 
       // Saves the number of elements
       elementsLength = elements.length
 
       if (!elementsLength) {
-        console.log('Ups, I can\'t find the selector ' + config.selector + '.')
-        return
+        return console.log('Ups, I can\'t find the selector ' + config.selector + '.')
       }
 
       // Execute a few things once per element
@@ -337,7 +303,7 @@
         element.classList.add('tobi')
 
         // Set zoom icon if necessary
-        if (config.zoom && element.getElementsByTagName('img')[0]) {
+        if (config.zoom && element.querySelector('img')) {
           var tobiZoom = document.createElement('div')
 
           tobiZoom.classList.add('tobi__zoom-icon')
@@ -364,29 +330,27 @@
      *
      */
     var createOverlay = function createOverlay (element) {
-      var sliderElement = null,
-        figureWrapper = null,
-        figure = null
-
-      sliderElement = document.createElement('div')
+      var sliderElement = document.createElement('div'),
+        figureWrapper = document.createElement('div'),
+        figure = document.createElement('figure')
       sliderElement.classList.add('tobi-slide')
 
-      // Create figure wrapper
-      figureWrapper = document.createElement('div')
+      // Set up figure wrapper
       figureWrapper.classList.add('tobi-figure-wrapper')
 
-      // Create figure
-      figure = document.createElement('figure')
+      // Set up figure
       figure.classList.add('tobi-figure')
 
       // Detect type
       for (var i in supportedElements) {
-        if (supportedElements[i].checkSupport(element) === true) {
-          // Found it
-
-          // Init
-          supportedElements[i].init(element, figure)
-          break
+        if (supportedElements.hasOwnProperty(i)) {
+          if (supportedElements[i].checkSupport(element)) {
+            // Found it
+  
+            // Init
+            supportedElements[i].init(element, figure)
+            break
+          }
         }
       }
 
@@ -400,7 +364,7 @@
       slider.appendChild(sliderElement)
       sliderElements.push(sliderElement)
 
-      ++x
+      ++figcaptionId
 
       // Hide buttons if necessary
       if (!config.nav || elementsLength === 1 || (config.nav === 'auto' && 'ontouchstart' in window)) {
@@ -458,9 +422,8 @@
       // Save last focused element
       lastFocus = document.activeElement
 
-      focusableEls = overlay.querySelectorAll('button')
-      firstFocusableEl = focusableEls[0]
-      lastFocusableEl = focusableEls[focusableEls.length - 1]
+      firstFocusableEl = overlay.firstElementChild
+      lastFocusableEl = overlay.lastElementChild
 
       // Set current index
       currentIndex = index
@@ -600,12 +563,7 @@
      * @returns {string} - Transform property supported by client
      */
     var transformSupport = function transformSupport () {
-      var div = document.documentElement.style
-
-      if (typeof div.transform === 'string') {
-        return 'transform'
-      }
-      return 'WebkitTransform'
+      return typeof document.documentElement.style.transform === 'string' ? 'transform' : 'WebkitTransform'
     }
 
     /**
@@ -624,7 +582,7 @@
      *
      */
     var updateCounter = function updateCounter () {
-      counter.innerHTML = (currentIndex + 1) + '/' + elementsLength
+      counter.textContent = (currentIndex + 1) + '/' + elementsLength
     }
 
     /**
@@ -633,14 +591,7 @@
      */
     var updateFocus = function updateFocus (direction) {
       if (config.nav) {
-        prevButton.disabled = false
-        nextButton.disabled = false
-
-        if (currentIndex === elementsLength - 1) {
-          nextButton.disabled = true
-        } else if (currentIndex === 0) {
-          prevButton.disabled = true
-        }
+        nextButton.disabled, prevButton.disabled = currentIndex === elementsLength - 1 ? true : false
 
         if (!direction && !nextButton.disabled) {
           nextButton.focus()
@@ -943,6 +894,14 @@
         overlay.removeEventListener('mouseup', mouseupHandler)
         overlay.removeEventListener('mousemove', mousemoveHandler)
       }
+    }
+
+    /**
+     * Checks whether element has requested data-type value
+     *
+     */
+    var checkType = function checkType (element, type) {
+      return element.getAttribute('data-type') === type
     }
 
     /**
