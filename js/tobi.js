@@ -380,7 +380,7 @@
      */
     var createLightboxSlide = function createLightboxSlide (element) {
       var sliderElement = document.createElement('div')
-        sliderElement = document.createElement('div')
+        sliderElementContent = document.createElement('div')
 
       sliderElement.classList.add('tobi__slider__slide')
       sliderElement.style.position = 'absolute'
