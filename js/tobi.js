@@ -434,7 +434,7 @@
       // Bind events
       bindEvents()
 
-      // Load image
+      // Load element
       load(currentIndex)
       preload(currentIndex + 1)
       preload(currentIndex - 1)
