@@ -384,7 +384,7 @@
 
       sliderElement.classList.add('tobi__slider__slide')
       sliderElement.style.position = 'absolute'
-      sliderElement.style.left = x * 100 + '%'
+      sliderElement.style.left = figcaptionId * 100 + '%'
       sliderElementContent.classList.add('tobi__slider__slide__content')
 
       // Detect type
