@@ -260,7 +260,7 @@
 
       // Transform property supported by client
       transformProperty = transformSupport()
-      
+
       // Create lightbox
       createLightbox()
 
@@ -628,7 +628,14 @@
      */
     var updateFocus = function updateFocus (direction) {
       if (config.nav) {
-        prevButton.disabled = nextButton.disabled = currentIndex === elementsLength - 1 || currentIndex === 0
+        prevButton.disabled = false
+        nextButton.disabled = false
+        
+        if (currentIndex === elementsLength - 1) {
+          nextButton.disabled = true
+        } else if (currentIndex === 0) {
+          prevButton.disabled = true
+        }
 
         if (!direction && !nextButton.disabled) {
           nextButton.focus()
