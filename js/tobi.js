@@ -913,6 +913,19 @@
       elementsLength++
     }
 
+    /**
+     * Resets tobi
+     *
+     */
+    var reset = function reset () {
+      if (slider) {
+        while (slider.firstChild) {
+          slider.removeChild(slider.firstChild);
+        }
+      }
+      gallery.length = sliderElements.length = elementsLength = figcaptionId = 0
+    }
+
     init(userOptions)
 
     return {
@@ -921,6 +934,7 @@
       open: openOverlay,
       close: closeOverlay,
       add: add,
+      reset: reset,
       version: '1.6.4'
     }
   }
