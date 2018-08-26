@@ -260,6 +260,9 @@
 
       // Transform property supported by client
       transformProperty = transformSupport()
+      
+      // Create lightbox
+      createLightbox()
 
       // Get a list of all elements within the document
       var elements = document.querySelectorAll(config.selector)
@@ -270,9 +273,6 @@
       if (!elementsLength) {
         return console.log('Ups, I can\'t find the selector ' + config.selector + '.')
       }
-
-      // Create lightbox
-      createLightbox()
 
       // Execute a few things once per element
       Array.prototype.forEach.call(elements, function (element) {
