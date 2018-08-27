@@ -32,8 +32,7 @@
       browserWindow = window,
       transformProperty = null,
       gallery = [],
-      x = 0,
-      elements = null,
+      figcaptionId = 0,
       elementsLength = null,
       lightbox = null,
       overlay = null,
@@ -47,11 +46,11 @@
       drag = {},
       pointerDown = false,
       lastFocus = null,
-      focusableEls = null,
       firstFocusableEl = null,
       lastFocusableEl = null,
       offset = null,
-      offsetTmp = null
+      offsetTmp = null,
+      resizeTicking = false
 
     /**
      * Types - you can add new type to support something new
@@ -60,28 +59,18 @@
     var supportedElements = {
       image: {
         checkSupport: function (element) {
-          if (!element.hasAttribute('data-type')) {
-            return (element.href.match(/\.(png|jpg|tiff|tif|gif|bmp|webp|svg|ico)$/) != null)
-          }
+          return !element.hasAttribute('data-type') && element.href.match(/\.(png|jpg|tiff|tif|gif|bmp|webp|svg|ico)$/)
         },
 
         init: function (element, container) {
-          var figure = null,
-            image = null
-
-          // Create figure
-          figure = document.createElement('figure')
-
-          // Create image
-          image = document.createElement('img')
-
+          // Create figure and image
+          var figure = document.createElement('figure'),
+            image = document.createElement('img')
+          
           image.style.opacity = '0'
 
-          if (element.getElementsByTagName('img')[0] && element.getElementsByTagName('img')[0].alt) {
-            image.alt = element.getElementsByTagName('img')[0].alt
-          } else {
-            image.alt = ''
-          }
+          var thumbnail = element.querySelector('img')
+          image.alt = thumbnail && thumbnail.alt ? thumbnail.alt : ''
 
           image.setAttribute('src', '')
           image.setAttribute('data-src', element.href)
@@ -96,13 +85,13 @@
             figcaption.style.opacity = '0'
 
             if (config.captionsSelector === 'self' && element.getAttribute(config.captionAttribute)) {
-              figcaption.innerHTML = element.getAttribute(config.captionAttribute)
-            } else if (config.captionsSelector === 'img' && element.getElementsByTagName('img')[0] && element.getElementsByTagName('img')[0].getAttribute(config.captionAttribute)) {
-              figcaption.innerHTML = element.getElementsByTagName('img')[0].getAttribute(config.captionAttribute)
+              figcaption.textContent = element.getAttribute(config.captionAttribute)
+            } else if (config.captionsSelector === 'img' && thumbnail && thumbnail.getAttribute(config.captionAttribute)) {
+              figcaption.textContent = thumbnail.getAttribute(config.captionAttribute)
             }
 
-            if (figcaption.innerHTML) {
-              figcaption.id = 'tobi-figcaption-' + x
+            if (figcaption.textContent) {
+              figcaption.id = 'tobi-figcaption-' + figcaptionId
               figure.appendChild(figcaption)
 
               image.setAttribute('aria-labelledby', figcaption.id)
@@ -122,13 +111,13 @@
         },
 
         onLoad: function (container) {
-          var image = container.getElementsByTagName('img')[0]
+          var image = container.querySelector('img')
 
           if (!image.hasAttribute('data-src')) {
             return
           }
 
-          var figcaption = container.getElementsByTagName('figcaption')[0]
+          var figcaption = container.querySelector('figcaption')
           var loaderHtml = document.createElement('div')
 
           loaderHtml.classList.add('tobi-loader')
@@ -156,11 +145,7 @@
 
       youtube: {
         checkSupport: function (element) {
-          if (element.hasAttribute('data-type') && element.getAttribute('data-type') === 'youtube') {
-            return true
-          } else {
-            return false
-          }
+          return checkType(element, 'youtube')
         },
 
         init: function (element, container) {
@@ -182,24 +167,14 @@
 
       iframe: {
         checkSupport: function (element) {
-          if (element.hasAttribute('data-type') && element.getAttribute('data-type') === 'iframe') {
-            return true
-          } else {
-            return false
-          }
+          return checkType(element, 'iframe')
         },
 
         init: function (element, container) {
           // Create iframe
           var iframe = document.createElement('iframe'),
-            href
-
-          if (element.hasAttribute('href')) {
-            href = element.getAttribute('href')
-          } else {
-            href = element.getAttribute('data-target')
-          }
-
+            href = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target')
+          
           iframe.setAttribute('frameborder', '0')
           iframe.setAttribute('src', '')
           iframe.setAttribute('data-src', href)
@@ -216,7 +191,7 @@
         },
 
         onLoad: function (container) {
-          var iframe = container.getElementsByTagName('iframe')[0]
+          var iframe = container.querySelector('iframe')
 
           iframe.setAttribute('src', iframe.getAttribute('data-src'))
         },
@@ -228,33 +203,20 @@
 
       html: {
         checkSupport: function (element) {
-          if (element.hasAttribute('data-type') && element.getAttribute('data-type') === 'html') {
-            return true
-          } else {
-            return false
-          }
+          return checkType(element, 'html')
         },
 
         init: function (element, container) {
           // Create HTML
           var div = document.createElement('div'),
-            targetSelector,
-            target
+            targetSelector = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target'),
+            target = document.querySelector(targetSelector)
+          
+          if (!target) {
+            return console.log('Ups, I can\'t find the target ' + targetSelector + '.')
+          }
 
           div.classList.add('tobi-html')
-
-          if (element.hasAttribute('href')) {
-            targetSelector = element.getAttribute('href')
-          } else {
-            targetSelector = element.getAttribute('data-target')
-          }
-
-          target = document.querySelector(targetSelector)
-
-          if (target === null) {
-            console.log('Ups, I can\'t find the target ' + targetSelector + '.')
-            return
-          }
 
           // Copy content
           div.innerHTML = target.innerHTML
@@ -280,7 +242,7 @@
         onLeave: function (container) {
           var video = container.querySelector('video')
 
-          if (video !== null) {
+          if (video) {
             // Stop if video was found
             video.pause()
           }
@@ -303,14 +265,13 @@
       createLightbox()
 
       // Get a list of all elements within the document
-      elements = document.querySelectorAll(config.selector)
+      var elements = document.querySelectorAll(config.selector)
 
       // Saves the number of elements
       elementsLength = elements.length
 
       if (!elementsLength) {
-        console.log('Ups, I can\'t find the selector ' + config.selector + '.')
-        return
+        return console.log('Ups, I can\'t find the selector ' + config.selector + '.')
       }
 
       // Execute a few things once per element
@@ -328,7 +289,7 @@
         gallery.push(element)
 
         // Set zoom icon if necessary
-        if (config.zoom && element.getElementsByTagName('img')[0]) {
+        if (config.zoom && element.querySelector('img')) {
           var tobiZoom = document.createElement('div')
 
           tobiZoom.classList.add('tobi-zoom__icon')
@@ -354,27 +315,21 @@
      * Create lightbox
      *
      */
-    var createLightbox = function createLightbox (element) {
+    var createLightbox = function createLightbox () {
       // Create lightbox container
       lightbox = document.createElement('div')
       lightbox.setAttribute('role', 'dialog')
       lightbox.setAttribute('aria-hidden', 'true')
       lightbox.classList.add('tobi')
-      document.getElementsByTagName('body')[0].appendChild(lightbox)
+      document.body.appendChild(lightbox)
 
-      // Resize event using requestAnimationFrame
-      var resizeTicking = false
-
-      browserWindow.addEventListener('resize', function () {
-        if (!resizeTicking) {
-          browserWindow.requestAnimationFrame(function () {
-            updateOffset()
-
-            resizeTicking = false
-          })
-        }
-        resizeTicking = true
-      })
+      // Create previous button
+      prevButton = document.createElement('button')
+      prevButton.classList.add('tobi__prev')
+      prevButton.setAttribute('type', 'button')
+      prevButton.setAttribute('aria-label', config.navLabel[0])
+      prevButton.innerHTML = config.navText[0]
+      lightbox.appendChild(prevButton)
 
       // Create overlay container
       overlay = document.createElement('div')
@@ -385,22 +340,6 @@
       slider = document.createElement('div')
       slider.classList.add('tobi__slider')
       lightbox.appendChild(slider)
-
-      // Create previous button
-      prevButton = document.createElement('button')
-      prevButton.classList.add('tobi__prev')
-      prevButton.setAttribute('type', 'button')
-      prevButton.setAttribute('aria-label', config.navLabel[0])
-      prevButton.innerHTML = config.navText[0]
-      lightbox.appendChild(prevButton)
-
-      // Create next button
-      nextButton = document.createElement('button')
-      nextButton.classList.add('tobi__next')
-      nextButton.setAttribute('type', 'button')
-      nextButton.setAttribute('aria-label', config.navLabel[1])
-      nextButton.innerHTML = config.navText[1]
-      lightbox.appendChild(nextButton)
 
       // Create close button
       closeButton = document.createElement('button')
@@ -414,6 +353,25 @@
       counter = document.createElement('div')
       counter.classList.add('tobi__counter')
       lightbox.appendChild(counter)
+
+      // Create next button
+      nextButton = document.createElement('button')
+      nextButton.classList.add('tobi__next')
+      nextButton.setAttribute('type', 'button')
+      nextButton.setAttribute('aria-label', config.navLabel[1])
+      nextButton.innerHTML = config.navText[1]
+      lightbox.appendChild(nextButton)
+
+      // Resize event using requestAnimationFrame
+      browserWindow.addEventListener('resize', function () {
+        if (!resizeTicking) {
+          resizeTicking = true
+          browserWindow.requestAnimationFrame(function () {
+            updateOffset()
+            resizeTicking = false
+          })
+        }
+      })
     }
 
     /**
@@ -421,26 +379,24 @@
      *
      */
     var createLightboxSlide = function createLightboxSlide (element) {
-      var sliderElement = null,
-        sliderElementContent = null
+      var sliderElement = document.createElement('div'),
+        sliderElementContent = document.createElement('div')
 
-      sliderElement = document.createElement('div')
       sliderElement.classList.add('tobi__slider__slide')
       sliderElement.style.position = 'absolute'
-      sliderElement.style.left = x * 100 + '%'
-
-      // Create slide content container
-      sliderElementContent = document.createElement('div')
+      sliderElement.style.left = figcaptionId * 100 + '%'
       sliderElementContent.classList.add('tobi__slider__slide__content')
 
       // Detect type
       for (var i in supportedElements) {
-        if (supportedElements[i].checkSupport(element) === true) {
-          // Found it
+        if (supportedElements.hasOwnProperty(i)) {
+          if (supportedElements[i].checkSupport(element)) {
+            // Found it
 
-          // Init
-          supportedElements[i].init(element, sliderElementContent)
-          break
+            // Init
+            supportedElements[i].init(element, sliderElementContent)
+            break
+          }
         }
       }
 
@@ -451,7 +407,7 @@
       slider.appendChild(sliderElement)
       sliderElements.push(sliderElement)
 
-      ++x
+      ++figcaptionId
     }
 
     /**
@@ -502,9 +458,8 @@
       // Save the user’s focus
       lastFocus = document.activeElement
 
-      focusableEls = lightbox.querySelectorAll('button')
-      firstFocusableEl = focusableEls[0]
-      lastFocusableEl = focusableEls[focusableEls.length - 1]
+      firstFocusableEl = lightbox.firstElementChild
+      lastFocusableEl = lightbox.lastElementChild
 
       // Set current index
       currentIndex = index
@@ -645,12 +600,7 @@
      * @returns {string} - Transform property supported by client
      */
     var transformSupport = function transformSupport () {
-      var div = document.documentElement.style
-
-      if (typeof div.transform === 'string') {
-        return 'transform'
-      }
-      return 'WebkitTransform'
+      return typeof document.documentElement.style.transform === 'string' ? 'transform' : 'WebkitTransform'
     }
 
     /**
@@ -669,7 +619,7 @@
      *
      */
     var updateCounter = function updateCounter () {
-      counter.innerHTML = (currentIndex + 1) + '/' + elementsLength
+      counter.textContent = (currentIndex + 1) + '/' + elementsLength
     }
 
     /**
@@ -680,7 +630,7 @@
       if (config.nav) {
         prevButton.disabled = false
         nextButton.disabled = false
-
+        
         if (currentIndex === elementsLength - 1) {
           nextButton.disabled = true
         } else if (currentIndex === 0) {
@@ -709,7 +659,7 @@
      * Navigate to the next slide
      *
      */
-    var next = function next (index) {
+    var next = function next () {
       // If not last
       if (currentIndex !== elementsLength - 1) {
         leave()
@@ -731,7 +681,7 @@
      * Navigate to the previous slide
      *
      */
-    var prev = function prev (index) {
+    var prev = function prev () {
       // If not first
       if (currentIndex > 0) {
         leave()
@@ -983,12 +933,33 @@
     }
 
     /**
+     * Checks whether element has requested data-type value
+     *
+     */
+    var checkType = function checkType (element, type) {
+      return element.getAttribute('data-type') === type
+    }
+
+    /**
      * Adds an element dynamically
      *
      */
     var add = function add (element) {
       initElement(element)
       elementsLength++
+    }
+
+    /**
+     * Resets lightbox
+     *
+     */
+    var reset = function reset () {
+      if (slider) {
+        while (slider.firstChild) {
+          slider.removeChild(slider.firstChild);
+        }
+      }
+      gallery.length = sliderElements.length = elementsLength = figcaptionId = 0
     }
 
     init(userOptions)
@@ -999,6 +970,7 @@
       open: openLightbox,
       close: closeLightbox,
       add: add,
+      reset: reset,
       version: '1.7.0'
     }
   }
