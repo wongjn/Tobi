@@ -458,8 +458,8 @@
       // Save the user’s focus
       lastFocus = document.activeElement
 
-      firstFocusableEl = overlay.firstElementChild
-      lastFocusableEl = overlay.lastElementChild
+      firstFocusableEl = lightbox.firstElementChild
+      lastFocusableEl = lightbox.lastElementChild
 
       // Set current index
       currentIndex = index
