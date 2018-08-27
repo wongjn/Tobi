@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.7.0
+ * @version 1.7.1
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -50,7 +50,8 @@
       lastFocusableEl = null,
       offset = null,
       offsetTmp = null,
-      resizeTicking = false
+      resizeTicking = false,
+      x = 0
 
     /**
      * Types - you can add new type to support something new
@@ -65,11 +66,10 @@
         init: function (element, container) {
           // Create figure and image
           var figure = document.createElement('figure'),
-            image = document.createElement('img')
-          
-          image.style.opacity = '0'
+            image = document.createElement('img'),
+            thumbnail = element.querySelector('img')
 
-          var thumbnail = element.querySelector('img')
+          image.style.opacity = '0'
           image.alt = thumbnail && thumbnail.alt ? thumbnail.alt : ''
 
           image.setAttribute('src', '')
@@ -95,6 +95,8 @@
               figure.appendChild(figcaption)
 
               image.setAttribute('aria-labelledby', figcaption.id)
+
+              ++figcaptionId
             }
           }
 
@@ -174,7 +176,7 @@
           // Create iframe
           var iframe = document.createElement('iframe'),
             href = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target')
-          
+
           iframe.setAttribute('frameborder', '0')
           iframe.setAttribute('src', '')
           iframe.setAttribute('data-src', href)
@@ -211,7 +213,7 @@
           var div = document.createElement('div'),
             targetSelector = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target'),
             target = document.querySelector(targetSelector)
-          
+
           if (!target) {
             return console.log('Ups, I can\'t find the target ' + targetSelector + '.')
           }
@@ -379,35 +381,35 @@
      *
      */
     var createLightboxSlide = function createLightboxSlide (element) {
-      var sliderElement = document.createElement('div'),
-        sliderElementContent = document.createElement('div')
-
-      sliderElement.classList.add('tobi__slider__slide')
-      sliderElement.style.position = 'absolute'
-      sliderElement.style.left = figcaptionId * 100 + '%'
-      sliderElementContent.classList.add('tobi__slider__slide__content')
-
       // Detect type
-      for (var i in supportedElements) {
-        if (supportedElements.hasOwnProperty(i)) {
-          if (supportedElements[i].checkSupport(element)) {
-            // Found it
+      for (var index in supportedElements) {
+        if (supportedElements.hasOwnProperty(index)) {
+          if (supportedElements[index].checkSupport(element)) {
+            // Create slide elements
+            var sliderElement = document.createElement('div'),
+              sliderElementContent = document.createElement('div')
 
-            // Init
-            supportedElements[i].init(element, sliderElementContent)
+            sliderElement.classList.add('tobi__slider__slide')
+            sliderElement.style.position = 'absolute'
+            sliderElement.style.left = x * 100 + '%'
+            sliderElementContent.classList.add('tobi__slider__slide__content')
+
+            // Create type elements
+            supportedElements[index].init(element, sliderElementContent)
+
+            // Add slide content container to slider element
+            sliderElement.appendChild(sliderElementContent)
+
+            // Add slider element to slider
+            slider.appendChild(sliderElement)
+            sliderElements.push(sliderElement)
+
+            ++x
+
             break
           }
         }
       }
-
-      // Add slide content container to slider element
-      sliderElement.appendChild(sliderElementContent)
-
-      // Add slider element to slider
-      slider.appendChild(sliderElement)
-      sliderElements.push(sliderElement)
-
-      ++figcaptionId
     }
 
     /**
@@ -630,7 +632,7 @@
       if (config.nav) {
         prevButton.disabled = false
         nextButton.disabled = false
-        
+
         if (currentIndex === elementsLength - 1) {
           nextButton.disabled = true
         } else if (currentIndex === 0) {
@@ -956,7 +958,7 @@
     var reset = function reset () {
       if (slider) {
         while (slider.firstChild) {
-          slider.removeChild(slider.firstChild);
+          slider.removeChild(slider.firstChild)
         }
       }
       gallery.length = sliderElements.length = elementsLength = figcaptionId = 0
@@ -971,7 +973,7 @@
       close: closeLightbox,
       add: add,
       reset: reset,
-      version: '1.7.0'
+      version: '1.7.1'
     }
   }
 
