@@ -263,9 +263,6 @@
       // Transform property supported by client
       transformProperty = transformSupport()
 
-      // Create lightbox
-      createLightbox()
-
       // Get a list of all elements within the document
       var elements = document.querySelectorAll(config.selector)
 
@@ -275,6 +272,9 @@
       if (!elementsLength) {
         return console.log('Ups, I can\'t find the selector ' + config.selector + '.')
       }
+
+      // Create lightbox
+      createLightbox()
 
       // Execute a few things once per element
       Array.prototype.forEach.call(elements, function (element) {
@@ -286,7 +286,7 @@
      * Init element
      *
      */
-    var initElement = function initElement (element) {
+    var initElement = function initElement (element, add) {
       if (gallery.indexOf(element) === -1) {
         gallery.push(element)
 
@@ -301,6 +301,10 @@
           element.appendChild(tobiZoom)
         }
 
+        if (add) {
+          elementsLength++
+        }
+
         // Bind click event handler
         element.addEventListener('click', function (event) {
           event.preventDefault()
@@ -310,6 +314,8 @@
 
         // Create slide
         createLightboxSlide(element)
+      } else {
+        return console.log('Element already added to the lightbox.')
       }
     }
 
@@ -419,8 +425,7 @@
      */
     var openLightbox = function openLightbox (index) {
       if (lightbox.getAttribute('aria-hidden') === 'false') {
-        console.log('Tobi is already open.')
-        return
+        return console.log('Tobi is already open.')
       }
 
       if (!config.scroll) {
@@ -947,8 +952,7 @@
      *
      */
     var add = function add (element) {
-      initElement(element)
-      elementsLength++
+      initElement(element, true)
     }
 
     /**
