@@ -54,6 +54,57 @@
       x = 0
 
     /**
+     * Merge default options with user options
+     *
+     * @param {Object} userOptions - User options
+     * @returns {Object} - Custom options
+     */
+    var mergeOptions = function mergeOptions (userOptions) {
+      // Default options
+      var options = {
+        selector: '.lightbox',
+        captions: true,
+        captionsSelector: 'img',
+        captionAttribute: 'alt',
+        nav: 'auto',
+        navText: ['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" /></svg>', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6" /></svg>'],
+        navLabel: ['Previous', 'Next'],
+        close: true,
+        closeText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>',
+        closeLabel: 'Close',
+        counter: true,
+        download: false,
+        downloadText: '',
+        downloadLabel: 'Download',
+        keyboard: true,
+        zoom: true,
+        zoomText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>',
+        docClose: true,
+        swipeClose: true,
+        scroll: false,
+        draggable: true,
+        threshold: 100
+      }
+
+      if (userOptions) {
+        Object.keys(userOptions).forEach(function (key) {
+          options[key] = userOptions[key]
+        })
+      }
+
+      return options
+    }
+
+    /**
+     * Determine if browser supports unprefixed transform property
+     *
+     * @returns {string} - Transform property supported by client
+     */
+    var transformSupport = function transformSupport () {
+      return typeof document.documentElement.style.transform === 'string' ? 'transform' : 'WebkitTransform'
+    }
+
+    /**
      * Types - you can add new type to support something new
      *
      */
@@ -64,10 +115,11 @@
         },
 
         init: function (element, container) {
-          // Create figure and image
           var figure = document.createElement('figure'),
+            figcaption = document.createElement('figcaption'),
             image = document.createElement('img'),
-            thumbnail = element.querySelector('img')
+            thumbnail = element.querySelector('img'),
+            loader = document.createElement('div')
 
           image.style.opacity = '0'
           image.alt = thumbnail && thumbnail.alt ? thumbnail.alt : ''
@@ -80,8 +132,6 @@
 
           // Create figcaption
           if (config.captions) {
-            var figcaption = document.createElement('figcaption')
-
             figcaption.style.opacity = '0'
 
             if (config.captionsSelector === 'self' && element.getAttribute(config.captionAttribute)) {
@@ -103,6 +153,12 @@
           // Add figure to container
           container.appendChild(figure)
 
+          //  Create loader
+          loader.classList.add('tobi-loader')
+
+          // Add loader to container
+          container.appendChild(loader)
+
           // Register type
           container.setAttribute('data-type', 'image')
         },
@@ -119,15 +175,10 @@
             return
           }
 
-          var figcaption = container.querySelector('figcaption')
-          var loaderHtml = document.createElement('div')
-
-          loaderHtml.classList.add('tobi-loader')
-          container.appendChild(loaderHtml)
+          var figcaption = container.querySelector('figcaption'),
+            loader = container.querySelector('.tobi-loader')
 
           image.onload = function () {
-            var loader = container.querySelector('.tobi-loader')
-
             container.removeChild(loader)
             image.style.opacity = '1'
 
@@ -173,7 +224,6 @@
         },
 
         init: function (element, container) {
-          // Create iframe
           var iframe = document.createElement('iframe'),
             href = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target')
 
@@ -209,7 +259,6 @@
         },
 
         init: function (element, container) {
-          // Create HTML
           var div = document.createElement('div'),
             targetSelector = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target'),
             target = document.querySelector(targetSelector)
@@ -331,14 +380,6 @@
       lightbox.classList.add('tobi')
       document.body.appendChild(lightbox)
 
-      // Create previous button
-      prevButton = document.createElement('button')
-      prevButton.classList.add('tobi__prev')
-      prevButton.setAttribute('type', 'button')
-      prevButton.setAttribute('aria-label', config.navLabel[0])
-      prevButton.innerHTML = config.navText[0]
-      lightbox.appendChild(prevButton)
-
       // Create overlay container
       overlay = document.createElement('div')
       overlay.classList.add('tobi__overlay')
@@ -348,6 +389,22 @@
       slider = document.createElement('div')
       slider.classList.add('tobi__slider')
       lightbox.appendChild(slider)
+
+      // Create previous button
+      prevButton = document.createElement('button')
+      prevButton.classList.add('tobi__prev')
+      prevButton.setAttribute('type', 'button')
+      prevButton.setAttribute('aria-label', config.navLabel[0])
+      prevButton.innerHTML = config.navText[0]
+      lightbox.appendChild(prevButton)
+
+      // Create next button
+      nextButton = document.createElement('button')
+      nextButton.classList.add('tobi__next')
+      nextButton.setAttribute('type', 'button')
+      nextButton.setAttribute('aria-label', config.navLabel[1])
+      nextButton.innerHTML = config.navText[1]
+      lightbox.appendChild(nextButton)
 
       // Create close button
       closeButton = document.createElement('button')
@@ -361,14 +418,6 @@
       counter = document.createElement('div')
       counter.classList.add('tobi__counter')
       lightbox.appendChild(counter)
-
-      // Create next button
-      nextButton = document.createElement('button')
-      nextButton.classList.add('tobi__next')
-      nextButton.setAttribute('type', 'button')
-      nextButton.setAttribute('aria-label', config.navLabel[1])
-      nextButton.innerHTML = config.navText[1]
-      lightbox.appendChild(nextButton)
 
       // Resize event using requestAnimationFrame
       browserWindow.addEventListener('resize', function () {
@@ -465,9 +514,6 @@
       // Save the user’s focus
       lastFocus = document.activeElement
 
-      firstFocusableEl = lightbox.firstElementChild
-      lastFocusableEl = lightbox.lastElementChild
-
       // Set current index
       currentIndex = index
 
@@ -495,7 +541,7 @@
      */
     var closeLightbox = function closeLightbox () {
       if (lightbox.getAttribute('aria-hidden') === 'true') {
-        return
+        return console.log('Tobi is already closed')
       }
 
       if (!config.scroll) {
@@ -560,57 +606,6 @@
     }
 
     /**
-     * Merge default options with user options
-     *
-     * @param {Object} userOptions - User options
-     * @returns {Object} - Custom options
-     */
-    var mergeOptions = function mergeOptions (userOptions) {
-      // Default options
-      var options = {
-        selector: '.lightbox',
-        captions: true,
-        captionsSelector: 'img',
-        captionAttribute: 'alt',
-        nav: 'auto',
-        navText: ['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" /></svg>', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6" /></svg>'],
-        navLabel: ['Previous', 'Next'],
-        close: true,
-        closeText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>',
-        closeLabel: 'Close',
-        counter: true,
-        download: false,
-        downloadText: '',
-        downloadLabel: 'Download',
-        keyboard: true,
-        zoom: true,
-        zoomText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>',
-        docClose: true,
-        swipeClose: true,
-        scroll: false,
-        draggable: true,
-        threshold: 100
-      }
-
-      if (userOptions) {
-        Object.keys(userOptions).forEach(function (key) {
-          options[key] = userOptions[key]
-        })
-      }
-
-      return options
-    }
-
-    /**
-     * Determine if browser supports unprefixed transform property
-     *
-     * @returns {string} - Transform property supported by client
-     */
-    var transformSupport = function transformSupport () {
-      return typeof document.documentElement.style.transform === 'string' ? 'transform' : 'WebkitTransform'
-    }
-
-    /**
      * Update the offset
      *
      */
@@ -634,6 +629,8 @@
      *
      */
     var updateFocus = function updateFocus (direction) {
+      var focusableEls
+
       if (config.nav) {
         prevButton.disabled = false
         nextButton.disabled = false
@@ -659,7 +656,13 @@
         }
       } else if (config.close) {
         closeButton.focus()
+
+        lastFocusableEl = closeButton
       }
+
+      focusableEls = lightbox.querySelectorAll('button:not(:disabled)')
+      firstFocusableEl = focusableEls[0]
+      lastFocusableEl = focusableEls[focusableEls.length - 1]
     }
 
     /**

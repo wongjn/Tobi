@@ -265,7 +265,7 @@ $iframeWidth: 85vw;
   &::before {
     animation: spin 1s infinite;
     border-radius: 100%;
-    border: .5em solid #f2f2f2;
+    border: .222em solid #fff;
     border-top-color: $loaderColor;
     bottom: 0;
     content: "";
