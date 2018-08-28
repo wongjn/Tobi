@@ -322,6 +322,9 @@
         return console.log('Ups, I can\'t find the selector ' + config.selector + '.')
       }
 
+      // Create lightbox
+      createLightbox()
+
       // Execute a few things once per element
       Array.prototype.forEach.call(elements, function (element) {
         initElement(element)
@@ -332,12 +335,15 @@
      * Init element
      *
      */
-    var initElement = function initElement (element, add) {
+    var initElement = function initElement (element, isNewDynamicElement) {
+      // Check if the lightbox already exists
+      if (!lightbox) {
+        // Create the lightbox
+        createLightbox()
+      }
+
+      // Check if element already exists
       if (gallery.indexOf(element) === -1) {
-        if (!lightbox) {
-          // Create lightbox
-          createLightbox()
-        }
         gallery.push(element)
 
         // Set zoom icon if necessary
@@ -351,7 +357,7 @@
           element.appendChild(tobiZoom)
         }
 
-        if (add) {
+        if (isNewDynamicElement) {
           elementsLength++
         }
 
@@ -362,7 +368,7 @@
           openLightbox(gallery.indexOf(this))
         })
 
-        // Create slide
+        // Create the slide
         createLightboxSlide(element)
       } else {
         return console.log('Element already added to the lightbox.')
@@ -370,7 +376,7 @@
     }
 
     /**
-     * Create lightbox
+     * Create the lightbox
      *
      */
     var createLightbox = function createLightbox () {
@@ -429,11 +435,12 @@
           })
         }
       })
+
       document.body.appendChild(lightbox)
     }
 
     /**
-     * Create lightbox slide
+     * Create a lightbox slide
      *
      */
     var createLightboxSlide = function createLightboxSlide (element) {
@@ -469,7 +476,7 @@
     }
 
     /**
-     * Open lightbox
+     * Open the lightbox
      *
      * @param {number} index - Item index to load
      */
@@ -537,7 +544,7 @@
     }
 
     /**
-     * Close lightbox
+     * Close the lightbox
      *
      */
     var closeLightbox = function closeLightbox () {
@@ -590,6 +597,50 @@
       var type = container.getAttribute('data-type')
 
       supportedElements[type].onLoad(container)
+    }
+
+    /**
+     * Navigate to the next slide
+     *
+     */
+    var next = function next () {
+      // If not last
+      if (currentIndex !== elementsLength - 1) {
+        leave()
+      }
+
+      if (currentIndex < elementsLength - 1) {
+        currentIndex++
+
+        updateOffset()
+        updateCounter()
+        updateFocus('right')
+
+        load(currentIndex)
+        preload(currentIndex + 1)
+      }
+    }
+
+    /**
+     * Navigate to the previous slide
+     *
+     */
+    var prev = function prev () {
+      // If not first
+      if (currentIndex > 0) {
+        leave()
+      }
+
+      if (currentIndex > 0) {
+        currentIndex--
+
+        updateOffset()
+        updateCounter()
+        updateFocus('left')
+
+        load(currentIndex)
+        preload(currentIndex - 1)
+      }
     }
 
     /**
@@ -664,50 +715,6 @@
       focusableEls = lightbox.querySelectorAll('button:not(:disabled)')
       firstFocusableEl = focusableEls[0]
       lastFocusableEl = focusableEls[focusableEls.length - 1]
-    }
-
-    /**
-     * Navigate to the next slide
-     *
-     */
-    var next = function next () {
-      // If not last
-      if (currentIndex !== elementsLength - 1) {
-        leave()
-      }
-
-      if (currentIndex < elementsLength - 1) {
-        currentIndex++
-
-        updateOffset()
-        updateCounter()
-        updateFocus('right')
-
-        load(currentIndex)
-        preload(currentIndex + 1)
-      }
-    }
-
-    /**
-     * Navigate to the previous slide
-     *
-     */
-    var prev = function prev () {
-      // If not first
-      if (currentIndex > 0) {
-        leave()
-      }
-
-      if (currentIndex > 0) {
-        currentIndex--
-
-        updateOffset()
-        updateCounter()
-        updateFocus('left')
-
-        load(currentIndex)
-        preload(currentIndex - 1)
-      }
     }
 
     /**
@@ -892,6 +899,7 @@
         document.addEventListener('keydown', keydownHandler)
       }
 
+      // Click events
       if (config.docClose) {
         lightbox.addEventListener('click', clickHandler)
       }
@@ -922,6 +930,7 @@
         document.removeEventListener('keydown', keydownHandler)
       }
 
+      // Click events
       if (config.docClose) {
         lightbox.removeEventListener('click', clickHandler)
       }
@@ -952,7 +961,7 @@
     }
 
     /**
-     * Adds an element dynamically
+     * Add an element dynamically to the lightbox
      *
      */
     var add = function add (element) {
@@ -960,7 +969,7 @@
     }
 
     /**
-     * Resets lightbox
+     * Reset the lightbox
      *
      */
     var reset = function reset () {
@@ -969,6 +978,7 @@
           slider.removeChild(slider.firstChild)
         }
       }
+
       gallery.length = sliderElements.length = elementsLength = figcaptionId = x = 0
     }
 
