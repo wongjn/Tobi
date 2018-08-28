@@ -122,7 +122,7 @@
             loader = document.createElement('div')
 
           image.style.opacity = '0'
-          image.alt = thumbnail && thumbnail.alt ? thumbnail.alt : ''
+          image.alt = thumbnail.alt || ''
 
           image.setAttribute('src', '')
           image.setAttribute('data-src', element.href)
@@ -322,9 +322,6 @@
         return console.log('Ups, I can\'t find the selector ' + config.selector + '.')
       }
 
-      // Create lightbox
-      createLightbox()
-
       // Execute a few things once per element
       Array.prototype.forEach.call(elements, function (element) {
         initElement(element)
@@ -337,6 +334,10 @@
      */
     var initElement = function initElement (element, add) {
       if (gallery.indexOf(element) === -1) {
+        if (!lightbox) {
+          // Create lightbox
+          createLightbox()
+        }
         gallery.push(element)
 
         // Set zoom icon if necessary
@@ -378,7 +379,6 @@
       lightbox.setAttribute('role', 'dialog')
       lightbox.setAttribute('aria-hidden', 'true')
       lightbox.classList.add('tobi')
-      document.body.appendChild(lightbox)
 
       // Create overlay container
       overlay = document.createElement('div')
@@ -429,6 +429,7 @@
           })
         }
       })
+      document.body.appendChild(lightbox)
     }
 
     /**
@@ -968,7 +969,7 @@
           slider.removeChild(slider.firstChild)
         }
       }
-      gallery.length = sliderElements.length = elementsLength = figcaptionId = 0
+      gallery.length = sliderElements.length = elementsLength = figcaptionId = x = 0
     }
 
     init(userOptions)
