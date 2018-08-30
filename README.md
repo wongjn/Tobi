@@ -1,6 +1,6 @@
 # Tobi
 
-[![Version](https://img.shields.io/badge/version-1.7.0-0437fd.svg)](https://github.com/rqrauhvmra/Tobi/releases)
+[![Version](https://img.shields.io/badge/version-1.7.1-0437fd.svg)](https://github.com/rqrauhvmra/Tobi/releases)
 [![License](https://img.shields.io/badge/license-MIT-0437fd.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
 ![Dependecies](https://img.shields.io/badge/dependencies-none-0437fd.svg)
 
@@ -37,7 +37,7 @@ JavaScript: `js/tobi.min.js` minified, or `js/tobi.js` un-minified
 
 Tobi is also available on npm.
 
-`npm install rqrauhvmra__tobi --save`
+`$ npm install rqrauhvmra__tobi --save`
 
 ## Usage
 
@@ -188,9 +188,11 @@ tobi.next()   // Shows the next slide in the lightbox
 tobi.prev()   // Shows the previous slide in the lightbox
 tobi.close()  // Closes the lightbox
 
-// Adds an element dynamically
+// Adds an element dynamically, even if the lightbox is open
 var newElement = document.querySelector('.new-image')
 tobi.add(newElement)
+
+tobi.isOpen() // Checks if the lightbox is open
 ```
 
 ## Browser support

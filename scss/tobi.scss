@@ -109,14 +109,21 @@ $iframeWidth: 85vw;
 .tobi__slider__slide {
   align-items: center;
   display: flex;
+  height: 100%;
   justify-content: center;
   width: 100%;
-  height: 100%;
 
 
   & .tobi__slider__slide__content {
     max-height: 85vh;
     max-width: 85vw;
+  }
+
+  & .tobi-html {
+    max-height: 85vh;
+    overflow: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   & figure {
@@ -265,7 +272,7 @@ $iframeWidth: 85vw;
   &::before {
     animation: spin 1s infinite;
     border-radius: 100%;
-    border: .5em solid #f2f2f2;
+    border: .222em solid #fff;
     border-top-color: $loaderColor;
     bottom: 0;
     content: "";
