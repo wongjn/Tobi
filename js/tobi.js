@@ -512,6 +512,7 @@
 
       // Hide close if necessary
       if (!config.close) {
+        closeButton.disabled = false
         closeButton.setAttribute('aria-hidden', 'true')
       }
 
@@ -681,14 +682,19 @@
      *
      */
     var updateFocus = function updateFocus (direction) {
-      var focusableEls
+      var focusableEls = null
 
       if (config.nav) {
         prevButton.disabled = false
         nextButton.disabled = false
 
         if (currentIndex === elementsLength - 1) {
+          prevButton.disabled = true
           nextButton.disabled = true
+
+          if (config.close) {
+            closeButton.focus()
+          }
         } else if (currentIndex === 0) {
           prevButton.disabled = true
         }
@@ -708,13 +714,11 @@
         }
       } else if (config.close) {
         closeButton.focus()
-
-        lastFocusableEl = closeButton
       }
 
       focusableEls = lightbox.querySelectorAll('button:not(:disabled)')
       firstFocusableEl = focusableEls[0]
-      lastFocusableEl = focusableEls[focusableEls.length - 1]
+      lastFocusableEl = focusableEls.length === 1 ? focusableEls[0] : focusableEls[focusableEls.length - 1]
     }
 
     /**
