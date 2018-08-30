@@ -685,10 +685,12 @@
       var focusableEls = null
 
       if (config.nav) {
+        // Display the next and previous buttons
         prevButton.disabled = false
         nextButton.disabled = false
 
-        if (currentIndex === elementsLength - 1) {
+        if (elementsLength === 1) {
+          // Hide the next and previous buttons if there is only one slide
           prevButton.disabled = true
           nextButton.disabled = true
 
@@ -696,7 +698,11 @@
             closeButton.focus()
           }
         } else if (currentIndex === 0) {
+          // Hide the previous button when the first slide is displayed
           prevButton.disabled = true
+        } else if (currentIndex === elementsLength - 1) {
+          // Hide the next button when the last slide is displayed
+          nextButton.disabled = true
         }
 
         if (!direction && !nextButton.disabled) {
