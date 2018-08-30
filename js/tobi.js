@@ -259,24 +259,17 @@
         },
 
         init: function (element, container) {
-          var div = document.createElement('div'),
-            targetSelector = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target'),
+          var targetSelector = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target'),
             target = document.querySelector(targetSelector)
 
           if (!target) {
             return console.log('Ups, I can\'t find the target ' + targetSelector + '.')
           }
 
-          div.classList.add('tobi-html')
+          target.classList.add('tobi-html')
 
-          // Copy content
-          div.innerHTML = target.innerHTML
-
-          // Hide original content
-          target.style.display = 'none'
-
-          // Add HTML to container
-          container.appendChild(div)
+          // Add content to container
+          container.appendChild(target)
 
           // Register type
           container.setAttribute('data-type', 'html')
