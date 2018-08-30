@@ -357,10 +357,6 @@
           element.appendChild(tobiZoom)
         }
 
-        if (isNewDynamicElement) {
-          elementsLength++
-        }
-
         // Bind click event handler
         element.addEventListener('click', function (event) {
           event.preventDefault()
@@ -370,6 +366,16 @@
 
         // Create the slide
         createLightboxSlide(element)
+
+        if (isNewDynamicElement) {
+          elementsLength++
+
+          if (isOpen()) {
+            updateCounter()
+            updateOffset()
+            updateFocus()
+          }
+        }
       } else {
         return console.log('Element already added to the lightbox.')
       }
@@ -992,6 +998,14 @@
       gallery.length = sliderElements.length = elementsLength = figcaptionId = x = 0
     }
 
+    /**
+     * Check if the lightbox is open
+     *
+     */
+    var isOpen = function isOpen () {
+      return lightbox.getAttribute('aria-hidden') === 'false'
+    }
+
     init(userOptions)
 
     return {
@@ -1001,6 +1015,7 @@
       close: closeLightbox,
       add: add,
       reset: reset,
+      isOpen: isOpen,
       version: '1.7.1'
     }
   }

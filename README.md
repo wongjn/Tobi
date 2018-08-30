@@ -37,7 +37,7 @@ JavaScript: `js/tobi.min.js` minified, or `js/tobi.js` un-minified
 
 Tobi is also available on npm.
 
-`npm install rqrauhvmra__tobi --save`
+`$ npm install rqrauhvmra__tobi --save`
 
 ## Usage
 
@@ -191,6 +191,8 @@ tobi.close()  // Closes the lightbox
 // Adds an element dynamically
 var newElement = document.querySelector('.new-image')
 tobi.add(newElement)
+
+tobi.isOpen() // Check if the lightbox is open
 ```
 
 ## Browser support
