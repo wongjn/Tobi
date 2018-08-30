@@ -122,7 +122,10 @@
             loader = document.createElement('div')
 
           image.style.opacity = '0'
-          image.alt = thumbnail.alt || ''
+
+          if (thumbnail) {
+            image.alt = thumbnail.alt || ''
+          }
 
           image.setAttribute('src', '')
           image.setAttribute('data-src', element.href)
