@@ -188,7 +188,7 @@ tobi.next()   // Shows the next slide in the lightbox
 tobi.prev()   // Shows the previous slide in the lightbox
 tobi.close()  // Closes the lightbox
 
-// Adds an element dynamically, even if the light box is open
+// Adds an element dynamically, even if the lightbox is open
 var newElement = document.querySelector('.new-image')
 tobi.add(newElement)
 
