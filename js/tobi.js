@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.7.1
+ * @version 1.7.2
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -1012,7 +1012,7 @@
       add: add,
       reset: reset,
       isOpen: isOpen,
-      version: '1.7.1'
+      version: '1.7.2'
     }
   }
 
