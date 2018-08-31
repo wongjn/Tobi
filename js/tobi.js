@@ -869,6 +869,7 @@
 
       pointerDown = true
       drag.startX = event.pageX
+      drag.startY = event.pageY
       slider.style.cursor = '-webkit-grabbing'
     }
 
@@ -881,6 +882,8 @@
 
       if (pointerDown) {
         drag.endX = event.pageX
+        drag.endY = event.pageY
+
         slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
       }
     }

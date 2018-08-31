@@ -31,9 +31,8 @@ An accessible, simple and light-weight open source lightbox script with no depen
 
 ## Features
 
-- No dependencies
-- Simple and light-weight
-- Accessible:
+- [x] No dependencies
+- [x] Accessible:
   - ARIA roles
   - Keyboard navigation:
     - `Prev`/`Next` Keys: Navigate through items
@@ -41,8 +40,12 @@ An accessible, simple and light-weight open source lightbox script with no depen
     - `TAB` Key: Focus elements within the lightbox, not outside
   - When the lightbox opens, focus is set to the first focusable element in the lightbox
   - When the lightbox closes, focus returns to what was in focus before the lightbox opened
-  - Touch gestures: Drag/Swipe to navigate through items, close the lightbox with a vertical drag/swipe
-- Support for images, iframes and inline HTML
+- [x] Touch & Mouse drag support:
+  - Drag/Swipe to navigate through items, close the lightbox with a vertical drag/swipe
+- [x] light-weight
+- [x] Responsive
+- [x] Iframe support
+- [x] Inline HTML support
 
 ## Get Tobi
 
@@ -226,8 +229,8 @@ Tobi has been tested in the following browsers (all the latest versions):
 
 ## To do
 
-- Possibility to group
-- Support for `srcset` and `picture`
+- [ ] Possibility to group
+- [ ] Support for `srcset` and `picture`
 
 ## Contributing
 
