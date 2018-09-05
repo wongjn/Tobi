@@ -122,7 +122,9 @@ $iframeWidth: 85vw;
   & .tobi-html {
     max-height: 85vh;
     overflow: hidden;
-    overflow-y: auto;
+    // videos may be larger than our viewport
+    // scale and don't show scrollbar
+    //overflow-y: auto;
     overscroll-behavior: contain;
   }
 
