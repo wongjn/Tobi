@@ -483,8 +483,16 @@
      * @param {number} index - Item index to load
      */
     var openLightbox = function openLightbox (index) {
-      if (lightbox.getAttribute('aria-hidden') === 'false') {
-        return console.log('Tobi is already open.')
+      if (isOpen() && !index) {
+        return console.log('Ups, Tobi is already open.')
+      }
+
+      if (isOpen() && index && index === currentIndex) {
+        return console.log('Ups, slide ' + index + ' is already selected.')
+      }
+
+      if (index > elementsLength) {
+        return console.log('Ups, I can\'t find slide ' + index + '.')
       }
 
       if (!config.scroll) {
@@ -1008,9 +1016,9 @@
     init(userOptions)
 
     return {
+      open: openLightbox,
       prev: prev,
       next: next,
-      open: openLightbox,
       close: closeLightbox,
       add: add,
       reset: reset,

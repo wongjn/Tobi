@@ -10,7 +10,7 @@ An accessible, simple and light-weight open source lightbox script with no depen
 
 ![.flex__*](https://rqrauhvmra.com/tobi/snapshot.png)
 
-## Table of Contents
+## Table of contents
 
 - [Features](#features)
 - [Get Tobi](#get-tobi)
@@ -31,8 +31,8 @@ An accessible, simple and light-weight open source lightbox script with no depen
 
 ## Features
 
-- [x] No dependencies
-- [x] Accessible:
+- No dependencies
+- Accessible:
   - ARIA roles
   - Keyboard navigation:
     - `Prev`/`Next` Keys: Navigate through items
@@ -40,12 +40,12 @@ An accessible, simple and light-weight open source lightbox script with no depen
     - `TAB` Key: Focus elements within the lightbox, not outside
   - When the lightbox opens, focus is set to the first focusable element in the lightbox
   - When the lightbox closes, focus returns to what was in focus before the lightbox opened
-- [x] Touch & Mouse drag support:
+- Touch & Mouse drag support:
   - Drag/Swipe to navigate through items, close the lightbox with a vertical drag/swipe
-- [x] light-weight
-- [x] Responsive
-- [x] Iframe support
-- [x] Inline HTML support
+- light-weight
+- Responsive
+- Iframe support
+- Inline HTML support
 
 ## Get Tobi
 
@@ -205,7 +205,7 @@ var tobi = new Tobi({
 })
 
 tobi.open()   // Opens the lightbox
-tobi.open(2)  // Opens the lightbox on slide 3 (first is 0)
+tobi.open(2)  // Opens the lightbox on slide 3 (first is 0) or select slide 3 if the lightbox is open
 tobi.next()   // Shows the next slide in the lightbox
 tobi.prev()   // Shows the previous slide in the lightbox
 tobi.close()  // Closes the lightbox
