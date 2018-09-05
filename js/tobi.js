@@ -283,7 +283,18 @@
         },
 
         onLoad: function (container) {
-          // Nothing
+          var video = container.querySelector('video')
+
+          if (video) {
+            // Play if video was found
+            if (!video.hasAttribute('src')) {
+              video.setAttribute('src', video.dataset.src)
+              video.removeAttribute('data-src')
+              video.load()
+            }
+            video.play()
+            video.style.display = 'block'
+          }
         },
 
         onLeave: function (container) {
@@ -292,6 +303,16 @@
           if (video) {
             // Stop if video was found
             video.pause()
+            video.style.display = 'none'
+            // We want our video to stop loading immediatly
+            // incase it's not completely done already.
+            // When it has finished loading browser will cache video itself
+            // So backup src, remove src and load() to let garbage collection
+            // kick in as soon as possible
+            // For more info check https://developer.mozilla.org/en-US/docs/Web/Apps/Fundamentals/Audio_and_video_delivery#Stopping_the_download_of_media
+            video.setAttribute('data-src', video.src)
+            video.removeAttribute('src')
+            video.load()
           }
         }
       }
