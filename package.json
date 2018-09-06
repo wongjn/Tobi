@@ -5,8 +5,14 @@
   "main": "js/tobi.js",
   "style": "css/tobi.css",
   "devDependencies": {
-    "standard": "*"
+    "standard": "*",
+    "autoprefixer": "*"
   },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "Firefox ESR"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
