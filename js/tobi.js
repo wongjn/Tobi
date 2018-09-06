@@ -33,7 +33,7 @@
       transformProperty = null,
       gallery = [],
       figcaptionId = 0,
-      elementsLength = null,
+      elementsLength = 0,
       lightbox = null,
       overlay = null,
       slider = null,
@@ -83,7 +83,8 @@
         swipeClose: true,
         scroll: false,
         draggable: true,
-        threshold: 100
+        threshold: 100,
+        autoplayVideo: false
       }
 
       if (userOptions) {
@@ -196,6 +197,14 @@
 
         onLeave: function (container) {
           // Nothing
+        },
+
+        onCleanup: function (container) {
+          // Nothing
+        },
+
+        onClose: function (container) {
+          // Nothing
         }
       },
 
@@ -218,6 +227,14 @@
 
         onLeave: function (container) {
           // To do
+        },
+
+        onCleanup: function (container) {
+          // Nothing
+        },
+
+        onClose: function (container) {
+          // Nothing
         }
       },
 
@@ -253,6 +270,14 @@
 
         onLeave: function (container) {
           // Nothing
+        },
+
+        onCleanup: function (container) {
+          // Nothing
+        },
+
+        onClose: function (container) {
+          // Nothing
         }
       },
 
@@ -286,14 +311,26 @@
           var video = container.querySelector('video')
 
           if (video) {
-            // Play if video was found
-            if (!video.hasAttribute('src')) {
-              video.setAttribute('src', video.dataset.src)
-              video.removeAttribute('data-src')
-              video.load()
+            if (video.hasAttribute('data-time')) {
+              // Continue where video was stopped
+              video.currentTime = video.getAttribute('data-time')
             }
-            video.play()
-            video.style.display = 'block'
+
+            if (video.hasAttribute('data-src')) {
+              // Recover original src
+              video.src = video.dataset.src
+              video.removeAttribute('data-src')
+            }
+
+            if (config.autoplayVideo) {
+              // Start playback (and loading if necessary)
+              video.play()
+            }
+
+            if (video.style.display === 'none') {
+              // Show hidden video
+              video.style.display = 'block'
+            }
           }
         },
 
@@ -301,18 +338,43 @@
           var video = container.querySelector('video')
 
           if (video) {
-            // Stop if video was found
-            video.pause()
-            video.style.display = 'none'
-            // We want our video to stop loading immediatly
-            // incase it's not completely done already.
-            // When it has finished loading browser will cache video itself
-            // So backup src, remove src and load() to let garbage collection
-            // kick in as soon as possible
-            // For more info check https://developer.mozilla.org/en-US/docs/Web/Apps/Fundamentals/Audio_and_video_delivery#Stopping_the_download_of_media
-            video.setAttribute('data-src', video.src)
-            video.removeAttribute('src')
-            video.load()
+            if (!video.paused) {
+              // Stop if video is playing
+              video.pause()
+            }
+            // Backup currentTime (needed for revisit)
+            video.setAttribute('data-time', video.currentTime)
+          }
+        },
+
+        onCleanup: function (container) {
+          var video = container.querySelector('video')
+
+          if (video) {
+            if (video.readyState > 0 && video.readyState < 4) {
+              // Some data has been loaded but not the whole package.
+              // In order to save bandwidth, stop downloading
+              // as soon as possible.
+              // According to https://developer.mozilla.org/en-US/docs/Web/Apps/Fundamentals/Audio_and_video_delivery#Stopping_the_download_of_media
+              // this can be achieved by:
+              // 1. backup src
+              // 2. remove src
+              // 3. call load()
+              video.setAttribute('data-src', video.src)
+              video.removeAttribute('src')
+              video.load()
+            }
+          }
+        },
+
+        onClose: function (container) {
+          var video = container.querySelector('video')
+
+          if (video) {
+            // We should hide video again to not mess up DOM
+            if (video.style.display === 'block') {
+              video.style.display = 'none'
+            }
           }
         }
       }
@@ -332,15 +394,9 @@
       // Get a list of all elements within the document
       var elements = document.querySelectorAll(config.selector)
 
-      // Saves the number of elements
-      elementsLength = elements.length
-
-      if (!elementsLength) {
+      if (!elements) {
         return console.log('Ups, I can\'t find the selector ' + config.selector + '.')
       }
-
-      // Create lightbox
-      createLightbox()
 
       // Execute a few things once per element
       Array.prototype.forEach.call(elements, function (element) {
@@ -352,7 +408,7 @@
      * Init element
      *
      */
-    var initElement = function initElement (element, isNewDynamicElement) {
+    var initElement = function initElement (element) {
       // Check if the lightbox already exists
       if (!lightbox) {
         // Create the lightbox
@@ -362,6 +418,7 @@
       // Check if element already exists
       if (gallery.indexOf(element) === -1) {
         gallery.push(element)
+        elementsLength++
 
         // Set zoom icon if necessary
         if (config.zoom && element.querySelector('img')) {
@@ -384,17 +441,11 @@
         // Create the slide
         createLightboxSlide(element)
 
-        if (isNewDynamicElement) {
-          elementsLength++
-
-          if (isOpen()) {
-            updateCounter()
-            updateOffset()
-            updateFocus()
-          }
+        if (isOpen()) {
+          updateComponents()
         }
       } else {
-        return console.log('Element already added to the lightbox.')
+        console.log('Element already added to the lightbox.')
       }
     }
 
@@ -508,13 +559,13 @@
         return console.log('Tobi is already open.')
       }
 
+      if (index === -1) {
+        return console.log('Cannot open Tobi. Requested element has not been added yet.')
+      }
+
       if (!config.scroll) {
         document.documentElement.classList.add('tobi-is-open')
         document.body.classList.add('tobi-is-open')
-      }
-
-      if (!index) {
-        index = 0
       }
 
       // Hide buttons if necessary
@@ -557,14 +608,16 @@
 
       // Load slide
       load(currentIndex)
-      preload(currentIndex + 1)
-      preload(currentIndex - 1)
 
-      updateOffset()
-      updateCounter()
+      // Makes lightbox appear, too
       lightbox.setAttribute('aria-hidden', 'false')
 
-      updateFocus()
+      // Update components
+      updateComponents()
+
+      // Preload late
+      preload(currentIndex + 1)
+      preload(currentIndex - 1)
     }
 
     /**
@@ -573,7 +626,7 @@
      */
     var closeLightbox = function closeLightbox () {
       if (lightbox.getAttribute('aria-hidden') === 'true') {
-        return console.log('Tobi is already closed')
+        return console.log('Tobi is already closed.')
       }
 
       if (!config.scroll) {
@@ -584,12 +637,13 @@
       // Unbind events
       unbindEvents()
 
-      leave()
-
-      lightbox.setAttribute('aria-hidden', 'true')
-
       // Reenable the user’s focus
       lastFocus.focus()
+
+      // Cleanup
+      close()
+
+      lightbox.setAttribute('aria-hidden', 'true')
     }
 
     /**
@@ -628,19 +682,11 @@
      *
      */
     var next = function next () {
-      // If not last
-      if (currentIndex !== elementsLength - 1) {
-        leave()
-      }
-
       if (currentIndex < elementsLength - 1) {
-        currentIndex++
-
-        updateOffset()
-        updateCounter()
-        updateFocus('right')
-
-        load(currentIndex)
+        leave(currentIndex)
+        load(++currentIndex)
+        updateComponents('right')
+        cleanup(currentIndex - 1)
         preload(currentIndex + 1)
       }
     }
@@ -650,34 +696,67 @@
      *
      */
     var prev = function prev () {
-      // If not first
       if (currentIndex > 0) {
-        leave()
-      }
-
-      if (currentIndex > 0) {
-        currentIndex--
-
-        updateOffset()
-        updateCounter()
-        updateFocus('left')
-
-        load(currentIndex)
+        leave(currentIndex)
+        load(--currentIndex)
+        updateComponents('left')
+        cleanup(currentIndex + 1)
         preload(currentIndex - 1)
       }
     }
 
     /**
      * Leave slide
-     * Will be called when closing the lightbox or moving index
+     * Will be called before moving index
      *
      */
-    var leave = function leave () {
+    var leave = function leave (index) {
+      if (sliderElements[index] === undefined) {
+        return
+      }
+
+      var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
+      var type = container.getAttribute('data-type')
+
+      supportedElements[type].onLeave(container)
+    }
+
+    /**
+     * Cleanup slide
+     * Will be called after moving index
+     *
+     */
+    var cleanup = function cleanup (index) {
+      if (sliderElements[index] === undefined) {
+        return
+      }
+
+      var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
+      var type = container.getAttribute('data-type')
+
+      supportedElements[type].onCleanup(container)
+    }
+
+    /**
+     * Close lightbox
+     * Will be called when closing the lightbox
+     *
+     */
+    var close = function close () {
       for (var index = 0; index < elementsLength; index++) {
+        if (sliderElements[index] === undefined) {
+          return
+        }
+
         var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
         var type = container.getAttribute('data-type')
 
-        supportedElements[type].onLeave(container)
+        if (index === currentIndex) {
+          // Dont forget to cleanup our current element
+          supportedElements[type].onLeave(container)
+          supportedElements[type].onCleanup(container)
+        }
+        supportedElements[type].onClose(container)
       }
     }
 
@@ -994,11 +1073,22 @@
     }
 
     /**
+     * Update all components
+     *
+     * @param {string} direction - Direction to focus after call
+     */
+    var updateComponents = function updateComponents (direction) {
+      updateOffset()
+      updateCounter()
+      updateFocus(direction)
+    }
+
+    /**
      * Add an element dynamically to the lightbox
      *
      */
     var add = function add (element) {
-      initElement(element, true)
+      initElement(element)
     }
 
     /**
