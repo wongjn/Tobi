@@ -200,7 +200,6 @@ $iframeWidth: 85vw;
   &:hover {
     opacity: 1;
     transition: opacity .5s cubic-bezier(.19, 1, .22, 1);
-    will-change: opacity;
   }
 
   &.tobi__prev,
@@ -269,6 +268,7 @@ $iframeWidth: 85vw;
   position: absolute;
   top: 50%;
   width: 5em;
+  will-change: transform;
 
 
   &::before {
@@ -282,7 +282,6 @@ $iframeWidth: 85vw;
     position: absolute;
     right: 0;
     top: 0;
-    will-change: transform;
     z-index: 1;
   }
 }
