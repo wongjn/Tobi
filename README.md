@@ -205,7 +205,7 @@ var tobi = new Tobi({
 })
 
 tobi.open()   // Opens the lightbox
-tobi.open(2)  // Opens the lightbox on slide 3 (first is 0) or select slide 3 if the lightbox is open
+tobi.open(2)  // Opens the lightbox on slide 3 (first is 0) or selects slide 3 if the lightbox is open
 tobi.next()   // Shows the next slide in the lightbox
 tobi.prev()   // Shows the previous slide in the lightbox
 tobi.close()  // Closes the lightbox
