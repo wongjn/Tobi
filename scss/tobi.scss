@@ -145,7 +145,7 @@ $slideMaxWidth: 85vw;
     overflow-y: auto;
     overscroll-behavior: contain;
 
-    > video {
+    video {
       display: block !important;
       max-height: $slideMaxHeight;
       max-width: $slideMaxWidth;
