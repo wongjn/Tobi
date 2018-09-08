@@ -35,7 +35,6 @@
       figcaptionId = 0,
       elementsLength = 0,
       lightbox = null,
-      overlay = null,
       slider = null,
       sliderElements = [],
       prevButton = null,
@@ -158,7 +157,7 @@
           container.appendChild(figure)
 
           //  Create loader
-          loader.classList.add('tobi-loader')
+          loader.className = 'tobi-loader'
 
           // Add loader to container
           container.appendChild(loader)
@@ -201,10 +200,6 @@
 
         onCleanup: function (container) {
           // Nothing
-        },
-
-        onClose: function (container) {
-          // Nothing
         }
       },
 
@@ -230,10 +225,6 @@
         },
 
         onCleanup: function (container) {
-          // Nothing
-        },
-
-        onClose: function (container) {
           // Nothing
         }
       },
@@ -274,10 +265,6 @@
 
         onCleanup: function (container) {
           // Nothing
-        },
-
-        onClose: function (container) {
-          // Nothing
         }
       },
 
@@ -294,10 +281,10 @@
             return console.log('Ups, I can\'t find the target ' + targetSelector + '.')
           }
 
-          target.classList.add('tobi-html')
-
           // Add content to container
-          container.appendChild(target)
+          for (var i = 0, len = target.children.length; i < len; i++) {
+            container.appendChild(target.children[i]);
+          }
 
           // Register type
           container.setAttribute('data-type', 'html')
@@ -325,11 +312,6 @@
             if (config.autoplayVideo) {
               // Start playback (and loading if necessary)
               video.play()
-            }
-
-            if (video.style.display === 'none') {
-              // Show hidden video
-              video.style.display = 'block'
             }
           }
         },
@@ -363,17 +345,6 @@
               video.setAttribute('data-src', video.src)
               video.removeAttribute('src')
               video.load()
-            }
-          }
-        },
-
-        onClose: function (container) {
-          var video = container.querySelector('video')
-
-          if (video) {
-            // We should hide video again to not mess up DOM
-            if (video.style.display === 'block') {
-              video.style.display = 'none'
             }
           }
         }
@@ -424,7 +395,7 @@
         if (config.zoom && element.querySelector('img')) {
           var tobiZoom = document.createElement('div')
 
-          tobiZoom.classList.add('tobi-zoom__icon')
+          tobiZoom.className = 'tobi-zoom__icon'
           tobiZoom.innerHTML = config.zoomText
 
           element.classList.add('tobi-zoom')
@@ -442,7 +413,7 @@
         createLightboxSlide(element)
 
         if (isOpen()) {
-          updateComponents()
+          updateLightbox()
         }
       } else {
         console.log('Element already added to the lightbox.')
@@ -458,21 +429,16 @@
       lightbox = document.createElement('div')
       lightbox.setAttribute('role', 'dialog')
       lightbox.setAttribute('aria-hidden', 'true')
-      lightbox.classList.add('tobi')
-
-      // Create overlay container
-      overlay = document.createElement('div')
-      overlay.classList.add('tobi__overlay')
-      lightbox.appendChild(overlay)
+      lightbox.className = 'tobi'
 
       // Create slider container
       slider = document.createElement('div')
-      slider.classList.add('tobi__slider')
+      slider.className = 'tobi__slider'
       lightbox.appendChild(slider)
 
       // Create previous button
       prevButton = document.createElement('button')
-      prevButton.classList.add('tobi__prev')
+      prevButton.className = 'tobi__prev'
       prevButton.setAttribute('type', 'button')
       prevButton.setAttribute('aria-label', config.navLabel[0])
       prevButton.innerHTML = config.navText[0]
@@ -480,7 +446,7 @@
 
       // Create next button
       nextButton = document.createElement('button')
-      nextButton.classList.add('tobi__next')
+      nextButton.className = 'tobi__next'
       nextButton.setAttribute('type', 'button')
       nextButton.setAttribute('aria-label', config.navLabel[1])
       nextButton.innerHTML = config.navText[1]
@@ -488,7 +454,7 @@
 
       // Create close button
       closeButton = document.createElement('button')
-      closeButton.classList.add('tobi__close')
+      closeButton.className = 'tobi__close'
       closeButton.setAttribute('type', 'button')
       closeButton.setAttribute('aria-label', config.closeLabel)
       closeButton.innerHTML = config.closeText
@@ -496,7 +462,7 @@
 
       // Create counter
       counter = document.createElement('div')
-      counter.classList.add('tobi__counter')
+      counter.className = 'tobi__counter'
       lightbox.appendChild(counter)
 
       // Resize event using requestAnimationFrame
@@ -526,10 +492,13 @@
             var sliderElement = document.createElement('div'),
               sliderElementContent = document.createElement('div')
 
-            sliderElement.classList.add('tobi__slider__slide')
+            sliderElement.className = 'tobi__slider__slide'
             sliderElement.style.position = 'absolute'
             sliderElement.style.left = x * 100 + '%'
-            sliderElementContent.classList.add('tobi__slider__slide__content')
+            sliderElementContent.className = 'tobi__slider__slide__content'
+            if (config.draggable) {
+              sliderElementContent.classList.add('draggable')
+            }
 
             // Create type elements
             supportedElements[index].init(element, sliderElementContent)
@@ -555,12 +524,15 @@
      * @param {number} index - Item index to load
      */
     var openLightbox = function openLightbox (index) {
-      if (lightbox.getAttribute('aria-hidden') === 'false') {
-        return console.log('Tobi is already open.')
+      if (isOpen()) {
+        if (index === currentIndex) {
+          return console.log('Ups, slide ' + index + ' is already selected.')
+        }
+        return console.log('Ups, Tobi is already open.')
       }
 
-      if (index === -1) {
-        return console.log('Cannot open Tobi. Requested element has not been added yet.')
+      if (index === -1 || index >= elementsLength) {
+        return console.log('Ups, I can\'t find slide ' + index + '.')
       }
 
       if (!config.scroll) {
@@ -590,10 +562,6 @@
         closeButton.setAttribute('aria-hidden', 'true')
       }
 
-      if (config.draggable) {
-        slider.style.cursor = '-webkit-grab'
-      }
-
       // Save the user’s focus
       lastFocus = document.activeElement
 
@@ -613,7 +581,7 @@
       lightbox.setAttribute('aria-hidden', 'false')
 
       // Update components
-      updateComponents()
+      updateLightbox()
 
       // Preload late
       preload(currentIndex + 1)
@@ -625,7 +593,7 @@
      *
      */
     var closeLightbox = function closeLightbox () {
-      if (lightbox.getAttribute('aria-hidden') === 'true') {
+      if (!isOpen()) {
         return console.log('Tobi is already closed.')
       }
 
@@ -640,8 +608,11 @@
       // Reenable the user’s focus
       lastFocus.focus()
 
-      // Cleanup
-      close()
+      // Don't forget to cleanup our current element
+      var container = sliderElements[currentIndex].querySelector('.tobi__slider__slide__content')
+      var type = container.getAttribute('data-type')
+      supportedElements[type].onLeave(container)
+      supportedElements[type].onCleanup(container)
 
       lightbox.setAttribute('aria-hidden', 'true')
     }
@@ -685,7 +656,7 @@
       if (currentIndex < elementsLength - 1) {
         leave(currentIndex)
         load(++currentIndex)
-        updateComponents('right')
+        updateLightbox('right')
         cleanup(currentIndex - 1)
         preload(currentIndex + 1)
       }
@@ -699,7 +670,7 @@
       if (currentIndex > 0) {
         leave(currentIndex)
         load(--currentIndex)
-        updateComponents('left')
+        updateLightbox('left')
         cleanup(currentIndex + 1)
         preload(currentIndex - 1)
       }
@@ -735,29 +706,6 @@
       var type = container.getAttribute('data-type')
 
       supportedElements[type].onCleanup(container)
-    }
-
-    /**
-     * Close lightbox
-     * Will be called when closing the lightbox
-     *
-     */
-    var close = function close () {
-      for (var index = 0; index < elementsLength; index++) {
-        if (sliderElements[index] === undefined) {
-          return
-        }
-
-        var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
-        var type = container.getAttribute('data-type')
-
-        if (index === currentIndex) {
-          // Dont forget to cleanup our current element
-          supportedElements[type].onLeave(container)
-          supportedElements[type].onCleanup(container)
-        }
-        supportedElements[type].onClose(container)
-      }
     }
 
     /**
@@ -872,7 +820,7 @@
         prev()
       } else if (event.target === nextButton) {
         next()
-      } else if (event.target === closeButton || (event.target.classList.contains('tobi__slider__slide') && !event.target.classList.contains('tobi__slider__slide__content'))) {
+      } else if (event.target === closeButton || event.target.className === 'tobi__slider__slide') {
         closeLightbox()
       }
 
@@ -969,7 +917,7 @@
 
       pointerDown = true
       drag.startX = event.pageX
-      slider.style.cursor = '-webkit-grabbing'
+      drag.startY = event.pageY
     }
 
     /**
@@ -981,6 +929,8 @@
 
       if (pointerDown) {
         drag.endX = event.pageX
+        drag.endY = event.pageY
+
         slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
       }
     }
@@ -993,7 +943,6 @@
       event.stopPropagation()
 
       pointerDown = false
-      slider.style.cursor = '-webkit-grab'
 
       if (drag.endX) {
         updateAfterDrag()
@@ -1077,7 +1026,7 @@
      *
      * @param {string} direction - Direction to focus after call
      */
-    var updateComponents = function updateComponents (direction) {
+    var updateLightbox = function updateLightbox (direction) {
       updateOffset()
       updateCounter()
       updateFocus(direction)
@@ -1116,9 +1065,9 @@
     init(userOptions)
 
     return {
+      open: openLightbox,
       prev: prev,
       next: next,
-      open: openLightbox,
       close: closeLightbox,
       add: add,
       reset: reset,

@@ -1,7 +1,7 @@
 $zoomIconBackground: #0437fd;
 $zoomIconColor: #fff;
 
-$overlayBackground: rgba(0, 0, 0, .8);
+$lightboxBackground: rgba(0, 0, 0, .8);
 
 $figcaptionBackground: rgba(0, 0, 0, .8);
 $figcaptionColor: #fff;
@@ -14,8 +14,8 @@ $buttonColor: #fff;
 
 $loaderColor: #0437fd;
 
-$iframeHeight: 85vh;
-$iframeWidth: 85vw;
+$slideMaxHeight: 85vh;
+$slideMaxWidth: 85vw;
 
 /* Link */
 .tobi-zoom {
@@ -61,6 +61,7 @@ $iframeWidth: 85vw;
 
 /* Lightbox */
 .tobi {
+  background-color: $lightboxBackground;
   bottom: 0;
   box-sizing: border-box;
   contain: strict;
@@ -72,7 +73,6 @@ $iframeWidth: 85vw;
   top: 0;
   z-index: 1337;
 
-
   &[aria-hidden="true"] {
     display: none;
   }
@@ -82,16 +82,6 @@ $iframeWidth: 85vw;
   & *::after {
     box-sizing: inherit;
   }
-}
-
-/* Overlay */
-.tobi__overlay {
-  background-color: $overlayBackground;
-  bottom: 0;
-  left: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
 }
 
 /* Slider */
@@ -112,59 +102,53 @@ $iframeWidth: 85vw;
   height: 100%;
   justify-content: center;
   width: 100%;
+}
 
+/* Slide content */
+.tobi__slider__slide__content {
+  &.draggable {
+    cursor: grab;
 
-  & .tobi__slider__slide__content {
-    max-height: 85vh;
-    max-width: 85vw;
+    &:active {
+    cursor: grabbing;
+    }
   }
 
-  & .tobi-html {
-    max-height: 85vh;
-    overflow: hidden;
-    // videos may be larger than our viewport
-    // scale and don't show scrollbar
-    //overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-
-  & figure {
+  > figure {
     margin: 0;
-    max-width: 100%;
     position: relative;
+
+    > img {
+      max-height: $slideMaxHeight;
+      max-width: $slideMaxWidth;
+    }
+
+    > figcaption {
+      background-color: $figcaptionBackground;
+      bottom: 0;
+      color: $figcaptionColor;
+      display: block;
+      left: 0;
+      padding-bottom: .222em;
+      padding-left: .5em;
+      padding-right: .5em;
+      padding-top: .222em;
+      position: absolute;
+      white-space: pre-wrap;
+      width: 100%;
+    }
   }
 
-  & img {
-    display: block;
-    height: auto;
-    max-height: 85vh;
-    max-width: 85vw;
-    width: auto;
-  }
+  &[data-type="html"] {
+    overflow: hidden;
+    overscroll-behavior: contain;
+    overflow-y: auto;
 
-  & iframe {
-    height: $iframeHeight;
-    width: $iframeWidth;
-  }
-
-  & video {
-    max-height: 85vh;
-    max-width: 85vw;
-  }
-
-  & figcaption {
-    background-color: $figcaptionBackground;
-    bottom: 0;
-    color: $figcaptionColor;
-    display: block;
-    left: 0;
-    padding-bottom: .222em;
-    padding-left: .5em;
-    padding-right: .5em;
-    padding-top: .222em;
-    position: absolute;
-    white-space: pre-wrap;
-    width: 100%;
+    > video {
+      display: block !important;
+      max-height: $slideMaxHeight;
+      max-width: $slideMaxWidth;
+    }
   }
 }
 
