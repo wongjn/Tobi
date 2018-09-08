@@ -282,9 +282,7 @@
           }
 
           // Add content to container
-          for (var i = 0, len = target.children.length; i < len; i++) {
-            container.appendChild(target.children[i]);
-          }
+          container.appendChild(target);
 
           // Register type
           container.setAttribute('data-type', 'html')

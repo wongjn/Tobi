@@ -140,9 +140,10 @@ $slideMaxWidth: 85vw;
   }
 
   &[data-type="html"] {
+    max-height: $slideMaxHeight;
     overflow: hidden;
-    overscroll-behavior: contain;
     overflow-y: auto;
+    overscroll-behavior: contain;
 
     > video {
       display: block !important;
