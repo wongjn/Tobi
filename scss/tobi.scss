@@ -119,8 +119,11 @@ $slideMaxWidth: 85vw;
     position: relative;
 
     > img {
+      display: block;
+      height: auto;
       max-height: $slideMaxHeight;
       max-width: $slideMaxWidth;
+      width: auto;
     }
 
     > figcaption {

@@ -118,8 +118,11 @@
 }
 
 .tobi__slider__slide__content > figure > img {
+  display: block;
+  height: auto;
   max-height: 85vh;
   max-width: 85vw;
+  width: auto;
 }
 
 .tobi__slider__slide__content > figure > figcaption {
