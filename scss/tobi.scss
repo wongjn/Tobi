@@ -142,22 +142,22 @@ $slideMaxWidth: 85vw;
   &[data-type="iframe"] {
     max-height: $slideMaxHeight;
     max-width: $slideMaxWidth;
-    overflow-y: auto;
     overflow: hidden;
+    overflow-y: auto;
     overscroll-behavior: contain;
 
     & iframe {
       display: block !important;
-      max-height: $slideMaxHeight;
-      max-width: $slideMaxWidth;
+      height: $slideMaxHeight;
+      width: $slideMaxWidth;
     }
   }
 
   &[data-type="html"] {
     max-height: $slideMaxHeight;
     max-width: $slideMaxWidth;
-    overflow-y: auto;
     overflow: hidden;
+    overflow-y: auto;
     overscroll-behavior: contain;
 
     & video {

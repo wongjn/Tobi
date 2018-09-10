@@ -140,22 +140,22 @@
 .tobi__slider__slide__content[data-type="iframe"] {
   max-height: 85vh;
   max-width: 85vw;
-  overflow-y: auto;
   overflow: hidden;
+  overflow-y: auto;
   overscroll-behavior: contain;
 }
 
 .tobi__slider__slide__content[data-type="iframe"] iframe {
   display: block !important;
-  max-height: 85vh;
-  max-width: 85vw;
+  height: 85vh;
+  width: 85vw;
 }
 
 .tobi__slider__slide__content[data-type="html"] {
   max-height: 85vh;
   max-width: 85vw;
-  overflow-y: auto;
   overflow: hidden;
+  overflow-y: auto;
   overscroll-behavior: contain;
 }
 
