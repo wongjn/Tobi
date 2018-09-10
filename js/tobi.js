@@ -62,7 +62,7 @@
     var mergeOptions = function mergeOptions (userOptions) {
       // Default options
       var options = {
-        selector: '.lightbox',
+        items: [],
         captions: true,
         captionsSelector: 'img',
         captionAttribute: 'alt',
@@ -104,198 +104,95 @@
       return typeof document.documentElement.style.transform === 'string' ? 'transform' : 'WebkitTransform'
     }
 
-    /**
-     * Types - you can add new type to support something new
-     *
-     */
-    var supportedElements = {
-      image: {
-        checkSupport: function (element) {
-          return !element.hasAttribute('data-type') && element.href.match(/\.(png|jpg|tiff|tif|gif|bmp|webp|svg|ico)$/)
-        },
-
-        init: function (element, container) {
-          var figure = document.createElement('figure'),
-            figcaption = document.createElement('figcaption'),
-            image = document.createElement('img'),
-            thumbnail = element.querySelector('img'),
-            loader = document.createElement('div')
-
-          image.style.opacity = '0'
-
-          if (thumbnail) {
-            image.alt = thumbnail.alt || ''
-          }
-
-          image.setAttribute('src', '')
-          image.setAttribute('data-src', element.href)
-
-          // Add image to figure
-          figure.appendChild(image)
-
-          // Create figcaption
-          if (config.captions) {
-            figcaption.style.opacity = '0'
-
-            if (config.captionsSelector === 'self' && element.getAttribute(config.captionAttribute)) {
-              figcaption.textContent = element.getAttribute(config.captionAttribute)
-            } else if (config.captionsSelector === 'img' && thumbnail && thumbnail.getAttribute(config.captionAttribute)) {
-              figcaption.textContent = thumbnail.getAttribute(config.captionAttribute)
-            }
-
-            if (figcaption.textContent) {
-              figcaption.id = 'tobi-figcaption-' + figcaptionId
-              figure.appendChild(figcaption)
-
-              image.setAttribute('aria-labelledby', figcaption.id)
-
-              ++figcaptionId
-            }
-          }
-
-          // Add figure to container
-          container.appendChild(figure)
-
-          //  Create loader
-          loader.classList.add('tobi-loader')
-
-          // Add loader to container
-          container.appendChild(loader)
-
-          // Register type
-          container.setAttribute('data-type', 'image')
-        },
-
-        onPreload: function (container) {
-          // Same as preload
-          supportedElements.image.onLoad(container)
-        },
-
-        onLoad: function (container) {
-          var image = container.querySelector('img')
-
-          if (!image.hasAttribute('data-src')) {
-            return
-          }
-
-          var figcaption = container.querySelector('figcaption'),
-            loader = container.querySelector('.tobi-loader')
-
-          image.onload = function () {
-            container.removeChild(loader)
-            image.style.opacity = '1'
-
-            if (figcaption) {
-              figcaption.style.opacity = '1'
-            }
-          }
-
-          image.setAttribute('src', image.getAttribute('data-src'))
-          image.removeAttribute('data-src')
-        },
-
-        onLeave: function (container) {
-          // Nothing
-        }
+    var supported = {
+      checkSupport: function (element) {
+        return !element.hasAttribute('data-type') && element.href.match(/\.(png|jpe?g|tiff|tif|gif|bmp|webp|svg|ico)$/)
       },
 
-      youtube: {
-        checkSupport: function (element) {
-          return checkType(element, 'youtube')
-        },
+      init: function (element, container) {
+        var figure = document.createElement('figure'),
+          figcaption = document.createElement('figcaption'),
+          image = document.createElement('img'),
+          thumbnail = element.querySelector('img'),
+          loader = document.createElement('div')
 
-        init: function (element, container) {
-          // To do
-        },
+        image.style.opacity = '0'
 
-        onPreload: function (container) {
-          // Nothing
-        },
-
-        onLoad: function (container) {
-          // To do
-        },
-
-        onLeave: function (container) {
-          // To do
+        if (thumbnail) {
+          image.alt = thumbnail.alt || ''
         }
-      },
 
-      iframe: {
-        checkSupport: function (element) {
-          return checkType(element, 'iframe')
-        },
+        image.setAttribute('src', '')
+        image.setAttribute('data-src', element.href)
 
-        init: function (element, container) {
-          var iframe = document.createElement('iframe'),
-            href = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target')
+        // Add image to figure
+        figure.appendChild(image)
 
-          iframe.setAttribute('frameborder', '0')
-          iframe.setAttribute('src', '')
-          iframe.setAttribute('data-src', href)
+        // Create figcaption
+        if (config.captions) {
+          figcaption.style.opacity = '0'
 
-          // Add iframe to container
-          container.appendChild(iframe)
-
-          // Register type
-          container.setAttribute('data-type', 'iframe')
-        },
-
-        onPreload: function (container) {
-          // Nothing
-        },
-
-        onLoad: function (container) {
-          var iframe = container.querySelector('iframe')
-
-          iframe.setAttribute('src', iframe.getAttribute('data-src'))
-        },
-
-        onLeave: function (container) {
-          // Nothing
-        }
-      },
-
-      html: {
-        checkSupport: function (element) {
-          return checkType(element, 'html')
-        },
-
-        init: function (element, container) {
-          var targetSelector = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target'),
-            target = document.querySelector(targetSelector)
-
-          if (!target) {
-            return console.log('Ups, I can\'t find the target ' + targetSelector + '.')
+          if (config.captionsSelector === 'self' && element.getAttribute(config.captionAttribute)) {
+            figcaption.textContent = element.getAttribute(config.captionAttribute)
+          } else if (config.captionsSelector === 'img' && thumbnail && thumbnail.getAttribute(config.captionAttribute)) {
+            figcaption.textContent = thumbnail.getAttribute(config.captionAttribute)
           }
 
-          target.classList.add('tobi-html')
+          if (figcaption.textContent) {
+            figcaption.id = 'tobi-figcaption-' + figcaptionId
+            figure.appendChild(figcaption)
 
-          // Add content to container
-          container.appendChild(target)
+            image.setAttribute('aria-labelledby', figcaption.id)
 
-          // Register type
-          container.setAttribute('data-type', 'html')
-        },
-
-        onPreload: function (container) {
-          // Nothing
-        },
-
-        onLoad: function (container) {
-          // Nothing
-        },
-
-        onLeave: function (container) {
-          var video = container.querySelector('video')
-
-          if (video) {
-            // Stop if video was found
-            video.pause()
+            ++figcaptionId
           }
         }
+
+        // Add figure to container
+        container.appendChild(figure)
+
+        //  Create loader
+        loader.classList.add('tobi-loader')
+
+        // Add loader to container
+        container.appendChild(loader)
+
+        // Register type
+        container.setAttribute('data-type', 'image')
+      },
+
+      onPreload: function (container) {
+        // Same as preload
+        supported.onLoad(container)
+      },
+
+      onLoad: function (container) {
+        var image = container.querySelector('img')
+
+        if (!image.hasAttribute('data-src')) {
+          return
+        }
+
+        var figcaption = container.querySelector('figcaption'),
+          loader = container.querySelector('.tobi-loader')
+
+        image.onload = function () {
+          container.removeChild(loader)
+          image.style.opacity = '1'
+
+          if (figcaption) {
+            figcaption.style.opacity = '1'
+          }
+        }
+
+        image.setAttribute('src', image.getAttribute('data-src'))
+        image.removeAttribute('data-src')
+      },
+
+      onLeave: function (container) {
+        // Nothing
       }
-    }
+    };
 
     /**
      * Init
@@ -308,21 +205,14 @@
       // Transform property supported by client
       transformProperty = transformSupport()
 
-      // Get a list of all elements within the document
-      var elements = document.querySelectorAll(config.selector)
-
       // Saves the number of elements
-      elementsLength = elements.length
-
-      if (!elementsLength) {
-        return console.log('Ups, I can\'t find the selector ' + config.selector + '.')
-      }
+      elementsLength = config.items.length
 
       // Create lightbox
       createLightbox()
 
       // Execute a few things once per element
-      Array.prototype.forEach.call(elements, function (element) {
+      config.items.forEach(function (element) {
         initElement(element)
       })
     }
@@ -446,34 +336,27 @@
      *
      */
     var createLightboxSlide = function createLightboxSlide (element) {
-      // Detect type
-      for (var index in supportedElements) {
-        if (supportedElements.hasOwnProperty(index)) {
-          if (supportedElements[index].checkSupport(element)) {
-            // Create slide elements
-            var sliderElement = document.createElement('div'),
-              sliderElementContent = document.createElement('div')
+      if (supported.checkSupport(element)) {
+        // Create slide elements
+        var sliderElement = document.createElement('div'),
+          sliderElementContent = document.createElement('div')
 
-            sliderElement.classList.add('tobi__slider__slide')
-            sliderElement.style.position = 'absolute'
-            sliderElement.style.left = x * 100 + '%'
-            sliderElementContent.classList.add('tobi__slider__slide__content')
+        sliderElement.classList.add('tobi__slider__slide')
+        sliderElement.style.position = 'absolute'
+        sliderElement.style.left = x * 100 + '%'
+        sliderElementContent.classList.add('tobi__slider__slide__content')
 
-            // Create type elements
-            supportedElements[index].init(element, sliderElementContent)
+        // Create type elements
+        supported.init(element, sliderElementContent)
 
-            // Add slide content container to slider element
-            sliderElement.appendChild(sliderElementContent)
+        // Add slide content container to slider element
+        sliderElement.appendChild(sliderElementContent)
 
-            // Add slider element to slider
-            slider.appendChild(sliderElement)
-            sliderElements.push(sliderElement)
+        // Add slider element to slider
+        slider.appendChild(sliderElement)
+        sliderElements.push(sliderElement)
 
-            ++x
-
-            break
-          }
-        }
+        ++x
       }
     }
 
@@ -581,9 +464,8 @@
       }
 
       var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
-      var type = container.getAttribute('data-type')
 
-      supportedElements[type].onPreload(container)
+      supported.onPreload(container)
     }
 
     /**
@@ -597,9 +479,7 @@
       }
 
       var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
-      var type = container.getAttribute('data-type')
-
-      supportedElements[type].onLoad(container)
+      supported.onLoad(container)
     }
 
     /**
@@ -654,9 +534,8 @@
     var leave = function leave () {
       for (var index = 0; index < elementsLength; index++) {
         var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
-        var type = container.getAttribute('data-type')
 
-        supportedElements[type].onLeave(container)
+        supported.onLeave(container)
       }
     }
 
@@ -984,14 +863,8 @@
      * Reset the lightbox
      *
      */
-    var reset = function reset () {
-      if (slider) {
-        while (slider.firstChild) {
-          slider.removeChild(slider.firstChild)
-        }
-      }
-
-      gallery.length = sliderElements.length = elementsLength = figcaptionId = x = 0
+    var remove = function remove () {
+      lightbox.parentElement.removeChild(lightbox);
     }
 
     /**
@@ -1010,7 +883,7 @@
       open: openLightbox,
       close: closeLightbox,
       add: add,
-      reset: reset,
+      remove: remove,
       isOpen: isOpen,
       version: '1.7.1'
     }
