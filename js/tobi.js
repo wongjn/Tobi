@@ -282,7 +282,7 @@
           }
 
           // Add content to container
-          container.appendChild(target);
+          container.appendChild(target)
 
           // Register type
           container.setAttribute('data-type', 'html')
@@ -303,7 +303,7 @@
 
             if (video.hasAttribute('data-src')) {
               // Recover original src
-              video.src = video.dataset.src
+              video.src = video.getAttribute('data-src')
               video.removeAttribute('data-src')
             }
 
