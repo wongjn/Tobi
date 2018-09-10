@@ -1037,14 +1037,14 @@
      * Replace attributes of all video <source> elements
      *
      */
-    var setVideoSources = function setVideoSources (element, from, to) {
-      var sources = element.querySelectorAll('source')
+    var setVideoSources = function setVideoSources (video, from, to) {
+      var sources = video.querySelectorAll('source')
       if (sources) {
-        Array.prototype.forEach.call(sources, function (element) {
-          replaceAttribute(element, from, to)
+        Array.prototype.forEach.call(sources, function (source) {
+          replaceAttribute(source, from, to)
         })
       } else {
-        replaceAttribute(element, from, to)
+        replaceAttribute(video, from, to)
       }
     }
 
