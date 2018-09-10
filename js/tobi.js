@@ -530,9 +530,11 @@
         return console.log('Ups, I can\'t find slide ' + index + '.')
       }
 
-      if (index === currentIndex) {
+      if (isOpen() && index === currentIndex) {
         return console.log('Ups, slide ' + index + ' is already selected.')
       }
+
+
 
       if (!config.scroll) {
         document.documentElement.classList.add('tobi-is-open')
@@ -917,10 +919,6 @@
       pointerDown = true
       drag.startX = event.pageX
       drag.startY = event.pageY
-<<<<<<< HEAD
-      slider.style.cursor = '-webkit-grabbing'
-=======
->>>>>>> 776e83575a4d3596f3655fd62eb142408ed9996c
     }
 
     /**
