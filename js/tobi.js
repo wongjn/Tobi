@@ -62,7 +62,7 @@
     var mergeOptions = function mergeOptions (userOptions) {
       // Default options
       var options = {
-        selector: '.lightbox',
+        items: [],
         captions: true,
         captionsSelector: 'img',
         captionAttribute: 'alt',
@@ -205,21 +205,14 @@
       // Transform property supported by client
       transformProperty = transformSupport()
 
-      // Get a list of all elements within the document
-      var elements = document.querySelectorAll(config.selector)
-
       // Saves the number of elements
-      elementsLength = elements.length
-
-      if (!elementsLength) {
-        return console.log('Ups, I can\'t find the selector ' + config.selector + '.')
-      }
+      elementsLength = config.items.length
 
       // Create lightbox
       createLightbox()
 
       // Execute a few things once per element
-      Array.prototype.forEach.call(elements, function (element) {
+      config.items.forEach(function (element) {
         initElement(element)
       })
     }
