@@ -137,12 +137,18 @@
   width: 100%;
 }
 
-.tobi__slider__slide__content[data-type="html"] {
+.tobi__slider__slide__content[data-type="iframe"] {
   max-height: 85vh;
   max-width: 85vw;
   overflow-y: auto;
   overflow: hidden;
   overscroll-behavior: contain;
+}
+
+.tobi__slider__slide__content[data-type="iframe"] iframe {
+  display: block !important;
+  max-height: 85vh;
+  max-width: 85vw;
 }
 
 .tobi__slider__slide__content[data-type="html"] {

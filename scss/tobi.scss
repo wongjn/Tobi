@@ -139,12 +139,18 @@ $slideMaxWidth: 85vw;
     }
   }
 
-  &[data-type="html"] {
+  &[data-type="iframe"] {
     max-height: $slideMaxHeight;
     max-width: $slideMaxWidth;
     overflow-y: auto;
     overflow: hidden;
     overscroll-behavior: contain;
+
+    & iframe {
+      display: block !important;
+      max-height: $slideMaxHeight;
+      max-width: $slideMaxWidth;
+    }
   }
 
   &[data-type="html"] {
@@ -154,7 +160,7 @@ $slideMaxWidth: 85vw;
     overflow: hidden;
     overscroll-behavior: contain;
 
-    video {
+    & video {
       display: block !important;
       max-height: $slideMaxHeight;
       max-width: $slideMaxWidth;
