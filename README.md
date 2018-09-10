@@ -1,12 +1,6 @@
 # Tobi
 
-[![Version](https://img.shields.io/badge/version-1.7.1-0437fd.svg)](https://github.com/rqrauhvmra/Tobi/releases)
-[![License](https://img.shields.io/badge/license-MIT-0437fd.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
-![Dependecies](https://img.shields.io/badge/dependencies-none-0437fd.svg)
-
 An accessible, simple and light-weight open source lightbox script with no dependencies.
-
-[Play on CodePen](https://codepen.io/collection/nbqJVV)
 
 ![.flex__*](https://rqrauhvmra.com/tobi/snapshot.png)
 
@@ -37,7 +31,7 @@ JavaScript: `js/tobi.min.js` minified, or `js/tobi.js` un-minified
 
 Tobi is also available on npm.
 
-`$ npm install rqrauhvmra__tobi --save`
+`$ npm install wongjn/tobi --save`
 
 ## Usage
 
@@ -66,96 +60,29 @@ You can install Tobi by linking the `.css` and `.js` files to your html file. Th
 Initialize the script by running:
 
 ```js
-var tobi = new Tobi()
+const tobi = new Tobi({
+  items: listOfHTMLElements,
+});
 ```
 
-## Media types
+## Items
 
-### Image
-
-The standard way of using Tobi is a linked thumbnail image with the class name `lightbox` to a larger image:
+Each element passed in the `items` parameter must have the full image in `href`
+property of its corresponding JavaScript object.
 
 ```html
-<a href="path/to/image.jpg" class="lightbox">
+<a href="path/to/image.jpg">
   <img src="path/to/thumbnail.jpg" alt="I am a caption">
 </a>
 ```
 
-Instead of a thumbnail, you can also refer to a larger image with a textlink:
-
-```html
-<a href="path/to/image.jpg" class="lightbox">
-  Open image
-</a>
-```
-
-[Play on CodePen](https://codepen.io/rqrauhvmra/pen/ZRZdwG)
-
-### Inline HTML
-
-For inline HTML, create an element with a unique ID:
-
-```html
-<div id="selector">
-  <!-- Your HTML content -->
-</div>
-```
-
-Then create a link with the class name `lightbox` and a `href` attribute that matches the ID of the element:
-
-```html
-<a href="#selector" data-type="html" class="lightbox">
-  Open HTML content / video or something else
-</a>
-```
-
-or a button with the class name `lightbox` and a `data-target` attribute that matches the ID of the element:
-
-```html
-<button type="button" data-type="html" data-target="#selector" class="lightbox">
-  Open HTML content / video or something else
-</button>
-```
-
-In any case, the attribute `data-type` with the value `html` must be added.
-
-### Iframe
-
-For an iframe simply create a link with the class name `lightbox`:
-
-```html
-<a href="https://www.wikipedia.org" data-type="iframe" class="lightbox">
-  Open Wikipedia
-</a>
-```
-
-or a button with the class name `lightbox` and a `data-target` attribute:
-
-```html
-<button type="button" data-type="iframe" data-target="https://www.wikipedia.org" class="lightbox">
-  Open Wikipedia
-</button>
-```
-
-In any case, the attribute `data-type` with the value `iframe` must be added. The iframe dimensions can be controlled by CSS.
-
 ## Options
-
-You can pass an object with custom options as an argument.
-
-```js
-var tobi = new Tobi({
-  captions: false
-})
-```
-
-[Play on CodePen](https://codepen.io/rqrauhvmra/pen/MBYEog)
 
 The following options are available:
 
 | Property | Type | Default | Description |
 | --- | --- | --- | --- |
-| selector | string | ".lightbox" | All elements with this class triggers the lightbox. |
+| items | Node[] | []] | Elements to be added into the lightbox, required. |
 | captions | bool | true | Display captions, if available. |
 | captionsSelector | "self", "img" | "img" | Set the element where the caption is. Set it to "self" for the `a` tag itself |
 | captionAttribute | string | "alt" | Get the caption from given attribute. |
@@ -187,6 +114,7 @@ tobi.open(2)  // Opens the lightbox on slide 3 (first is 0)
 tobi.next()   // Shows the next slide in the lightbox
 tobi.prev()   // Shows the previous slide in the lightbox
 tobi.close()  // Closes the lightbox
+tobi.remove() // Removes the lightbox from the dom
 
 // Adds an element dynamically, even if the lightbox is open
 var newElement = document.querySelector('.new-image')
