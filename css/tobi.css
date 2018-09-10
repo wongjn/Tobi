@@ -139,8 +139,17 @@
 
 .tobi__slider__slide__content[data-type="html"] {
   max-height: 85vh;
-  overflow: hidden;
+  max-width: 85vw;
   overflow-y: auto;
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+.tobi__slider__slide__content[data-type="html"] {
+  max-height: 85vh;
+  max-width: 85vw;
+  overflow-y: auto;
+  overflow: hidden;
   overscroll-behavior: contain;
 }
 

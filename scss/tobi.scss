@@ -110,7 +110,7 @@ $slideMaxWidth: 85vw;
     cursor: grab;
 
     &:active {
-    cursor: grabbing;
+      cursor: grabbing;
     }
   }
 
@@ -141,8 +141,17 @@ $slideMaxWidth: 85vw;
 
   &[data-type="html"] {
     max-height: $slideMaxHeight;
-    overflow: hidden;
+    max-width: $slideMaxWidth;
     overflow-y: auto;
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
+
+  &[data-type="html"] {
+    max-height: $slideMaxHeight;
+    max-width: $slideMaxWidth;
+    overflow-y: auto;
+    overflow: hidden;
     overscroll-behavior: contain;
 
     video {
