@@ -1029,7 +1029,7 @@
      *
      */
     var replaceAttribute = function replaceAttribute (element, from, to) {
-      element.setAttribute(to) = element.getAttribute(from)
+      element.setAttribute(to, element.getAttribute(from))
       element.removeAttribute(from)
     }
 
