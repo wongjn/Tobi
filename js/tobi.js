@@ -303,8 +303,7 @@
 
             if (video.hasAttribute('data-src')) {
               // Recover original src
-              video.src = video.getAttribute('data-src')
-              video.removeAttribute('data-src')
+              setVideoSources(video, 'data-src', 'src')
             }
 
             if (config.autoplayVideo) {
@@ -340,8 +339,7 @@
               // 1. backup src
               // 2. remove src
               // 3. call load()
-              video.setAttribute('data-src', video.src)
-              video.removeAttribute('src')
+              setVideoSources(video, 'src', 'data-src')
               video.load()
             }
           }
@@ -1024,6 +1022,30 @@
      */
     var checkType = function checkType (element, type) {
       return element.getAttribute('data-type') === type
+    }
+
+    /**
+     * Replace attribute 'to' of element with 'from' and remove 'from'
+     *
+     */
+    var replaceAttribute = function replaceAttribute (element, from, to) {
+      element.setAttribute(to, element.getAttribute(from))
+      element.removeAttribute(from)
+    }
+
+    /**
+     * Replace attributes of all video <source> elements
+     *
+     */
+    var setVideoSources = function setVideoSources (video, from, to) {
+      var sources = video.querySelectorAll('source')
+      if (sources) {
+        Array.prototype.forEach.call(sources, function (source) {
+          replaceAttribute(source, from, to)
+        })
+      } else {
+        replaceAttribute(video, from, to)
+      }
     }
 
     /**
