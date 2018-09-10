@@ -522,19 +522,23 @@
      * @param {number} index - Item index to load
      */
     var openLightbox = function openLightbox (index) {
-      if (!index) {
+      if (!isOpen() && !index) {
         index = 0
+      }
+
+      if (isOpen()) {
+        if (!index) {
+          return console.log('Ups, Tobi is aleady open.')
+        }
+
+        if (index === currentIndex) {
+          return console.log('Ups, slide ' + index + ' is already selected.')
+        }
       }
 
       if (index === -1 || index >= elementsLength) {
         return console.log('Ups, I can\'t find slide ' + index + '.')
       }
-
-      if (isOpen() && index === currentIndex) {
-        return console.log('Ups, slide ' + index + ' is already selected.')
-      }
-
-
 
       if (!config.scroll) {
         document.documentElement.classList.add('tobi-is-open')
