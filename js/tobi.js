@@ -104,14 +104,9 @@
       return typeof document.documentElement.style.transform === 'string' ? 'transform' : 'WebkitTransform'
     }
 
-    /**
-     * Types - you can add new type to support something new
-     *
-     */
-    var supportedElements = {
-      image: {
+    var supported = {
         checkSupport: function (element) {
-          return !element.hasAttribute('data-type') && element.href.match(/\.(png|jpg|tiff|tif|gif|bmp|webp|svg|ico)$/)
+        return !element.hasAttribute('data-type') && element.href.match(/\.(png|jpe?g|tiff|tif|gif|bmp|webp|svg|ico)$/)
         },
 
         init: function (element, container) {
@@ -168,7 +163,7 @@
 
         onPreload: function (container) {
           // Same as preload
-          supportedElements.image.onLoad(container)
+        supported.onLoad(container)
         },
 
         onLoad: function (container) {
@@ -197,105 +192,7 @@
         onLeave: function (container) {
           // Nothing
         }
-      },
-
-      youtube: {
-        checkSupport: function (element) {
-          return checkType(element, 'youtube')
-        },
-
-        init: function (element, container) {
-          // To do
-        },
-
-        onPreload: function (container) {
-          // Nothing
-        },
-
-        onLoad: function (container) {
-          // To do
-        },
-
-        onLeave: function (container) {
-          // To do
-        }
-      },
-
-      iframe: {
-        checkSupport: function (element) {
-          return checkType(element, 'iframe')
-        },
-
-        init: function (element, container) {
-          var iframe = document.createElement('iframe'),
-            href = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target')
-
-          iframe.setAttribute('frameborder', '0')
-          iframe.setAttribute('src', '')
-          iframe.setAttribute('data-src', href)
-
-          // Add iframe to container
-          container.appendChild(iframe)
-
-          // Register type
-          container.setAttribute('data-type', 'iframe')
-        },
-
-        onPreload: function (container) {
-          // Nothing
-        },
-
-        onLoad: function (container) {
-          var iframe = container.querySelector('iframe')
-
-          iframe.setAttribute('src', iframe.getAttribute('data-src'))
-        },
-
-        onLeave: function (container) {
-          // Nothing
-        }
-      },
-
-      html: {
-        checkSupport: function (element) {
-          return checkType(element, 'html')
-        },
-
-        init: function (element, container) {
-          var targetSelector = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target'),
-            target = document.querySelector(targetSelector)
-
-          if (!target) {
-            return console.log('Ups, I can\'t find the target ' + targetSelector + '.')
-          }
-
-          target.classList.add('tobi-html')
-
-          // Add content to container
-          container.appendChild(target)
-
-          // Register type
-          container.setAttribute('data-type', 'html')
-        },
-
-        onPreload: function (container) {
-          // Nothing
-        },
-
-        onLoad: function (container) {
-          // Nothing
-        },
-
-        onLeave: function (container) {
-          var video = container.querySelector('video')
-
-          if (video) {
-            // Stop if video was found
-            video.pause()
-          }
-        }
-      }
-    }
+    };
 
     /**
      * Init
@@ -446,10 +343,7 @@
      *
      */
     var createLightboxSlide = function createLightboxSlide (element) {
-      // Detect type
-      for (var index in supportedElements) {
-        if (supportedElements.hasOwnProperty(index)) {
-          if (supportedElements[index].checkSupport(element)) {
+      if (supported.checkSupport(element)) {
             // Create slide elements
             var sliderElement = document.createElement('div'),
               sliderElementContent = document.createElement('div')
@@ -460,7 +354,7 @@
             sliderElementContent.classList.add('tobi__slider__slide__content')
 
             // Create type elements
-            supportedElements[index].init(element, sliderElementContent)
+        supported.init(element, sliderElementContent)
 
             // Add slide content container to slider element
             sliderElement.appendChild(sliderElementContent)
@@ -470,12 +364,8 @@
             sliderElements.push(sliderElement)
 
             ++x
-
-            break
-          }
         }
       }
-    }
 
     /**
      * Open the lightbox
@@ -581,9 +471,8 @@
       }
 
       var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
-      var type = container.getAttribute('data-type')
 
-      supportedElements[type].onPreload(container)
+      supported.onPreload(container)
     }
 
     /**
@@ -597,9 +486,7 @@
       }
 
       var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
-      var type = container.getAttribute('data-type')
-
-      supportedElements[type].onLoad(container)
+      supported.onLoad(container)
     }
 
     /**
@@ -654,9 +541,8 @@
     var leave = function leave () {
       for (var index = 0; index < elementsLength; index++) {
         var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
-        var type = container.getAttribute('data-type')
 
-        supportedElements[type].onLeave(container)
+        supported.onLeave(container)
       }
     }
 
