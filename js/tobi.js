@@ -111,7 +111,7 @@
     var supportedElements = {
       image: {
         checkSupport: function (element) {
-          return !element.hasAttribute('data-type') && element.href.match(/\.(png|jpg|tiff|tif|gif|bmp|webp|svg|ico)$/)
+          return !element.hasAttribute('data-type') && element.href.match(/\.(png|jpe?g|tiff|tif|gif|bmp|webp|svg|ico)$/)
         },
 
         init: function (element, container) {
