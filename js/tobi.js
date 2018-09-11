@@ -296,14 +296,14 @@
           var video = container.querySelector('video')
 
           if (video) {
+            if (video.querySelector('[data-src]')) {
+              // Recover original src
+              setVideoSources(video, 'data-src', 'src')
+            }
+
             if (video.hasAttribute('data-time')) {
               // Continue where video was stopped
               video.currentTime = video.getAttribute('data-time')
-            }
-
-            if (video.hasAttribute('data-src')) {
-              // Recover original src
-              setVideoSources(video, 'data-src', 'src')
             }
 
             if (config.autoplayVideo) {
@@ -1038,7 +1038,8 @@
      *
      */
     var setVideoSources = function setVideoSources (video, from, to) {
-      var sources = video.querySelectorAll('source')
+      var sources = video.querySelectorAll('[' + from + ']')
+
       if (sources) {
         Array.prototype.forEach.call(sources, function (source) {
           replaceAttribute(source, from, to)
