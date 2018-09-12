@@ -66,10 +66,10 @@
         captionsSelector: 'img',
         captionAttribute: 'alt',
         nav: 'auto',
-        navText: ['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" /></svg>', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6" /></svg>'],
+        navText: ['<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" /></svg>', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6" /></svg>'],
         navLabel: ['Previous', 'Next'],
         close: true,
-        closeText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>',
+        closeText: '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>',
         closeLabel: 'Close',
         counter: true,
         download: false,
@@ -77,7 +77,7 @@
         downloadLabel: 'Download',
         keyboard: true,
         zoom: true,
-        zoomText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>',
+        zoomText: '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>',
         docClose: true,
         swipeClose: true,
         scroll: false,
@@ -209,7 +209,7 @@
         },
 
         init: function (element, container) {
-          // To do
+          // TODO
         },
 
         onPreload: function (container) {
@@ -217,11 +217,11 @@
         },
 
         onLoad: function (container) {
-          // To do
+          // TODO
         },
 
         onLeave: function (container) {
-          // To do
+          // TODO
         },
 
         onCleanup: function (container) {
@@ -296,10 +296,13 @@
           var video = container.querySelector('video')
 
           if (video) {
+            // TODO
+            /*
             if (video.querySelector('[data-src]')) {
               // Recover original src
               setVideoSources(video, 'data-src', 'src')
             }
+            */
 
             if (video.hasAttribute('data-time')) {
               // Continue where video was stopped
@@ -329,6 +332,8 @@
         onCleanup: function (container) {
           var video = container.querySelector('video')
 
+          // TODO
+          /*
           if (video) {
             if (video.readyState > 0 && video.readyState < 4) {
               // Some data has been loaded but not the whole package.
@@ -343,6 +348,7 @@
               video.load()
             }
           }
+          */
         }
       }
     }

@@ -164,6 +164,7 @@ $slideMaxWidth: 85vw;
     overscroll-behavior: contain;
 
     & video {
+      cursor: auto;
       display: block !important;
       max-height: $slideMaxHeight;
       max-width: $slideMaxWidth;

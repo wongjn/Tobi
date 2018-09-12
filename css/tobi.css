@@ -163,6 +163,7 @@
 }
 
 .tobi__slider__slide__content[data-type="html"] video {
+  cursor: auto;
   display: block !important;
   max-height: 85vh;
   max-width: 85vw;
