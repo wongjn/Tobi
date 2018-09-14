@@ -143,7 +143,7 @@ In any case, the attribute `data-type` with the value `html` must be added.
 
 ### Iframe
 
-For an iframe simply create a link with the class name `lightbox`:
+For an iframe, create a link with the class name `lightbox`:
 
 ```html
 <a href="https://www.wikipedia.org" data-type="iframe" class="lightbox">

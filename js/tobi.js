@@ -332,10 +332,12 @@
         onCleanup: function (container) {
           var video = container.querySelector('video')
 
-          // TODO
-          /*
+          console.log('video.readyState: ' + video.readyState)
+          console.log('video.currentTime: ' + video.currentTime)
+          console.log('video.duration: ' + video.duration)
+
           if (video) {
-            if (video.readyState > 0 && video.readyState < 4) {
+            if (video.readyState > 0 && video.readyState < 3 && video.duration !== video.currentTime) {
               // Some data has been loaded but not the whole package.
               // In order to save bandwidth, stop downloading
               // as soon as possible.
@@ -344,11 +346,16 @@
               // 1. backup src
               // 2. remove src
               // 3. call load()
+              var clone = video.cloneNode(true)
+
               setVideoSources(video, 'src', 'data-src')
               video.load()
+
+              video.parentNode.removeChild(video)
+
+              container.appendChild(clone)
             }
           }
-          */
         }
       }
     }
@@ -498,6 +505,7 @@
             sliderElement.style.position = 'absolute'
             sliderElement.style.left = x * 100 + '%'
             sliderElementContent.className = 'tobi__slider__slide__content'
+
             if (config.draggable) {
               sliderElementContent.classList.add('draggable')
             }
