@@ -332,10 +332,6 @@
         onCleanup: function (container) {
           var video = container.querySelector('video')
 
-          console.log('video.readyState: ' + video.readyState)
-          console.log('video.currentTime: ' + video.currentTime)
-          console.log('video.duration: ' + video.duration)
-
           if (video) {
             if (video.readyState > 0 && video.readyState < 3 && video.duration !== video.currentTime) {
               // Some data has been loaded but not the whole package.
@@ -929,7 +925,6 @@
      *
      */
     var mousedownHandler = function mousedownHandler (event) {
-      event.preventDefault()
       event.stopPropagation()
 
       pointerDown = true
