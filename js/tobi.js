@@ -880,6 +880,13 @@
      *
      */
     var touchstartHandler = function touchstartHandler (event) {
+      // Prevent dragging / swiping on textareas inputs, selects and videos
+      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1;
+
+      if (ignoreElements) {
+        return
+      }
+
       event.stopPropagation()
 
       pointerDown = true
@@ -893,10 +900,11 @@
      *
      */
     var touchmoveHandler = function touchmoveHandler (event) {
-      event.preventDefault()
       event.stopPropagation()
 
       if (pointerDown) {
+        event.preventDefault()
+
         drag.endX = event.touches[0].pageX
         drag.endY = event.touches[0].pageY
 
@@ -925,7 +933,15 @@
      *
      */
     var mousedownHandler = function mousedownHandler (event) {
-      event.stopPropagation()
+      // Prevent dragging / swiping on textareas inputs, selects and videos
+      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1;
+
+      if (ignoreElements) {
+        return
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
 
       pointerDown = true
       drag.startX = event.pageX
