@@ -1,7 +1,7 @@
 $zoomIconBackground: #0437fd;
 $zoomIconColor: #fff;
 
-$overlayBackground: rgba(0, 0, 0, .8);
+$lightboxBackground: rgba(0, 0, 0, .8);
 
 $figcaptionBackground: rgba(0, 0, 0, .8);
 $figcaptionColor: #fff;
@@ -14,8 +14,8 @@ $buttonColor: #fff;
 
 $loaderColor: #0437fd;
 
-$iframeHeight: 85vh;
-$iframeWidth: 85vw;
+$slideMaxHeight: 85vh;
+$slideMaxWidth: 85vw;
 
 /* Link */
 .tobi-zoom {
@@ -50,6 +50,12 @@ $iframeWidth: 85vw;
       padding-top: .222em;
       pointer-events: none;
       width: 1.111em;
+      stroke: $zoomIconColor;
+      stroke-width: 1.8;
+      stroke-linecap: square;
+      stroke-linejoin: miter;
+      fill: none;
+      color: $zoomIconColor;
     }
   }
 }
@@ -61,6 +67,7 @@ $iframeWidth: 85vw;
 
 /* Lightbox */
 .tobi {
+  background-color: $lightboxBackground;
   bottom: 0;
   box-sizing: border-box;
   contain: strict;
@@ -72,7 +79,6 @@ $iframeWidth: 85vw;
   top: 0;
   z-index: 1337;
 
-
   &[aria-hidden="true"] {
     display: none;
   }
@@ -82,16 +88,6 @@ $iframeWidth: 85vw;
   & *::after {
     box-sizing: inherit;
   }
-}
-
-/* Overlay */
-.tobi__overlay {
-  background-color: $overlayBackground;
-  bottom: 0;
-  left: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
 }
 
 /* Slider */
@@ -112,57 +108,73 @@ $iframeWidth: 85vw;
   height: 100%;
   justify-content: center;
   width: 100%;
+}
 
+/* Slide content */
+.tobi__slider__slide__content {
+  &.draggable {
+    cursor: grab;
 
-  & .tobi__slider__slide__content {
-    max-height: 85vh;
-    max-width: 85vw;
+    &:active {
+      cursor: grabbing;
+    }
   }
 
-  & .tobi-html {
-    max-height: 85vh;
+  > figure {
+    margin: 0;
+    position: relative;
+
+    > img {
+      display: block;
+      height: auto;
+      max-height: $slideMaxHeight;
+      max-width: $slideMaxWidth;
+      width: auto;
+    }
+
+    > figcaption {
+      background-color: $figcaptionBackground;
+      bottom: 0;
+      color: $figcaptionColor;
+      display: block;
+      left: 0;
+      padding-bottom: .222em;
+      padding-left: .5em;
+      padding-right: .5em;
+      padding-top: .222em;
+      position: absolute;
+      white-space: pre-wrap;
+      width: 100%;
+    }
+  }
+
+  &[data-type="iframe"] {
+    max-height: $slideMaxHeight;
+    max-width: $slideMaxWidth;
     overflow: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
+
+    & iframe {
+      display: block !important;
+      height: $slideMaxHeight;
+      width: $slideMaxWidth;
+    }
   }
 
-  & figure {
-    margin: 0;
-    max-width: 100%;
-    position: relative;
-  }
+  &[data-type="html"] {
+    max-height: $slideMaxHeight;
+    max-width: $slideMaxWidth;
+    overflow: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 
-  & img {
-    display: block;
-    height: auto;
-    max-height: 85vh;
-    max-width: 85vw;
-    width: auto;
-  }
-
-  & iframe {
-    height: $iframeHeight;
-    width: $iframeWidth;
-  }
-
-  & video {
-    max-height: 85vh;
-    max-width: 85vw;
-  }
-
-  & figcaption {
-    background-color: $figcaptionBackground;
-    bottom: 0;
-    color: $figcaptionColor;
-    display: block;
-    left: 0;
-    padding-bottom: .222em;
-    padding-left: .5em;
-    padding-right: .5em;
-    padding-top: .222em;
-    position: absolute;
-    white-space: pre-wrap;
-    width: 100%;
+    & video {
+      cursor: auto;
+      display: block !important;
+      max-height: $slideMaxHeight;
+      max-width: $slideMaxWidth;
+    }
   }
 }
 
@@ -191,6 +203,12 @@ $iframeWidth: 85vw;
 
   & svg {
     pointer-events: none;
+    stroke: #fff;
+    stroke-width: .8;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+    fill: none;
+    color: #fff;
   }
 
   &:active,
@@ -198,7 +216,6 @@ $iframeWidth: 85vw;
   &:hover {
     opacity: 1;
     transition: opacity .5s cubic-bezier(.19, 1, .22, 1);
-    will-change: opacity;
   }
 
   &.tobi__prev,
@@ -222,13 +239,13 @@ $iframeWidth: 85vw;
   }
 
   &.tobi__close {
-    right: 1em;
+    right: .5em;
     top: 1em;
 
 
     & svg {
-      height: 2em;
-      width: 2em;
+      height: 3em;
+      width: 3em;
     }
   }
 
@@ -267,6 +284,7 @@ $iframeWidth: 85vw;
   position: absolute;
   top: 50%;
   width: 5em;
+  will-change: transform;
 
 
   &::before {
@@ -280,7 +298,6 @@ $iframeWidth: 85vw;
     position: absolute;
     right: 0;
     top: 0;
-    will-change: transform;
     z-index: 1;
   }
 }

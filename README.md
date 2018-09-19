@@ -1,8 +1,8 @@
 # Tobi
 
-[![Version](https://img.shields.io/badge/version-1.7.1-0437fd.svg)](https://github.com/rqrauhvmra/Tobi/releases)
-[![License](https://img.shields.io/badge/license-MIT-0437fd.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
-![Dependecies](https://img.shields.io/badge/dependencies-none-0437fd.svg)
+[![Version](https://img.shields.io/badge/version-1.7.2-0000ff.svg)](https://github.com/rqrauhvmra/Tobi/releases)
+[![License](https://img.shields.io/badge/license-MIT-0000ff.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
+![Dependecies](https://img.shields.io/badge/dependencies-none-0000ff.svg)
 
 An accessible, simple and light-weight open source lightbox script with no dependencies.
 
@@ -10,10 +10,28 @@ An accessible, simple and light-weight open source lightbox script with no depen
 
 ![.flex__*](https://rqrauhvmra.com/tobi/snapshot.png)
 
+## Table of contents
+
+- [Features](#features)
+- [Get Tobi](#get-tobi)
+  - [Download](#download)
+  - [Package managers](#package-managers)
+- [Usage](#usage)
+- [Media types](#media-types)
+  - [Image](#image)
+  - [Inline HTML](#inline-html)
+  - [Iframe](#iframe)
+- [Options](#options)
+- [API](#api)
+- [Browser support](#browser-support)
+- [To do](#to-do)
+- [Contributing](#contributing)
+- [License](#license)
+- [Notes](#notes)
+
 ## Features
 
 - No dependencies
-- Simple and light-weight
 - Accessible:
   - ARIA roles
   - Keyboard navigation:
@@ -22,8 +40,12 @@ An accessible, simple and light-weight open source lightbox script with no depen
     - `TAB` Key: Focus elements within the lightbox, not outside
   - When the lightbox opens, focus is set to the first focusable element in the lightbox
   - When the lightbox closes, focus returns to what was in focus before the lightbox opened
-  - Touch gestures: Drag/Swipe to navigate through items, close the lightbox with a vertical drag/swipe
-- Support for images, iframes and inline HTML
+- Touch & Mouse drag support:
+  - Drag/Swipe to navigate through items, close the lightbox with a vertical drag/swipe
+- light-weight
+- Responsive
+- Iframe support
+- Inline HTML support
 
 ## Get Tobi
 
@@ -121,7 +143,7 @@ In any case, the attribute `data-type` with the value `html` must be added.
 
 ### Iframe
 
-For an iframe simply create a link with the class name `lightbox`:
+For an iframe, create a link with the class name `lightbox`:
 
 ```html
 <a href="https://www.wikipedia.org" data-type="iframe" class="lightbox">
@@ -174,6 +196,7 @@ The following options are available:
 | scroll | bool | false | Hide scrollbars if lightbox is displayed |
 | draggable | bool | true | Use dragging and touch swiping |
 | threshold | number | 100 | Touch and mouse dragging threshold (in px) |
+| autoplayVideo | bool | false | The video will automatically start playing as soon as it can do so without stopping to finish loading the data
 
 ## API
 
@@ -183,7 +206,7 @@ var tobi = new Tobi({
 })
 
 tobi.open()   // Opens the lightbox
-tobi.open(2)  // Opens the lightbox on slide 3 (first is 0)
+tobi.open(2)  // Opens the lightbox on slide 3 (first is 0) or selects slide 3 if the lightbox is open
 tobi.next()   // Shows the next slide in the lightbox
 tobi.prev()   // Shows the previous slide in the lightbox
 tobi.close()  // Closes the lightbox
@@ -205,15 +228,20 @@ Tobi has been tested in the following browsers (all the latest versions):
 - Edge
 - Safari
 
-## Missing stuff
+## To do
 
-- Possibility to group
+- [ ] Possibility to group
+- [ ] Support for `srcset` and `picture`
 
 ## Contributing
 
 - Report issues
 - Open pull request with improvements
 - Spread the word
+
+## License
+
+Tobi is available under the MIT license. See the [LICENSE](https://github.com/rqrauhvmra/Tobi/blob/master/LICENSE.md) file for more info.
 
 ## Notes
 

@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.7.1
+ * @version 1.7.2
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -33,9 +33,8 @@
       transformProperty = null,
       gallery = [],
       figcaptionId = 0,
-      elementsLength = null,
+      elementsLength = 0,
       lightbox = null,
-      overlay = null,
       slider = null,
       sliderElements = [],
       prevButton = null,
@@ -67,10 +66,10 @@
         captionsSelector: 'img',
         captionAttribute: 'alt',
         nav: 'auto',
-        navText: ['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" /></svg>', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6" /></svg>'],
+        navText: ['<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><polyline points="14 18 8 12 14 6 14 6"></polyline></svg>', '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><polyline points="10 6 16 12 10 18 10 18"></polyline></svg>'],
         navLabel: ['Previous', 'Next'],
         close: true,
-        closeText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>',
+        closeText: '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path d="M6.34314575 6.34314575L17.6568542 17.6568542M6.34314575 17.6568542L17.6568542 6.34314575"></path></svg>',
         closeLabel: 'Close',
         counter: true,
         download: false,
@@ -78,12 +77,13 @@
         downloadLabel: 'Download',
         keyboard: true,
         zoom: true,
-        zoomText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>',
+        zoomText: '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4,20 L9.58788778,14.4121122"></path><path d="M14,16 C10.6862915,16 8,13.3137085 8,10 C8,6.6862915 10.6862915,4 14,4 C17.3137085,4 20,6.6862915 20,10 C20,13.3137085 17.3137085,16 14,16 Z"></path><path d="M16.6666667 10L11.3333333 10M14 7.33333333L14 12.6666667"></path></svg>',
         docClose: true,
         swipeClose: true,
         scroll: false,
         draggable: true,
-        threshold: 100
+        threshold: 100,
+        autoplayVideo: false
       }
 
       if (userOptions) {
@@ -111,7 +111,7 @@
     var supportedElements = {
       image: {
         checkSupport: function (element) {
-          return !element.hasAttribute('data-type') && element.href.match(/\.(png|jpg|tiff|tif|gif|bmp|webp|svg|ico)$/)
+          return !element.hasAttribute('data-type') && element.href.match(/\.(png|jpe?g|tiff|tif|gif|bmp|webp|svg|ico)$/)
         },
 
         init: function (element, container) {
@@ -157,7 +157,7 @@
           container.appendChild(figure)
 
           //  Create loader
-          loader.classList.add('tobi-loader')
+          loader.className = 'tobi-loader'
 
           // Add loader to container
           container.appendChild(loader)
@@ -196,6 +196,10 @@
 
         onLeave: function (container) {
           // Nothing
+        },
+
+        onCleanup: function (container) {
+          // Nothing
         }
       },
 
@@ -205,7 +209,7 @@
         },
 
         init: function (element, container) {
-          // To do
+          // TODO
         },
 
         onPreload: function (container) {
@@ -213,11 +217,15 @@
         },
 
         onLoad: function (container) {
-          // To do
+          // TODO
         },
 
         onLeave: function (container) {
-          // To do
+          // TODO
+        },
+
+        onCleanup: function (container) {
+          // Nothing
         }
       },
 
@@ -253,6 +261,10 @@
 
         onLeave: function (container) {
           // Nothing
+        },
+
+        onCleanup: function (container) {
+          // Nothing
         }
       },
 
@@ -269,8 +281,6 @@
             return console.log('Ups, I can\'t find the target ' + targetSelector + '.')
           }
 
-          target.classList.add('tobi-html')
-
           // Add content to container
           container.appendChild(target)
 
@@ -283,15 +293,64 @@
         },
 
         onLoad: function (container) {
-          // Nothing
+          var video = container.querySelector('video')
+
+          if (video) {
+            // TODO
+            /*
+            if (video.querySelector('[data-src]')) {
+              // Recover original src
+              setVideoSources(video, 'data-src', 'src')
+            }
+            */
+
+            if (video.hasAttribute('data-time')) {
+              // Continue where video was stopped
+              video.currentTime = video.getAttribute('data-time')
+            }
+
+            if (config.autoplayVideo) {
+              // Start playback (and loading if necessary)
+              video.play()
+            }
+          }
         },
 
         onLeave: function (container) {
           var video = container.querySelector('video')
 
           if (video) {
-            // Stop if video was found
-            video.pause()
+            if (!video.paused) {
+              // Stop if video is playing
+              video.pause()
+            }
+            // Backup currentTime (needed for revisit)
+            video.setAttribute('data-time', video.currentTime)
+          }
+        },
+
+        onCleanup: function (container) {
+          var video = container.querySelector('video')
+
+          if (video) {
+            if (video.readyState > 0 && video.readyState < 3 && video.duration !== video.currentTime) {
+              // Some data has been loaded but not the whole package.
+              // In order to save bandwidth, stop downloading
+              // as soon as possible.
+              // According to https://developer.mozilla.org/en-US/docs/Web/Apps/Fundamentals/Audio_and_video_delivery#Stopping_the_download_of_media
+              // this can be achieved by:
+              // 1. backup src
+              // 2. remove src
+              // 3. call load()
+              var clone = video.cloneNode(true)
+
+              setVideoSources(video, 'src', 'data-src')
+              video.load()
+
+              video.parentNode.removeChild(video)
+
+              container.appendChild(clone)
+            }
           }
         }
       }
@@ -311,15 +370,9 @@
       // Get a list of all elements within the document
       var elements = document.querySelectorAll(config.selector)
 
-      // Saves the number of elements
-      elementsLength = elements.length
-
-      if (!elementsLength) {
+      if (!elements) {
         return console.log('Ups, I can\'t find the selector ' + config.selector + '.')
       }
-
-      // Create lightbox
-      createLightbox()
 
       // Execute a few things once per element
       Array.prototype.forEach.call(elements, function (element) {
@@ -331,7 +384,7 @@
      * Init element
      *
      */
-    var initElement = function initElement (element, isNewDynamicElement) {
+    var initElement = function initElement (element) {
       // Check if the lightbox already exists
       if (!lightbox) {
         // Create the lightbox
@@ -341,12 +394,13 @@
       // Check if element already exists
       if (gallery.indexOf(element) === -1) {
         gallery.push(element)
+        elementsLength++
 
         // Set zoom icon if necessary
         if (config.zoom && element.querySelector('img')) {
           var tobiZoom = document.createElement('div')
 
-          tobiZoom.classList.add('tobi-zoom__icon')
+          tobiZoom.className = 'tobi-zoom__icon'
           tobiZoom.innerHTML = config.zoomText
 
           element.classList.add('tobi-zoom')
@@ -363,17 +417,11 @@
         // Create the slide
         createLightboxSlide(element)
 
-        if (isNewDynamicElement) {
-          elementsLength++
-
-          if (isOpen()) {
-            updateCounter()
-            updateOffset()
-            updateFocus()
-          }
+        if (isOpen()) {
+          updateLightbox()
         }
       } else {
-        return console.log('Element already added to the lightbox.')
+        console.log('Element already added to the lightbox.')
       }
     }
 
@@ -386,21 +434,16 @@
       lightbox = document.createElement('div')
       lightbox.setAttribute('role', 'dialog')
       lightbox.setAttribute('aria-hidden', 'true')
-      lightbox.classList.add('tobi')
-
-      // Create overlay container
-      overlay = document.createElement('div')
-      overlay.classList.add('tobi__overlay')
-      lightbox.appendChild(overlay)
+      lightbox.className = 'tobi'
 
       // Create slider container
       slider = document.createElement('div')
-      slider.classList.add('tobi__slider')
+      slider.className = 'tobi__slider'
       lightbox.appendChild(slider)
 
       // Create previous button
       prevButton = document.createElement('button')
-      prevButton.classList.add('tobi__prev')
+      prevButton.className = 'tobi__prev'
       prevButton.setAttribute('type', 'button')
       prevButton.setAttribute('aria-label', config.navLabel[0])
       prevButton.innerHTML = config.navText[0]
@@ -408,7 +451,7 @@
 
       // Create next button
       nextButton = document.createElement('button')
-      nextButton.classList.add('tobi__next')
+      nextButton.className = 'tobi__next'
       nextButton.setAttribute('type', 'button')
       nextButton.setAttribute('aria-label', config.navLabel[1])
       nextButton.innerHTML = config.navText[1]
@@ -416,7 +459,7 @@
 
       // Create close button
       closeButton = document.createElement('button')
-      closeButton.classList.add('tobi__close')
+      closeButton.className = 'tobi__close'
       closeButton.setAttribute('type', 'button')
       closeButton.setAttribute('aria-label', config.closeLabel)
       closeButton.innerHTML = config.closeText
@@ -424,7 +467,7 @@
 
       // Create counter
       counter = document.createElement('div')
-      counter.classList.add('tobi__counter')
+      counter.className = 'tobi__counter'
       lightbox.appendChild(counter)
 
       // Resize event using requestAnimationFrame
@@ -454,10 +497,14 @@
             var sliderElement = document.createElement('div'),
               sliderElementContent = document.createElement('div')
 
-            sliderElement.classList.add('tobi__slider__slide')
+            sliderElement.className = 'tobi__slider__slide'
             sliderElement.style.position = 'absolute'
             sliderElement.style.left = x * 100 + '%'
-            sliderElementContent.classList.add('tobi__slider__slide__content')
+            sliderElementContent.className = 'tobi__slider__slide__content'
+
+            if (config.draggable) {
+              sliderElementContent.classList.add('draggable')
+            }
 
             // Create type elements
             supportedElements[index].init(element, sliderElementContent)
@@ -483,17 +530,27 @@
      * @param {number} index - Item index to load
      */
     var openLightbox = function openLightbox (index) {
-      if (lightbox.getAttribute('aria-hidden') === 'false') {
-        return console.log('Tobi is already open.')
+      if (!isOpen() && !index) {
+        index = 0
+      }
+
+      if (isOpen()) {
+        if (!index) {
+          return console.log('Ups, Tobi is aleady open.')
+        }
+
+        if (index === currentIndex) {
+          return console.log('Ups, slide ' + index + ' is already selected.')
+        }
+      }
+
+      if (index === -1 || index >= elementsLength) {
+        return console.log('Ups, I can\'t find slide ' + index + '.')
       }
 
       if (!config.scroll) {
         document.documentElement.classList.add('tobi-is-open')
         document.body.classList.add('tobi-is-open')
-      }
-
-      if (!index) {
-        index = 0
       }
 
       // Hide buttons if necessary
@@ -518,10 +575,6 @@
         closeButton.setAttribute('aria-hidden', 'true')
       }
 
-      if (config.draggable) {
-        slider.style.cursor = '-webkit-grab'
-      }
-
       // Save the user’s focus
       lastFocus = document.activeElement
 
@@ -536,14 +589,16 @@
 
       // Load slide
       load(currentIndex)
-      preload(currentIndex + 1)
-      preload(currentIndex - 1)
 
-      updateOffset()
-      updateCounter()
+      // Makes lightbox appear, too
       lightbox.setAttribute('aria-hidden', 'false')
 
-      updateFocus()
+      // Update components
+      updateLightbox()
+
+      // Preload late
+      preload(currentIndex + 1)
+      preload(currentIndex - 1)
     }
 
     /**
@@ -551,8 +606,8 @@
      *
      */
     var closeLightbox = function closeLightbox () {
-      if (lightbox.getAttribute('aria-hidden') === 'true') {
-        return console.log('Tobi is already closed')
+      if (!isOpen()) {
+        return console.log('Tobi is already closed.')
       }
 
       if (!config.scroll) {
@@ -563,12 +618,16 @@
       // Unbind events
       unbindEvents()
 
-      leave()
-
-      lightbox.setAttribute('aria-hidden', 'true')
-
       // Reenable the user’s focus
       lastFocus.focus()
+
+      // Don't forget to cleanup our current element
+      var container = sliderElements[currentIndex].querySelector('.tobi__slider__slide__content')
+      var type = container.getAttribute('data-type')
+      supportedElements[type].onLeave(container)
+      supportedElements[type].onCleanup(container)
+
+      lightbox.setAttribute('aria-hidden', 'true')
     }
 
     /**
@@ -607,19 +666,11 @@
      *
      */
     var next = function next () {
-      // If not last
-      if (currentIndex !== elementsLength - 1) {
-        leave()
-      }
-
       if (currentIndex < elementsLength - 1) {
-        currentIndex++
-
-        updateOffset()
-        updateCounter()
-        updateFocus('right')
-
-        load(currentIndex)
+        leave(currentIndex)
+        load(++currentIndex)
+        updateLightbox('right')
+        cleanup(currentIndex - 1)
         preload(currentIndex + 1)
       }
     }
@@ -629,35 +680,45 @@
      *
      */
     var prev = function prev () {
-      // If not first
       if (currentIndex > 0) {
-        leave()
-      }
-
-      if (currentIndex > 0) {
-        currentIndex--
-
-        updateOffset()
-        updateCounter()
-        updateFocus('left')
-
-        load(currentIndex)
+        leave(currentIndex)
+        load(--currentIndex)
+        updateLightbox('left')
+        cleanup(currentIndex + 1)
         preload(currentIndex - 1)
       }
     }
 
     /**
      * Leave slide
-     * Will be called when closing the lightbox or moving index
+     * Will be called before moving index
      *
      */
-    var leave = function leave () {
-      for (var index = 0; index < elementsLength; index++) {
-        var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
-        var type = container.getAttribute('data-type')
-
-        supportedElements[type].onLeave(container)
+    var leave = function leave (index) {
+      if (sliderElements[index] === undefined) {
+        return
       }
+
+      var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
+      var type = container.getAttribute('data-type')
+
+      supportedElements[type].onLeave(container)
+    }
+
+    /**
+     * Cleanup slide
+     * Will be called after moving index
+     *
+     */
+    var cleanup = function cleanup (index) {
+      if (sliderElements[index] === undefined) {
+        return
+      }
+
+      var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
+      var type = container.getAttribute('data-type')
+
+      supportedElements[type].onCleanup(container)
     }
 
     /**
@@ -772,7 +833,7 @@
         prev()
       } else if (event.target === nextButton) {
         next()
-      } else if (event.target === closeButton || (event.target.classList.contains('tobi__slider__slide') && !event.target.classList.contains('tobi__slider__slide__content'))) {
+      } else if (event.target === closeButton || event.target.className === 'tobi__slider__slide') {
         closeLightbox()
       }
 
@@ -819,6 +880,13 @@
      *
      */
     var touchstartHandler = function touchstartHandler (event) {
+      // Prevent dragging / swiping on textareas inputs, selects and videos
+      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1;
+
+      if (ignoreElements) {
+        return
+      }
+
       event.stopPropagation()
 
       pointerDown = true
@@ -832,10 +900,11 @@
      *
      */
     var touchmoveHandler = function touchmoveHandler (event) {
-      event.preventDefault()
       event.stopPropagation()
 
       if (pointerDown) {
+        event.preventDefault()
+
         drag.endX = event.touches[0].pageX
         drag.endY = event.touches[0].pageY
 
@@ -864,12 +933,19 @@
      *
      */
     var mousedownHandler = function mousedownHandler (event) {
-      event.preventDefault()
-      event.stopPropagation()
+      // Prevent dragging / swiping on textareas inputs, selects and videos
+      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1;
+
+      if (ignoreElements) {
+        return
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
 
       pointerDown = true
       drag.startX = event.pageX
-      slider.style.cursor = '-webkit-grabbing'
+      drag.startY = event.pageY
     }
 
     /**
@@ -881,6 +957,8 @@
 
       if (pointerDown) {
         drag.endX = event.pageX
+        drag.endY = event.pageY
+
         slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
       }
     }
@@ -893,7 +971,6 @@
       event.stopPropagation()
 
       pointerDown = false
-      slider.style.cursor = '-webkit-grab'
 
       if (drag.endX) {
         updateAfterDrag()
@@ -973,11 +1050,47 @@
     }
 
     /**
+     * Replace attribute 'to' of element with 'from' and remove 'from'
+     *
+     */
+    var replaceAttribute = function replaceAttribute (element, from, to) {
+      element.setAttribute(to, element.getAttribute(from))
+      element.removeAttribute(from)
+    }
+
+    /**
+     * Replace attributes of all video <source> elements
+     *
+     */
+    var setVideoSources = function setVideoSources (video, from, to) {
+      var sources = video.querySelectorAll('[' + from + ']')
+
+      if (sources) {
+        Array.prototype.forEach.call(sources, function (source) {
+          replaceAttribute(source, from, to)
+        })
+      } else {
+        replaceAttribute(video, from, to)
+      }
+    }
+
+    /**
+     * Update all components
+     *
+     * @param {string} direction - Direction to focus after call
+     */
+    var updateLightbox = function updateLightbox (direction) {
+      updateOffset()
+      updateCounter()
+      updateFocus(direction)
+    }
+
+    /**
      * Add an element dynamically to the lightbox
      *
      */
     var add = function add (element) {
-      initElement(element, true)
+      initElement(element)
     }
 
     /**
@@ -1005,14 +1118,14 @@
     init(userOptions)
 
     return {
+      open: openLightbox,
       prev: prev,
       next: next,
-      open: openLightbox,
       close: closeLightbox,
       add: add,
       reset: reset,
       isOpen: isOpen,
-      version: '1.7.1'
+      version: '1.7.2'
     }
   }
 
