@@ -8,7 +8,7 @@ An accessible, simple and light-weight open source lightbox script with no depen
 
 [Play on CodePen](https://codepen.io/collection/nbqJVV)
 
-![.flex__*](https://rqrauhvmra.com/tobi/snapshot.png)
+![A picture of the lightbox](https://rqrauhvmra.com/tobi/snapshot.png)
 
 ## Table of contents
 
