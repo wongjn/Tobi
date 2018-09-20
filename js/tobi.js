@@ -597,7 +597,7 @@
       preload(currentIndex - 1)
 
       if (callback) {
-        callback.call(this);
+        callback.call(this)
       }
     }
 

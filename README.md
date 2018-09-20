@@ -200,28 +200,28 @@ The following options are available:
 
 ## API
 
-`open(index, callback)`
+**`open(index, callback)`**
 Opens the lightbox. Optional at specific `index` (number) and optional `callback` (function) as a second argument.
 
-`next(callback)`
+**`next(callback)`**
 Shows the next slide in the lightbox. Optional `callback` (function).
 
-`prev(callback)`
+**`prev(callback)`**
 Shows the previous slide in the lightbox. Optional `callback` (function).
 
-`close(callback)`
+**`close(callback)`**
 Closes the lightbox. Optional `callback` (function).
 
-`add(element, callback)`
-Adds an new `element` (DOM element) dynamically, even if the lightbox is open. Optional `callback` (function) as a second argument ([example on CodePen](https://codepen.io/rqrauhvmra/pen/qyEmXR)).
+**`add(element, callback)`**
+Adds an new `element` (DOM element) dynamically, even if the lightbox is open ([example on CodePen](https://codepen.io/rqrauhvmra/pen/vzbXxQ)). Optional `callback` (function) as a second argument ([example on CodePen](https://codepen.io/rqrauhvmra/pen/qyEmXR)).
 
-`isOpen()`
+**`isOpen()`**
 Checks if the lightbox is open.
 
-`version`
+**`version`**
 Prints current version.
 
-`currentIndex`
+**`currentIndex`**
 Prints current slide index.
 
 ## Browser support
