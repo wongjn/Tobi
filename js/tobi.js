@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.7.2
+ * @version 1.7.3
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -55,7 +55,7 @@
     /**
      * Merge default options with user options
      *
-     * @param {Object} userOptions - User options
+     * @param {Object} userOptions - Optional user options
      * @returns {Object} - Custom options
      */
     var mergeOptions = function mergeOptions (userOptions) {
@@ -278,7 +278,7 @@
             target = document.querySelector(targetSelector)
 
           if (!target) {
-            return console.log('Ups, I can\'t find the target ' + targetSelector + '.')
+            throw new Error('Ups, I can\'t find the target ' + targetSelector + '.')
           }
 
           // Add content to container
@@ -296,15 +296,7 @@
           var video = container.querySelector('video')
 
           if (video) {
-            // TODO
-            /*
-            if (video.querySelector('[data-src]')) {
-              // Recover original src
-              setVideoSources(video, 'data-src', 'src')
-            }
-            */
-
-            if (video.hasAttribute('data-time')) {
+            if (video.hasAttribute('data-time') && video.readyState > 0) {
               // Continue where video was stopped
               video.currentTime = video.getAttribute('data-time')
             }
@@ -324,8 +316,11 @@
               // Stop if video is playing
               video.pause()
             }
+
             // Backup currentTime (needed for revisit)
-            video.setAttribute('data-time', video.currentTime)
+            if (video.readyState > 0) {
+              video.setAttribute('data-time', video.currentTime)
+            }
           }
         },
 
@@ -335,16 +330,10 @@
           if (video) {
             if (video.readyState > 0 && video.readyState < 3 && video.duration !== video.currentTime) {
               // Some data has been loaded but not the whole package.
-              // In order to save bandwidth, stop downloading
-              // as soon as possible.
-              // According to https://developer.mozilla.org/en-US/docs/Web/Apps/Fundamentals/Audio_and_video_delivery#Stopping_the_download_of_media
-              // this can be achieved by:
-              // 1. backup src
-              // 2. remove src
-              // 3. call load()
+              // In order to save bandwidth, stop downloading as soon as possible.
               var clone = video.cloneNode(true)
 
-              setVideoSources(video, 'src', 'data-src')
+              removeSources(video)
               video.load()
 
               video.parentNode.removeChild(video)
@@ -371,20 +360,22 @@
       var elements = document.querySelectorAll(config.selector)
 
       if (!elements) {
-        return console.log('Ups, I can\'t find the selector ' + config.selector + '.')
+        throw new Error('Ups, I can\'t find the selector ' + config.selector + '.')
       }
 
       // Execute a few things once per element
       Array.prototype.forEach.call(elements, function (element) {
-        initElement(element)
+        add(element)
       })
     }
 
     /**
-     * Init element
+     * Add element
      *
+     * @param {HTMLElement} element - Element to add
+     * @param {function} callback - Optional callback to call after add
      */
-    var initElement = function initElement (element) {
+    var add = function add (element, callback) {
       // Check if the lightbox already exists
       if (!lightbox) {
         // Create the lightbox
@@ -420,8 +411,12 @@
         if (isOpen()) {
           updateLightbox()
         }
+
+        if (callback) {
+          callback.call(this)
+        }
       } else {
-        console.log('Element already added to the lightbox.')
+        throw new Error('Ups, element already added to the lightbox.')
       }
     }
 
@@ -527,25 +522,26 @@
     /**
      * Open the lightbox
      *
-     * @param {number} index - Item index to load
+     * @param {number} index - Index to load
+     * @param {function} callback - Optional callback to call after open
      */
-    var openLightbox = function openLightbox (index) {
+    var openLightbox = function openLightbox (index, callback) {
       if (!isOpen() && !index) {
         index = 0
       }
 
       if (isOpen()) {
         if (!index) {
-          return console.log('Ups, Tobi is aleady open.')
+          throw new Error('Ups, Tobi is aleady open.')
         }
 
         if (index === currentIndex) {
-          return console.log('Ups, slide ' + index + ' is already selected.')
+          throw new Error('Ups, slide ' + index + ' is already selected.')
         }
       }
 
       if (index === -1 || index >= elementsLength) {
-        return console.log('Ups, I can\'t find slide ' + index + '.')
+        throw new Error('Ups, I can\'t find slide ' + index + '.')
       }
 
       if (!config.scroll) {
@@ -593,21 +589,26 @@
       // Makes lightbox appear, too
       lightbox.setAttribute('aria-hidden', 'false')
 
-      // Update components
+      // Update lightbox
       updateLightbox()
 
       // Preload late
       preload(currentIndex + 1)
       preload(currentIndex - 1)
+
+      if (callback) {
+        callback.call(this);
+      }
     }
 
     /**
      * Close the lightbox
      *
+     * @param {function} callback - Optional callback to call after close
      */
-    var closeLightbox = function closeLightbox () {
+    var closeLightbox = function closeLightbox (callback) {
       if (!isOpen()) {
-        return console.log('Tobi is already closed.')
+        throw new Error('Tobi is already closed.')
       }
 
       if (!config.scroll) {
@@ -628,11 +629,16 @@
       supportedElements[type].onCleanup(container)
 
       lightbox.setAttribute('aria-hidden', 'true')
+
+      if (callback) {
+        callback.call(this)
+      }
     }
 
     /**
      * Preload slide
      *
+     * @param {number} index - Index to preload
      */
     var preload = function preload (index) {
       if (sliderElements[index] === undefined) {
@@ -649,6 +655,7 @@
      * Load slide
      * Will be called when opening the lightbox or moving index
      *
+     * @param {number} index - Index to load
      */
     var load = function load (index) {
       if (sliderElements[index] === undefined) {
@@ -662,30 +669,40 @@
     }
 
     /**
-     * Navigate to the next slide
-     *
-     */
-    var next = function next () {
-      if (currentIndex < elementsLength - 1) {
-        leave(currentIndex)
-        load(++currentIndex)
-        updateLightbox('right')
-        cleanup(currentIndex - 1)
-        preload(currentIndex + 1)
-      }
-    }
-
-    /**
      * Navigate to the previous slide
      *
+     * @param {function} callback - Optional callback function
      */
-    var prev = function prev () {
+    var prev = function prev (callback) {
       if (currentIndex > 0) {
         leave(currentIndex)
         load(--currentIndex)
         updateLightbox('left')
         cleanup(currentIndex + 1)
         preload(currentIndex - 1)
+
+        if (callback) {
+          callback.call(this)
+        }
+      }
+    }
+
+    /**
+     * Navigate to the next slide
+     *
+     * @param {function} callback - Optional callback function
+     */
+    var next = function next (callback) {
+      if (currentIndex < elementsLength - 1) {
+        leave(currentIndex)
+        load(++currentIndex)
+        updateLightbox('right')
+        cleanup(currentIndex - 1)
+        preload(currentIndex + 1)
+
+        if (callback) {
+          callback.call(this)
+        }
       }
     }
 
@@ -693,6 +710,7 @@
      * Leave slide
      * Will be called before moving index
      *
+     * @param {number} index - Index to leave
      */
     var leave = function leave (index) {
       if (sliderElements[index] === undefined) {
@@ -709,6 +727,7 @@
      * Cleanup slide
      * Will be called after moving index
      *
+     * @param {number} index - Index to cleanup
      */
     var cleanup = function cleanup (index) {
       if (sliderElements[index] === undefined) {
@@ -743,8 +762,9 @@
     /**
      * Set the focus to the next element
      *
+     * @param {string} dir - Current slide direction
      */
-    var updateFocus = function updateFocus (direction) {
+    var updateFocus = function updateFocus (dir) {
       var focusableEls = null
 
       if (config.nav) {
@@ -768,17 +788,17 @@
           nextButton.disabled = true
         }
 
-        if (!direction && !nextButton.disabled) {
+        if (!dir && !nextButton.disabled) {
           nextButton.focus()
-        } else if (!direction && nextButton.disabled && !prevButton.disabled) {
+        } else if (!dir && nextButton.disabled && !prevButton.disabled) {
           prevButton.focus()
-        } else if (!nextButton.disabled && direction === 'right') {
+        } else if (!nextButton.disabled && dir === 'right') {
           nextButton.focus()
-        } else if (nextButton.disabled && direction === 'right' && !prevButton.disabled) {
+        } else if (nextButton.disabled && dir === 'right' && !prevButton.disabled) {
           prevButton.focus()
-        } else if (!prevButton.disabled && direction === 'left') {
+        } else if (!prevButton.disabled && dir === 'left') {
           prevButton.focus()
-        } else if (prevButton.disabled && direction === 'left' && !nextButton.disabled) {
+        } else if (prevButton.disabled && dir === 'left' && !nextButton.disabled) {
           nextButton.focus()
         }
       } else if (config.close) {
@@ -791,7 +811,7 @@
     }
 
     /**
-     * Clear drag after touchend
+     * Clear drag after touchend and mousup event
      *
      */
     var clearDrag = function clearDrag () {
@@ -804,7 +824,7 @@
     }
 
     /**
-     * Recalculate drag event
+     * Recalculate drag / swipe event
      *
      */
     var updateAfterDrag = function updateAfterDrag () {
@@ -881,7 +901,7 @@
      */
     var touchstartHandler = function touchstartHandler (event) {
       // Prevent dragging / swiping on textareas inputs, selects and videos
-      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1;
+      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1
 
       if (ignoreElements) {
         return
@@ -934,14 +954,14 @@
      */
     var mousedownHandler = function mousedownHandler (event) {
       // Prevent dragging / swiping on textareas inputs, selects and videos
-      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1;
+      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1
 
       if (ignoreElements) {
         return
       }
 
-      event.preventDefault();
-      event.stopPropagation();
+      event.preventDefault()
+      event.stopPropagation()
 
       pointerDown = true
       drag.startX = event.pageX
@@ -1050,54 +1070,37 @@
     }
 
     /**
-     * Replace attribute 'to' of element with 'from' and remove 'from'
+     * Remove all `src` attributes
      *
+     * @param {HTMLElement} element - Element to remove all `src` attributes
      */
-    var replaceAttribute = function replaceAttribute (element, from, to) {
-      element.setAttribute(to, element.getAttribute(from))
-      element.removeAttribute(from)
-    }
-
-    /**
-     * Replace attributes of all video <source> elements
-     *
-     */
-    var setVideoSources = function setVideoSources (video, from, to) {
-      var sources = video.querySelectorAll('[' + from + ']')
+    var removeSources = function setVideoSources (element) {
+      var sources = element.querySelectorAll('src')
 
       if (sources) {
         Array.prototype.forEach.call(sources, function (source) {
-          replaceAttribute(source, from, to)
+          source.setAttribute('src', '')
         })
-      } else {
-        replaceAttribute(video, from, to)
       }
     }
 
     /**
-     * Update all components
+     * Update all lightbox
      *
-     * @param {string} direction - Direction to focus after call
+     * @param {string} dir - Current slide direction
      */
-    var updateLightbox = function updateLightbox (direction) {
+    var updateLightbox = function updateLightbox (dir) {
       updateOffset()
       updateCounter()
-      updateFocus(direction)
-    }
-
-    /**
-     * Add an element dynamically to the lightbox
-     *
-     */
-    var add = function add (element) {
-      initElement(element)
+      updateFocus(dir)
     }
 
     /**
      * Reset the lightbox
      *
+     * @param {function} callback - Optional callback to call after reset
      */
-    var reset = function reset () {
+    var reset = function reset (callback) {
       if (slider) {
         while (slider.firstChild) {
           slider.removeChild(slider.firstChild)
@@ -1105,6 +1108,10 @@
       }
 
       gallery.length = sliderElements.length = elementsLength = figcaptionId = x = 0
+
+      if (callback) {
+        callback.call(this)
+      }
     }
 
     /**
@@ -1125,7 +1132,8 @@
       add: add,
       reset: reset,
       isOpen: isOpen,
-      version: '1.7.2'
+      currentIndex: currentIndex,
+      version: '1.7.3'
     }
   }
 
