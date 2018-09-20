@@ -402,7 +402,7 @@
         element.addEventListener('click', function (event) {
           event.preventDefault()
 
-          openLightbox(gallery.indexOf(this))
+          open(gallery.indexOf(this))
         })
 
         // Create the slide
@@ -525,7 +525,7 @@
      * @param {number} index - Index to load
      * @param {function} callback - Optional callback to call after open
      */
-    var openLightbox = function openLightbox (index, callback) {
+    var open = function open (index, callback) {
       if (!isOpen() && !index) {
         index = 0
       }
@@ -606,7 +606,7 @@
      *
      * @param {function} callback - Optional callback to call after close
      */
-    var closeLightbox = function closeLightbox (callback) {
+    var close = function close (callback) {
       if (!isOpen()) {
         throw new Error('Tobi is already closed.')
       }
@@ -629,6 +629,9 @@
       supportedElements[type].onCleanup(container)
 
       lightbox.setAttribute('aria-hidden', 'true')
+
+      // Reset current index
+      currentIndex = 0
 
       if (callback) {
         callback.call(this)
@@ -838,7 +841,7 @@
       } else if (movementX < 0 && movementXDistance > config.threshold && currentIndex !== elementsLength - 1) {
         next()
       } else if (movementY < 0 && movementYDistance > config.threshold && config.swipeClose) {
-        closeLightbox()
+        close()
       } else {
         updateOffset()
       }
@@ -854,7 +857,7 @@
       } else if (event.target === nextButton) {
         next()
       } else if (event.target === closeButton || event.target.className === 'tobi__slider__slide') {
-        closeLightbox()
+        close()
       }
 
       event.stopPropagation()
@@ -883,7 +886,7 @@
       } else if (event.keyCode === 27) {
         // `ESC` Key: Close the lightbox
         event.preventDefault()
-        closeLightbox()
+        close()
       } else if (event.keyCode === 37) {
         // `PREV` Key: Navigate to the previous slide
         event.preventDefault()
@@ -1085,7 +1088,7 @@
     }
 
     /**
-     * Update all lightbox
+     * Update lightbox
      *
      * @param {string} dir - Current slide direction
      */
@@ -1122,18 +1125,25 @@
       return lightbox.getAttribute('aria-hidden') === 'false'
     }
 
+    /**
+     * Return current index
+     *
+     */
+    var currentSlide = function currentSlide () {
+      return currentIndex
+    }
+
     init(userOptions)
 
     return {
-      open: openLightbox,
+      open: open,
       prev: prev,
       next: next,
-      close: closeLightbox,
+      close: close,
       add: add,
       reset: reset,
       isOpen: isOpen,
-      currentIndex: currentIndex,
-      version: '1.7.3'
+      currentSlide: currentSlide
     }
   }
 

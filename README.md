@@ -218,11 +218,8 @@ Adds an new `element` (DOM element) dynamically, even if the lightbox is open ([
 **`isOpen()`**
 Checks if the lightbox is open.
 
-**`version`**
-Prints current version.
-
-**`currentIndex`**
-Prints current slide index.
+**`currentSlide()`**
+Returns current slide index.
 
 ## Browser support
 
