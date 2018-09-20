@@ -196,7 +196,7 @@ The following options are available:
 | scroll | bool | false | Hide scrollbars if lightbox is displayed |
 | draggable | bool | true | Use dragging and touch swiping |
 | threshold | number | 100 | Touch and mouse dragging threshold (in px) |
-| autoplayVideo | bool | false | The video will automatically start playing as soon as it can do so without stopping to finish loading the data
+| autoplayVideo | bool | false | Videos will automatically start playing as soon as they can do so without stopping to finish loading the data
 
 ## API
 

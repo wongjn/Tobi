@@ -72,9 +72,9 @@
         closeText: '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path d="M6.34314575 6.34314575L17.6568542 17.6568542M6.34314575 17.6568542L17.6568542 6.34314575"></path></svg>',
         closeLabel: 'Close',
         counter: true,
-        download: false,
-        downloadText: '',
-        downloadLabel: 'Download',
+        download: false, // TODO
+        downloadText: '', // TODO
+        downloadLabel: 'Download', // TODO
         keyboard: true,
         zoom: true,
         zoomText: '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4,20 L9.58788778,14.4121122"></path><path d="M14,16 C10.6862915,16 8,13.3137085 8,10 C8,6.6862915 10.6862915,4 14,4 C17.3137085,4 20,6.6862915 20,10 C20,13.3137085 17.3137085,16 14,16 Z"></path><path d="M16.6666667 10L11.3333333 10M14 7.33333333L14 12.6666667"></path></svg>',
@@ -83,6 +83,8 @@
         scroll: false,
         draggable: true,
         threshold: 100,
+        rtl: false, // TODO
+        loop: false, // TODO
         autoplayVideo: false
       }
 
