@@ -1,6 +1,6 @@
 # Tobi
 
-[![Version](https://img.shields.io/badge/version-1.7.2-0000ff.svg)](https://github.com/rqrauhvmra/Tobi/releases)
+[![Version](https://img.shields.io/badge/version-1.7.3-0000ff.svg)](https://github.com/rqrauhvmra/Tobi/releases)
 [![License](https://img.shields.io/badge/license-MIT-0000ff.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
 ![Dependecies](https://img.shields.io/badge/dependencies-none-0000ff.svg)
 
@@ -8,7 +8,7 @@ An accessible, simple and light-weight open source lightbox script with no depen
 
 [Play on CodePen](https://codepen.io/collection/nbqJVV)
 
-![.flex__*](https://rqrauhvmra.com/tobi/snapshot.png)
+![A picture of the lightbox](https://rqrauhvmra.com/tobi/snapshot.png)
 
 ## Table of contents
 
@@ -196,27 +196,30 @@ The following options are available:
 | scroll | bool | false | Hide scrollbars if lightbox is displayed |
 | draggable | bool | true | Use dragging and touch swiping |
 | threshold | number | 100 | Touch and mouse dragging threshold (in px) |
-| autoplayVideo | bool | false | The video will automatically start playing as soon as it can do so without stopping to finish loading the data
+| autoplayVideo | bool | false | Videos will automatically start playing as soon as they can do so without stopping to finish loading the data
 
 ## API
 
-```javascript
-var tobi = new Tobi({
-  // Options
-})
+**`open(index, callback)`**
+Opens the lightbox. Optional at specific `index` (number) and optional `callback` (function) as a second argument.
 
-tobi.open()   // Opens the lightbox
-tobi.open(2)  // Opens the lightbox on slide 3 (first is 0) or selects slide 3 if the lightbox is open
-tobi.next()   // Shows the next slide in the lightbox
-tobi.prev()   // Shows the previous slide in the lightbox
-tobi.close()  // Closes the lightbox
+**`next(callback)`**
+Shows the next slide in the lightbox. Optional `callback` (function).
 
-// Adds an element dynamically, even if the lightbox is open
-var newElement = document.querySelector('.new-image')
-tobi.add(newElement)
+**`prev(callback)`**
+Shows the previous slide in the lightbox. Optional `callback` (function).
 
-tobi.isOpen() // Checks if the lightbox is open
-```
+**`close(callback)`**
+Closes the lightbox. Optional `callback` (function).
+
+**`add(element, callback)`**
+Adds an new `element` (DOM element) dynamically, even if the lightbox is open ([example on CodePen](https://codepen.io/rqrauhvmra/pen/vzbXxQ)). Optional `callback` (function) as a second argument ([example on CodePen](https://codepen.io/rqrauhvmra/pen/qyEmXR)).
+
+**`isOpen()`**
+Checks if the lightbox is open.
+
+**`currentSlide()`**
+Returns current slide index.
 
 ## Browser support
 

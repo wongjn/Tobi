@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.7.2
+ * @version 1.7.3
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -55,7 +55,7 @@
     /**
      * Merge default options with user options
      *
-     * @param {Object} userOptions - User options
+     * @param {Object} userOptions - Optional user options
      * @returns {Object} - Custom options
      */
     var mergeOptions = function mergeOptions (userOptions) {
@@ -72,9 +72,9 @@
         closeText: '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path d="M6.34314575 6.34314575L17.6568542 17.6568542M6.34314575 17.6568542L17.6568542 6.34314575"></path></svg>',
         closeLabel: 'Close',
         counter: true,
-        download: false,
-        downloadText: '',
-        downloadLabel: 'Download',
+        download: false, // TODO
+        downloadText: '', // TODO
+        downloadLabel: 'Download', // TODO
         keyboard: true,
         zoom: true,
         zoomText: '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4,20 L9.58788778,14.4121122"></path><path d="M14,16 C10.6862915,16 8,13.3137085 8,10 C8,6.6862915 10.6862915,4 14,4 C17.3137085,4 20,6.6862915 20,10 C20,13.3137085 17.3137085,16 14,16 Z"></path><path d="M16.6666667 10L11.3333333 10M14 7.33333333L14 12.6666667"></path></svg>',
@@ -83,6 +83,8 @@
         scroll: false,
         draggable: true,
         threshold: 100,
+        rtl: false, // TODO
+        loop: false, // TODO
         autoplayVideo: false
       }
 
@@ -278,7 +280,7 @@
             target = document.querySelector(targetSelector)
 
           if (!target) {
-            return console.log('Ups, I can\'t find the target ' + targetSelector + '.')
+            throw new Error('Ups, I can\'t find the target ' + targetSelector + '.')
           }
 
           // Add content to container
@@ -296,15 +298,7 @@
           var video = container.querySelector('video')
 
           if (video) {
-            // TODO
-            /*
-            if (video.querySelector('[data-src]')) {
-              // Recover original src
-              setVideoSources(video, 'data-src', 'src')
-            }
-            */
-
-            if (video.hasAttribute('data-time')) {
+            if (video.hasAttribute('data-time') && video.readyState > 0) {
               // Continue where video was stopped
               video.currentTime = video.getAttribute('data-time')
             }
@@ -324,8 +318,11 @@
               // Stop if video is playing
               video.pause()
             }
+
             // Backup currentTime (needed for revisit)
-            video.setAttribute('data-time', video.currentTime)
+            if (video.readyState > 0) {
+              video.setAttribute('data-time', video.currentTime)
+            }
           }
         },
 
@@ -335,16 +332,10 @@
           if (video) {
             if (video.readyState > 0 && video.readyState < 3 && video.duration !== video.currentTime) {
               // Some data has been loaded but not the whole package.
-              // In order to save bandwidth, stop downloading
-              // as soon as possible.
-              // According to https://developer.mozilla.org/en-US/docs/Web/Apps/Fundamentals/Audio_and_video_delivery#Stopping_the_download_of_media
-              // this can be achieved by:
-              // 1. backup src
-              // 2. remove src
-              // 3. call load()
+              // In order to save bandwidth, stop downloading as soon as possible.
               var clone = video.cloneNode(true)
 
-              setVideoSources(video, 'src', 'data-src')
+              removeSources(video)
               video.load()
 
               video.parentNode.removeChild(video)
@@ -371,20 +362,22 @@
       var elements = document.querySelectorAll(config.selector)
 
       if (!elements) {
-        return console.log('Ups, I can\'t find the selector ' + config.selector + '.')
+        throw new Error('Ups, I can\'t find the selector ' + config.selector + '.')
       }
 
       // Execute a few things once per element
       Array.prototype.forEach.call(elements, function (element) {
-        initElement(element)
+        add(element)
       })
     }
 
     /**
-     * Init element
+     * Add element
      *
+     * @param {HTMLElement} element - Element to add
+     * @param {function} callback - Optional callback to call after add
      */
-    var initElement = function initElement (element) {
+    var add = function add (element, callback) {
       // Check if the lightbox already exists
       if (!lightbox) {
         // Create the lightbox
@@ -411,7 +404,7 @@
         element.addEventListener('click', function (event) {
           event.preventDefault()
 
-          openLightbox(gallery.indexOf(this))
+          open(gallery.indexOf(this))
         })
 
         // Create the slide
@@ -420,8 +413,12 @@
         if (isOpen()) {
           updateLightbox()
         }
+
+        if (callback) {
+          callback.call(this)
+        }
       } else {
-        console.log('Element already added to the lightbox.')
+        throw new Error('Ups, element already added to the lightbox.')
       }
     }
 
@@ -527,25 +524,26 @@
     /**
      * Open the lightbox
      *
-     * @param {number} index - Item index to load
+     * @param {number} index - Index to load
+     * @param {function} callback - Optional callback to call after open
      */
-    var openLightbox = function openLightbox (index) {
+    var open = function open (index, callback) {
       if (!isOpen() && !index) {
         index = 0
       }
 
       if (isOpen()) {
         if (!index) {
-          return console.log('Ups, Tobi is aleady open.')
+          throw new Error('Ups, Tobi is aleady open.')
         }
 
         if (index === currentIndex) {
-          return console.log('Ups, slide ' + index + ' is already selected.')
+          throw new Error('Ups, slide ' + index + ' is already selected.')
         }
       }
 
       if (index === -1 || index >= elementsLength) {
-        return console.log('Ups, I can\'t find slide ' + index + '.')
+        throw new Error('Ups, I can\'t find slide ' + index + '.')
       }
 
       if (!config.scroll) {
@@ -593,21 +591,26 @@
       // Makes lightbox appear, too
       lightbox.setAttribute('aria-hidden', 'false')
 
-      // Update components
+      // Update lightbox
       updateLightbox()
 
       // Preload late
       preload(currentIndex + 1)
       preload(currentIndex - 1)
+
+      if (callback) {
+        callback.call(this)
+      }
     }
 
     /**
      * Close the lightbox
      *
+     * @param {function} callback - Optional callback to call after close
      */
-    var closeLightbox = function closeLightbox () {
+    var close = function close (callback) {
       if (!isOpen()) {
-        return console.log('Tobi is already closed.')
+        throw new Error('Tobi is already closed.')
       }
 
       if (!config.scroll) {
@@ -628,11 +631,19 @@
       supportedElements[type].onCleanup(container)
 
       lightbox.setAttribute('aria-hidden', 'true')
+
+      // Reset current index
+      currentIndex = 0
+
+      if (callback) {
+        callback.call(this)
+      }
     }
 
     /**
      * Preload slide
      *
+     * @param {number} index - Index to preload
      */
     var preload = function preload (index) {
       if (sliderElements[index] === undefined) {
@@ -649,6 +660,7 @@
      * Load slide
      * Will be called when opening the lightbox or moving index
      *
+     * @param {number} index - Index to load
      */
     var load = function load (index) {
       if (sliderElements[index] === undefined) {
@@ -662,30 +674,40 @@
     }
 
     /**
-     * Navigate to the next slide
-     *
-     */
-    var next = function next () {
-      if (currentIndex < elementsLength - 1) {
-        leave(currentIndex)
-        load(++currentIndex)
-        updateLightbox('right')
-        cleanup(currentIndex - 1)
-        preload(currentIndex + 1)
-      }
-    }
-
-    /**
      * Navigate to the previous slide
      *
+     * @param {function} callback - Optional callback function
      */
-    var prev = function prev () {
+    var prev = function prev (callback) {
       if (currentIndex > 0) {
         leave(currentIndex)
         load(--currentIndex)
         updateLightbox('left')
         cleanup(currentIndex + 1)
         preload(currentIndex - 1)
+
+        if (callback) {
+          callback.call(this)
+        }
+      }
+    }
+
+    /**
+     * Navigate to the next slide
+     *
+     * @param {function} callback - Optional callback function
+     */
+    var next = function next (callback) {
+      if (currentIndex < elementsLength - 1) {
+        leave(currentIndex)
+        load(++currentIndex)
+        updateLightbox('right')
+        cleanup(currentIndex - 1)
+        preload(currentIndex + 1)
+
+        if (callback) {
+          callback.call(this)
+        }
       }
     }
 
@@ -693,6 +715,7 @@
      * Leave slide
      * Will be called before moving index
      *
+     * @param {number} index - Index to leave
      */
     var leave = function leave (index) {
       if (sliderElements[index] === undefined) {
@@ -709,6 +732,7 @@
      * Cleanup slide
      * Will be called after moving index
      *
+     * @param {number} index - Index to cleanup
      */
     var cleanup = function cleanup (index) {
       if (sliderElements[index] === undefined) {
@@ -743,8 +767,9 @@
     /**
      * Set the focus to the next element
      *
+     * @param {string} dir - Current slide direction
      */
-    var updateFocus = function updateFocus (direction) {
+    var updateFocus = function updateFocus (dir) {
       var focusableEls = null
 
       if (config.nav) {
@@ -768,17 +793,17 @@
           nextButton.disabled = true
         }
 
-        if (!direction && !nextButton.disabled) {
+        if (!dir && !nextButton.disabled) {
           nextButton.focus()
-        } else if (!direction && nextButton.disabled && !prevButton.disabled) {
+        } else if (!dir && nextButton.disabled && !prevButton.disabled) {
           prevButton.focus()
-        } else if (!nextButton.disabled && direction === 'right') {
+        } else if (!nextButton.disabled && dir === 'right') {
           nextButton.focus()
-        } else if (nextButton.disabled && direction === 'right' && !prevButton.disabled) {
+        } else if (nextButton.disabled && dir === 'right' && !prevButton.disabled) {
           prevButton.focus()
-        } else if (!prevButton.disabled && direction === 'left') {
+        } else if (!prevButton.disabled && dir === 'left') {
           prevButton.focus()
-        } else if (prevButton.disabled && direction === 'left' && !nextButton.disabled) {
+        } else if (prevButton.disabled && dir === 'left' && !nextButton.disabled) {
           nextButton.focus()
         }
       } else if (config.close) {
@@ -791,7 +816,7 @@
     }
 
     /**
-     * Clear drag after touchend
+     * Clear drag after touchend and mousup event
      *
      */
     var clearDrag = function clearDrag () {
@@ -804,7 +829,7 @@
     }
 
     /**
-     * Recalculate drag event
+     * Recalculate drag / swipe event
      *
      */
     var updateAfterDrag = function updateAfterDrag () {
@@ -818,7 +843,7 @@
       } else if (movementX < 0 && movementXDistance > config.threshold && currentIndex !== elementsLength - 1) {
         next()
       } else if (movementY < 0 && movementYDistance > config.threshold && config.swipeClose) {
-        closeLightbox()
+        close()
       } else {
         updateOffset()
       }
@@ -834,7 +859,7 @@
       } else if (event.target === nextButton) {
         next()
       } else if (event.target === closeButton || event.target.className === 'tobi__slider__slide') {
-        closeLightbox()
+        close()
       }
 
       event.stopPropagation()
@@ -863,7 +888,7 @@
       } else if (event.keyCode === 27) {
         // `ESC` Key: Close the lightbox
         event.preventDefault()
-        closeLightbox()
+        close()
       } else if (event.keyCode === 37) {
         // `PREV` Key: Navigate to the previous slide
         event.preventDefault()
@@ -881,7 +906,7 @@
      */
     var touchstartHandler = function touchstartHandler (event) {
       // Prevent dragging / swiping on textareas inputs, selects and videos
-      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1;
+      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1
 
       if (ignoreElements) {
         return
@@ -934,14 +959,14 @@
      */
     var mousedownHandler = function mousedownHandler (event) {
       // Prevent dragging / swiping on textareas inputs, selects and videos
-      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1;
+      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1
 
       if (ignoreElements) {
         return
       }
 
-      event.preventDefault();
-      event.stopPropagation();
+      event.preventDefault()
+      event.stopPropagation()
 
       pointerDown = true
       drag.startX = event.pageX
@@ -1050,54 +1075,37 @@
     }
 
     /**
-     * Replace attribute 'to' of element with 'from' and remove 'from'
+     * Remove all `src` attributes
      *
+     * @param {HTMLElement} element - Element to remove all `src` attributes
      */
-    var replaceAttribute = function replaceAttribute (element, from, to) {
-      element.setAttribute(to, element.getAttribute(from))
-      element.removeAttribute(from)
-    }
-
-    /**
-     * Replace attributes of all video <source> elements
-     *
-     */
-    var setVideoSources = function setVideoSources (video, from, to) {
-      var sources = video.querySelectorAll('[' + from + ']')
+    var removeSources = function setVideoSources (element) {
+      var sources = element.querySelectorAll('src')
 
       if (sources) {
         Array.prototype.forEach.call(sources, function (source) {
-          replaceAttribute(source, from, to)
+          source.setAttribute('src', '')
         })
-      } else {
-        replaceAttribute(video, from, to)
       }
     }
 
     /**
-     * Update all components
+     * Update lightbox
      *
-     * @param {string} direction - Direction to focus after call
+     * @param {string} dir - Current slide direction
      */
-    var updateLightbox = function updateLightbox (direction) {
+    var updateLightbox = function updateLightbox (dir) {
       updateOffset()
       updateCounter()
-      updateFocus(direction)
-    }
-
-    /**
-     * Add an element dynamically to the lightbox
-     *
-     */
-    var add = function add (element) {
-      initElement(element)
+      updateFocus(dir)
     }
 
     /**
      * Reset the lightbox
      *
+     * @param {function} callback - Optional callback to call after reset
      */
-    var reset = function reset () {
+    var reset = function reset (callback) {
       if (slider) {
         while (slider.firstChild) {
           slider.removeChild(slider.firstChild)
@@ -1105,6 +1113,10 @@
       }
 
       gallery.length = sliderElements.length = elementsLength = figcaptionId = x = 0
+
+      if (callback) {
+        callback.call(this)
+      }
     }
 
     /**
@@ -1115,17 +1127,25 @@
       return lightbox.getAttribute('aria-hidden') === 'false'
     }
 
+    /**
+     * Return current index
+     *
+     */
+    var currentSlide = function currentSlide () {
+      return currentIndex
+    }
+
     init(userOptions)
 
     return {
-      open: openLightbox,
+      open: open,
       prev: prev,
       next: next,
-      close: closeLightbox,
+      close: close,
       add: add,
       reset: reset,
       isOpen: isOpen,
-      version: '1.7.2'
+      currentSlide: currentSlide
     }
   }
 
