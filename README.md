@@ -1,6 +1,6 @@
 # Tobi
 
-[![Version](https://img.shields.io/badge/version-1.7.3-0000ff.svg)](https://github.com/rqrauhvmra/Tobi/releases)
+[![Version](https://img.shields.io/badge/version-1.7.4-0000ff.svg)](https://github.com/rqrauhvmra/Tobi/releases)
 [![License](https://img.shields.io/badge/license-MIT-0000ff.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
 ![Dependecies](https://img.shields.io/badge/dependencies-none-0000ff.svg)
 
@@ -187,6 +187,7 @@ The following options are available:
 | close | bool | true | Display close button. |
 | closeText | string | "inline svg" | Text or HTML for the close button. |
 | closeLabel | string | "Close" | ARIA label for screen readers. |
+| loadingIndicatorLabel | string | "Image loading" | ARIA label for screen readers. |
 | counter | bool | true | Display current image index |
 | keyboard | bool | true | Allow keyboard navigation. |
 | zoom | bool | true | Display zoom icon. |

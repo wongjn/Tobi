@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.7.3
+ * @version 1.7.4
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -71,6 +71,7 @@
         close: true,
         closeText: '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path d="M6.34314575 6.34314575L17.6568542 17.6568542M6.34314575 17.6568542L17.6568542 6.34314575"></path></svg>',
         closeLabel: 'Close',
+        loadingIndicatorLabel: 'Image loading',
         counter: true,
         download: false, // TODO
         downloadText: '', // TODO
@@ -121,7 +122,7 @@
             figcaption = document.createElement('figcaption'),
             image = document.createElement('img'),
             thumbnail = element.querySelector('img'),
-            loader = document.createElement('div')
+            loadingIndicator = document.createElement('div')
 
           image.style.opacity = '0'
 
@@ -158,11 +159,13 @@
           // Add figure to container
           container.appendChild(figure)
 
-          //  Create loader
-          loader.className = 'tobi-loader'
+          // Create loading indicator
+          loadingIndicator.className = 'tobi-loader'
+          loadingIndicator.setAttribute('role', 'progressbar')
+          loadingIndicator.setAttribute('aria-label', config.loadingIndicatorLabel)
 
-          // Add loader to container
-          container.appendChild(loader)
+          // Add loading indicator to container
+          container.appendChild(loadingIndicator)
 
           // Register type
           container.setAttribute('data-type', 'image')
@@ -181,10 +184,10 @@
           }
 
           var figcaption = container.querySelector('figcaption'),
-            loader = container.querySelector('.tobi-loader')
+            loadingIndicator = container.querySelector('.tobi-loader')
 
           image.onload = function () {
-            container.removeChild(loader)
+            container.removeChild(loadingIndicator)
             image.style.opacity = '1'
 
             if (figcaption) {
