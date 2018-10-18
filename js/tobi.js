@@ -43,6 +43,10 @@
       counter = null,
       currentIndex = 0,
       drag = {},
+      draggingX = false,
+      draggingY = false,
+      swipingX = false,
+      swipingY = false,
       pointerDown = false,
       lastFocus = null,
       firstFocusableEl = null,
@@ -936,7 +940,19 @@
         drag.endX = event.touches[0].pageX
         drag.endY = event.touches[0].pageY
 
-        slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
+        if (Math.abs(drag.startX - drag.endX) > 0 && !swipingY && config.swipeClose) {
+          // Horizontal swipe
+          slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
+
+          swipingX = true
+          swipingY = false
+        } else if (Math.abs(drag.startY - drag.endY) > 0 && !swipingX) {
+          // Vertical swipe
+          slider.style[transformProperty] = 'translate3d(' + (offsetTmp + 'px, -' + Math.round(drag.startY - drag.endY)) + 'px, 0)'
+
+          swipingX = false
+          swipingY = true
+        }
       }
     }
 
@@ -950,6 +966,9 @@
       pointerDown = false
 
       if (drag.endX) {
+        swipingX = false
+        swipingY = false
+
         updateAfterDrag()
       }
 
@@ -987,7 +1006,19 @@
         drag.endX = event.pageX
         drag.endY = event.pageY
 
-        slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
+        if (Math.abs(drag.startX - drag.endX) > 0 && !draggingY && config.swipeClose) {
+          // Horizontal drag
+          slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
+
+          draggingX = true
+          draggingY = false
+        } else if (Math.abs(drag.startY - drag.endY) > 0 && !draggingX) {
+          // Vertical drag
+          slider.style[transformProperty] = 'translate3d(' + (offsetTmp + 'px, -' + Math.round(drag.startY - drag.endY)) + 'px, 0)'
+
+          draggingX = false
+          draggingY = true
+        }
       }
     }
 
@@ -1001,6 +1032,9 @@
       pointerDown = false
 
       if (drag.endX) {
+        draggingX = false
+        draggingY = false
+
         updateAfterDrag()
       }
 
