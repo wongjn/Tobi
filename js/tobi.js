@@ -1028,20 +1028,6 @@
         draggingX = false
         draggingY = true
       }
-
-      if (Math.abs(drag.startX - drag.endX) > 0 && !draggingY && config.swipeClose) {
-        // Horizontal drag
-        slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
-
-        draggingX = true
-        draggingY = false
-      } else if (Math.abs(drag.startY - drag.endY) > 0 && !draggingX) {
-        // Vertical drag
-        slider.style[transformProperty] = 'translate3d(' + (offsetTmp + 'px, -' + Math.round(drag.startY - drag.endY)) + 'px, 0)'
-
-        draggingX = false
-        draggingY = true
-      }
     }
 
     /**
