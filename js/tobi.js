@@ -45,8 +45,6 @@
       drag = {},
       draggingX = false,
       draggingY = false,
-      swipingX = false,
-      swipingY = false,
       pointerDown = false,
       lastFocus = null,
       firstFocusableEl = null,
@@ -559,7 +557,7 @@
       }
 
       // Hide buttons if necessary
-      if (!config.nav || elementsLength === 1 || (config.nav === 'auto' && 'ontouchstart' in window)) {
+      if (!config.nav || elementsLength === 1 || (config.nav === 'auto' && isTouchDevice())) {
         prevButton.setAttribute('aria-hidden', 'true')
         nextButton.setAttribute('aria-hidden', 'true')
       } else {
@@ -912,10 +910,7 @@
      *
      */
     var touchstartHandler = function touchstartHandler (event) {
-      // Prevent dragging / swiping on textareas inputs, selects and videos
-      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1
-
-      if (ignoreElements) {
+      if (isIgnoreElement(event.target)) {
         return
       }
 
@@ -940,19 +935,7 @@
         drag.endX = event.touches[0].pageX
         drag.endY = event.touches[0].pageY
 
-        if (Math.abs(drag.startX - drag.endX) > 0 && !swipingY && config.swipeClose) {
-          // Horizontal swipe
-          slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
-
-          swipingX = true
-          swipingY = false
-        } else if (Math.abs(drag.startY - drag.endY) > 0 && !swipingX) {
-          // Vertical swipe
-          slider.style[transformProperty] = 'translate3d(' + (offsetTmp + 'px, -' + Math.round(drag.startY - drag.endY)) + 'px, 0)'
-
-          swipingX = false
-          swipingY = true
-        }
+        doSwipe()
       }
     }
 
@@ -966,8 +949,8 @@
       pointerDown = false
 
       if (drag.endX) {
-        swipingX = false
-        swipingY = false
+        draggingX = false
+        draggingY = false
 
         updateAfterDrag()
       }
@@ -980,10 +963,8 @@
      *
      */
     var mousedownHandler = function mousedownHandler (event) {
-      // Prevent dragging / swiping on textareas inputs, selects and videos
-      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1
-
-      if (ignoreElements) {
+      // Prevent dragging / swiping on textareas inputs, selects and videos 
+      if (isIgnoreElement(event.target)) {
         return
       }
 
@@ -1006,19 +987,7 @@
         drag.endX = event.pageX
         drag.endY = event.pageY
 
-        if (Math.abs(drag.startX - drag.endX) > 0 && !draggingY && config.swipeClose) {
-          // Horizontal drag
-          slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
-
-          draggingX = true
-          draggingY = false
-        } else if (Math.abs(drag.startY - drag.endY) > 0 && !draggingX) {
-          // Vertical drag
-          slider.style[transformProperty] = 'translate3d(' + (offsetTmp + 'px, -' + Math.round(drag.startY - drag.endY)) + 'px, 0)'
-
-          draggingX = false
-          draggingY = true
-        }
+        doSwipe()
       }
     }
 
@@ -1042,6 +1011,26 @@
     }
 
     /**
+     * Decide whether to do horizontal of vertical swipe
+     *
+     */
+    var doSwipe = function doSwipe () {
+      if (Math.abs(drag.startX - drag.endX) > 0 && !draggingY && config.swipeClose) {
+        // Horizontal swipe
+        slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
+
+        draggingX = true
+        draggingY = false
+      } else if (Math.abs(drag.startY - drag.endY) > 0 && !draggingX) {
+        // Vertical swipe
+        slider.style[transformProperty] = 'translate3d(' + (offsetTmp + 'px, -' + Math.round(drag.startY - drag.endY)) + 'px, 0)'
+
+        draggingX = false
+        draggingY = true
+      }
+    }
+
+    /**
      * Bind events
      *
      */
@@ -1060,10 +1049,12 @@
       closeButton.addEventListener('click', clickHandler)
 
       if (config.draggable) {
-        // Touch events
-        lightbox.addEventListener('touchstart', touchstartHandler)
-        lightbox.addEventListener('touchmove', touchmoveHandler)
-        lightbox.addEventListener('touchend', touchendHandler)
+        if (isTouchDevice()) {
+          // Touch events
+          lightbox.addEventListener('touchstart', touchstartHandler)
+          lightbox.addEventListener('touchmove', touchmoveHandler)
+          lightbox.addEventListener('touchend', touchendHandler)
+        }
 
         // Mouse events
         lightbox.addEventListener('mousedown', mousedownHandler)
@@ -1091,6 +1082,12 @@
       closeButton.removeEventListener('click', clickHandler)
 
       if (config.draggable) {
+        if (isTouchDevice()) {
+          // Touch events
+          lightbox.addEventListener('touchstart', touchstartHandler)
+          lightbox.addEventListener('touchmove', touchmoveHandler)
+          lightbox.addEventListener('touchend', touchendHandler)
+        }
         // Touch events
         lightbox.removeEventListener('touchstart', touchstartHandler)
         lightbox.removeEventListener('touchmove', touchmoveHandler)
@@ -1101,6 +1098,14 @@
         lightbox.removeEventListener('mouseup', mouseupHandler)
         lightbox.removeEventListener('mousemove', mousemoveHandler)
       }
+    }
+
+    /**
+     * Checks whether element's nodeName is part of array
+     *
+     */
+    var isIgnoreElement = function isIgnoreElement(element) {
+      return ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(element.nodeName) !== -1
     }
 
     /**
@@ -1162,6 +1167,14 @@
      */
     var isOpen = function isOpen () {
       return lightbox.getAttribute('aria-hidden') === 'false'
+    }
+
+    /**
+     * Detect whether device is touch capable
+     *
+     */
+    var isTouchDevice = function isTouchDevice () {
+      return 'ontouchstart' in window
     }
 
     /**
