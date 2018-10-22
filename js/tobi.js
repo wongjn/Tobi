@@ -332,19 +332,16 @@
         },
 
         init: function (el, container) {
-          var playerContainer = document.createElement('div')
+          var iframePlaceholder = document.createElement('div')
 
-          // Add playerContainer to container
-          container.appendChild(playerContainer)
+          // Add iframePlaceholder to container
+          container.appendChild(iframePlaceholder)
 
-          player[elementsLength] = new window.YT.Player(playerContainer, {
-            //wmode: 'transparent',
-            //host: 'https://www.youtube-nocookie.com',
+          player[elementsLength] = new window.YT.Player(iframePlaceholder, {
             height: el.getAttribute('data-height') || '360',
             width: el.getAttribute('data-width') || '640',
             videoId: el.getAttribute('data-id'),
             playerVars: {
-              //'wmode': 'transparent',
               'showinfo': 0,
               'controls': 1
             }
@@ -366,7 +363,7 @@
 
         onLeave: function (container) {
           if (config.autoplayVideo) {
-            player[currentIndex + 1].stopVideo()
+            player[currentIndex + 1].pauseVideo()
           }
         },
 
