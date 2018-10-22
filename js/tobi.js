@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.7.4
+ * @version 1.8.0
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -342,8 +342,9 @@
             width: el.getAttribute('data-width') || '640',
             videoId: el.getAttribute('data-id'),
             playerVars: {
-              'showinfo': 0,
-              'controls': 1
+              'showinfo': el.getAttribute('data-showinfo') || 1,
+              'controls': el.getAttribute('data-controls') || 1,
+              'rel': 0
             }
           })
 
