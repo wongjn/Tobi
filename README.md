@@ -180,6 +180,17 @@ or a button with the class name `lightbox` and a `data-id` attribute with the Yo
 
 In any case, the attribute `data-type` with the value `youtube` must be added.
 
+#### Optional attributes
+
+**`data-controls`**
+Indicates whether the video player controls are displayed: `0` do not display and `1` display controls in the player.
+
+**`data-height`**
+specify the height of the player.
+
+**`data-width`**
+specify the with of the player.
+
 ## Options
 
 You can pass an object with custom options as an argument.

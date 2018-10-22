@@ -343,7 +343,6 @@
             width: el.getAttribute('data-width') || '640',
             videoId: el.getAttribute('data-id'),
             playerVars: {
-              'showinfo': el.getAttribute('data-showinfo') || 1,
               'controls': el.getAttribute('data-controls') || 1,
               'rel': 0
             }
