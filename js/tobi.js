@@ -338,6 +338,7 @@
           container.appendChild(iframePlaceholder)
 
           player[elementsLength] = new window.YT.Player(iframePlaceholder, {
+            host: 'https://www.youtube-nocookie.com',
             height: el.getAttribute('data-height') || '360',
             width: el.getAttribute('data-width') || '640',
             videoId: el.getAttribute('data-id'),
