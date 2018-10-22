@@ -52,6 +52,7 @@
       offset = null,
       offsetTmp = null,
       resizeTicking = false,
+      player = [],
       x = 0
 
     /**
@@ -115,15 +116,15 @@
      */
     var supportedElements = {
       image: {
-        checkSupport: function (element) {
-          return !element.hasAttribute('data-type') && element.href.match(/\.(png|jpe?g|tiff|tif|gif|bmp|webp|svg|ico)$/)
+        checkSupport: function (el) {
+          return !el.hasAttribute('data-type') && el.href.match(/\.(png|jpe?g|tiff|tif|gif|bmp|webp|svg|ico)$/)
         },
 
-        init: function (element, container) {
+        init: function (el, container) {
           var figure = document.createElement('figure'),
             figcaption = document.createElement('figcaption'),
             image = document.createElement('img'),
-            thumbnail = element.querySelector('img'),
+            thumbnail = el.querySelector('img'),
             loadingIndicator = document.createElement('div')
 
           image.style.opacity = '0'
@@ -133,7 +134,7 @@
           }
 
           image.setAttribute('src', '')
-          image.setAttribute('data-src', element.href)
+          image.setAttribute('data-src', el.href)
 
           // Add image to figure
           figure.appendChild(image)
@@ -142,8 +143,8 @@
           if (config.captions) {
             figcaption.style.opacity = '0'
 
-            if (config.captionsSelector === 'self' && element.getAttribute(config.captionAttribute)) {
-              figcaption.textContent = element.getAttribute(config.captionAttribute)
+            if (config.captionsSelector === 'self' && el.getAttribute(config.captionAttribute)) {
+              figcaption.textContent = el.getAttribute(config.captionAttribute)
             } else if (config.captionsSelector === 'img' && thumbnail && thumbnail.getAttribute(config.captionAttribute)) {
               figcaption.textContent = thumbnail.getAttribute(config.captionAttribute)
             }
@@ -210,78 +211,13 @@
         }
       },
 
-      youtube: {
-        checkSupport: function (element) {
-          return checkType(element, 'youtube')
-        },
-
-        init: function (element, container) {
-          // TODO
-        },
-
-        onPreload: function (container) {
-          // Nothing
-        },
-
-        onLoad: function (container) {
-          // TODO
-        },
-
-        onLeave: function (container) {
-          // TODO
-        },
-
-        onCleanup: function (container) {
-          // Nothing
-        }
-      },
-
-      iframe: {
-        checkSupport: function (element) {
-          return checkType(element, 'iframe')
-        },
-
-        init: function (element, container) {
-          var iframe = document.createElement('iframe'),
-            href = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target')
-
-          iframe.setAttribute('frameborder', '0')
-          iframe.setAttribute('src', '')
-          iframe.setAttribute('data-src', href)
-
-          // Add iframe to container
-          container.appendChild(iframe)
-
-          // Register type
-          container.setAttribute('data-type', 'iframe')
-        },
-
-        onPreload: function (container) {
-          // Nothing
-        },
-
-        onLoad: function (container) {
-          var iframe = container.querySelector('iframe')
-
-          iframe.setAttribute('src', iframe.getAttribute('data-src'))
-        },
-
-        onLeave: function (container) {
-          // Nothing
-        },
-
-        onCleanup: function (container) {
-          // Nothing
-        }
-      },
-
       html: {
-        checkSupport: function (element) {
-          return checkType(element, 'html')
+        checkSupport: function (el) {
+          return checkType(el, 'html')
         },
 
-        init: function (element, container) {
-          var targetSelector = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target'),
+        init: function (el, container) {
+          var targetSelector = el.hasAttribute('href') ? el.getAttribute('href') : el.getAttribute('data-target'),
             target = document.querySelector(targetSelector)
 
           if (!target) {
@@ -349,6 +285,94 @@
             }
           }
         }
+      },
+
+      iframe: {
+        checkSupport: function (el) {
+          return checkType(el, 'iframe')
+        },
+
+        init: function (el, container) {
+          var iframe = document.createElement('iframe'),
+            href = el.hasAttribute('href') ? el.getAttribute('href') : el.getAttribute('data-target')
+
+          iframe.setAttribute('frameborder', '0')
+          iframe.setAttribute('src', '')
+          iframe.setAttribute('data-src', href)
+
+          // Add iframe to container
+          container.appendChild(iframe)
+
+          // Register type
+          container.setAttribute('data-type', 'iframe')
+        },
+
+        onPreload: function (container) {
+          // Nothing
+        },
+
+        onLoad: function (container) {
+          var iframe = container.querySelector('iframe')
+
+          iframe.setAttribute('src', iframe.getAttribute('data-src'))
+        },
+
+        onLeave: function (container) {
+          // Nothing
+        },
+
+        onCleanup: function (container) {
+          // Nothing
+        }
+      },
+
+      youtube: {
+        checkSupport: function (el) {
+          return checkType(el, 'youtube')
+        },
+
+        init: function (el, container) {
+          var playerContainer = document.createElement('div')
+
+          // Add playerContainer to container
+          container.appendChild(playerContainer)
+
+          player[elementsLength] = new window.YT.Player(playerContainer, {
+            //wmode: 'transparent',
+            //host: 'https://www.youtube-nocookie.com',
+            height: el.getAttribute('data-height') || '360',
+            width: el.getAttribute('data-width') || '640',
+            videoId: el.getAttribute('data-id'),
+            playerVars: {
+              //'wmode': 'transparent',
+              'showinfo': 0,
+              'controls': 1
+            }
+          })
+
+          // Register type
+          container.setAttribute('data-type', 'youtube')
+        },
+
+        onPreload: function (container) {
+          // Nothing
+        },
+
+        onLoad: function (container) {
+          if (config.autoplayVideo) {
+            player[currentIndex + 1].playVideo()
+          }
+        },
+
+        onLeave: function (container) {
+          if (config.autoplayVideo) {
+            player[currentIndex + 1].stopVideo()
+          }
+        },
+
+        onCleanup: function (container) {
+          // Nothing
+        }
       }
     }
 
@@ -364,25 +388,41 @@
       transformProperty = transformSupport()
 
       // Get a list of all elements within the document
-      var elements = document.querySelectorAll(config.selector)
+      var els = document.querySelectorAll(config.selector)
 
-      if (!elements) {
+      if (!els) {
         throw new Error('Ups, I can\'t find the selector ' + config.selector + '.')
       }
 
-      // Execute a few things once per element
-      Array.prototype.forEach.call(elements, function (element) {
-        add(element)
-      })
+      var allScriptsLoaded = function allScriptsLoaded () {
+        // Execute a few things once per element
+        Array.prototype.forEach.call(els, function (el) {
+          add(el)
+        })
+      }
+
+      if (document.querySelector('[data-type="youtube"]')) {
+        var tag = document.createElement('script')
+
+        tag.src = 'https://www.youtube.com/iframe_api'
+        var firstScriptTag = document.getElementsByTagName('script')[0]
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
+
+        window.onYouTubePlayerAPIReady = function () {
+          allScriptsLoaded()
+        }
+      } else {
+        allScriptsLoaded()
+      }
     }
 
     /**
      * Add element
      *
-     * @param {HTMLElement} element - Element to add
+     * @param {HTMLElement} el - Element to add
      * @param {function} callback - Optional callback to call after add
      */
-    var add = function add (element, callback) {
+    var add = function add (el, callback) {
       // Check if the lightbox already exists
       if (!lightbox) {
         // Create the lightbox
@@ -390,30 +430,30 @@
       }
 
       // Check if element already exists
-      if (gallery.indexOf(element) === -1) {
-        gallery.push(element)
+      if (gallery.indexOf(el) === -1) {
+        gallery.push(el)
         elementsLength++
 
         // Set zoom icon if necessary
-        if (config.zoom && element.querySelector('img')) {
+        if (config.zoom && el.querySelector('img')) {
           var tobiZoom = document.createElement('div')
 
           tobiZoom.className = 'tobi-zoom__icon'
           tobiZoom.innerHTML = config.zoomText
 
-          element.classList.add('tobi-zoom')
-          element.appendChild(tobiZoom)
+          el.classList.add('tobi-zoom')
+          el.appendChild(tobiZoom)
         }
 
         // Bind click event handler
-        element.addEventListener('click', function (event) {
+        el.addEventListener('click', function (event) {
           event.preventDefault()
 
           open(gallery.indexOf(this))
         })
 
         // Create the slide
-        createLightboxSlide(element)
+        createLightboxSlide(el)
 
         if (isOpen()) {
           updateLightbox()
@@ -490,11 +530,11 @@
      * Create a lightbox slide
      *
      */
-    var createLightboxSlide = function createLightboxSlide (element) {
+    var createLightboxSlide = function createLightboxSlide (el) {
       // Detect type
       for (var index in supportedElements) {
         if (supportedElements.hasOwnProperty(index)) {
-          if (supportedElements[index].checkSupport(element)) {
+          if (supportedElements[index].checkSupport(el)) {
             // Create slide elements
             var sliderElement = document.createElement('div'),
               sliderElementContent = document.createElement('div')
@@ -509,7 +549,7 @@
             }
 
             // Create type elements
-            supportedElements[index].init(element, sliderElementContent)
+            supportedElements[index].init(el, sliderElementContent)
 
             // Add slide content container to slider element
             sliderElement.appendChild(sliderElementContent)
@@ -910,6 +950,7 @@
      *
      */
     var touchstartHandler = function touchstartHandler (event) {
+      // Prevent dragging / swiping on textareas inputs, selects and videos
       if (isIgnoreElement(event.target)) {
         return
       }
@@ -963,7 +1004,7 @@
      *
      */
     var mousedownHandler = function mousedownHandler (event) {
-      // Prevent dragging / swiping on textareas inputs, selects and videos 
+      // Prevent dragging / swiping on textareas inputs, selects and videos
       if (isIgnoreElement(event.target)) {
         return
       }
@@ -1101,28 +1142,20 @@
     }
 
     /**
-     * Checks whether element's nodeName is part of array
-     *
-     */
-    var isIgnoreElement = function isIgnoreElement(element) {
-      return ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(element.nodeName) !== -1
-    }
-
-    /**
      * Checks whether element has requested data-type value
      *
      */
-    var checkType = function checkType (element, type) {
-      return element.getAttribute('data-type') === type
+    var checkType = function checkType (el, type) {
+      return el.getAttribute('data-type') === type
     }
 
     /**
      * Remove all `src` attributes
      *
-     * @param {HTMLElement} element - Element to remove all `src` attributes
+     * @param {HTMLElement} el - Element to remove all `src` attributes
      */
-    var removeSources = function setVideoSources (element) {
-      var sources = element.querySelectorAll('src')
+    var removeSources = function setVideoSources (el) {
+      var sources = el.querySelectorAll('src')
 
       if (sources) {
         Array.prototype.forEach.call(sources, function (source) {
@@ -1175,6 +1208,14 @@
      */
     var isTouchDevice = function isTouchDevice () {
       return 'ontouchstart' in window
+    }
+
+    /**
+     * Checks whether element's nodeName is part of array
+     *
+     */
+    var isIgnoreElement = function isIgnoreElement (el) {
+      return ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(el.nodeName) !== -1
     }
 
     /**

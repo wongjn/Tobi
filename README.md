@@ -21,6 +21,7 @@ An accessible, simple and light-weight open source lightbox script with no depen
   - [Image](#image)
   - [Inline HTML](#inline-html)
   - [Iframe](#iframe)
+  - [YouTube](#youtube)
 - [Options](#options)
 - [API](#api)
 - [Browser support](#browser-support)
@@ -159,7 +160,25 @@ or a button with the class name `lightbox` and a `data-target` attribute:
 </button>
 ```
 
-In any case, the attribute `data-type` with the value `iframe` must be added. The iframe dimensions can be controlled by CSS.
+### YouTube
+
+For an YouTube video, create a link with the class name `lightbox` and a `data-id` attribute with the YouTube video ID:
+
+```html
+<a href="#" data-type="youtube" data-id="KU2sSZ_90PY" class="lightbox">
+  Open YouTube video
+</a>
+```
+
+or a button with the class name `lightbox` and a `data-id` attribute with the YouTube video ID:
+
+```html
+<button type="button" data-type="youtube" data-id="KU2sSZ_90PY" class="lightbox">
+  Open YouTube video
+</button>
+```
+
+In any case, the attribute `data-type` with the value `youtube` must be added.
 
 ## Options
 
