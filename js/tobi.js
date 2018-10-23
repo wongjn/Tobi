@@ -844,14 +844,6 @@
     }
 
     /**
-     * Checks whether element has requested data-type value
-     *
-     */
-    var checkType = function checkType (element, type) {
-      return element.getAttribute('data-type') === type
-    }
-
-    /**
      * Add an element dynamically to the lightbox
      *
      */
