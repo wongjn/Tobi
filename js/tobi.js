@@ -217,6 +217,11 @@
       })
     }
 
+    var onItemClick = function (event) {
+      event.preventDefault()
+      openLightbox(gallery.indexOf(this))
+    }
+
     /**
      * Init element
      *
@@ -244,11 +249,7 @@
         }
 
         // Bind click event handler
-        element.addEventListener('click', function (event) {
-          event.preventDefault()
-
-          openLightbox(gallery.indexOf(this))
-        })
+        element.addEventListener('click', onItemClick);
 
         // Create the slide
         createLightboxSlide(element)
@@ -264,6 +265,16 @@
         }
       } else {
         return console.log('Element already added to the lightbox.')
+      }
+    }
+
+    var onResize = function onResize() {
+      if (!resizeTicking) {
+        resizeTicking = true
+        browserWindow.requestAnimationFrame(function () {
+          updateOffset()
+          resizeTicking = false
+        })
       }
     }
 
@@ -317,16 +328,7 @@
       counter.classList.add('tobi__counter')
       lightbox.appendChild(counter)
 
-      // Resize event using requestAnimationFrame
-      browserWindow.addEventListener('resize', function () {
-        if (!resizeTicking) {
-          resizeTicking = true
-          browserWindow.requestAnimationFrame(function () {
-            updateOffset()
-            resizeTicking = false
-          })
-        }
-      })
+      browserWindow.addEventListener('resize', onResize);
 
       document.body.appendChild(lightbox)
     }
@@ -852,11 +854,16 @@
     }
 
     /**
-     * Reset the lightbox
-     *
+     * Destroy the lightbox.
      */
-    var remove = function remove () {
+    var remove = function remove() {
       lightbox.parentElement.removeChild(lightbox);
+
+      config.items.forEach(function (element) {
+        element.removeEventListener('click', onItemClick);
+      });
+
+      browserWindow.removeEventListener('resize', onResize);
     }
 
     /**
@@ -877,7 +884,6 @@
       add: add,
       remove: remove,
       isOpen: isOpen,
-      version: '1.7.1'
     }
   }
 
