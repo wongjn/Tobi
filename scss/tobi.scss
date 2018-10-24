@@ -99,6 +99,10 @@ $slideMaxWidth: 85vw;
   top: 0;
   transition: transform .3s cubic-bezier(.19, 1, .22, 1);
   will-change: transform;
+
+  @media screen and (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }
 
 /* Slide */
@@ -200,6 +204,10 @@ $slideMaxWidth: 85vw;
   transition: opacity .5s cubic-bezier(.19, 1, .22, 1);
   will-change: opacity;
 
+  @media screen and (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
 
   & svg {
     pointer-events: none;
@@ -216,6 +224,10 @@ $slideMaxWidth: 85vw;
   &:hover {
     opacity: 1;
     transition: opacity .5s cubic-bezier(.19, 1, .22, 1);
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
   }
 
   &.tobi__prev,
@@ -284,7 +296,6 @@ $slideMaxWidth: 85vw;
   position: absolute;
   top: 50%;
   width: 5em;
-  will-change: transform;
 
 
   &::before {

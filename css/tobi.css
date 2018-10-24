@@ -92,6 +92,13 @@
   will-change: transform;
 }
 
+@media screen and (prefers-reduced-motion: reduce) {
+  .tobi__slider {
+    -webkit-transition: none;
+    transition: none;
+  }
+}
+
 /* Slide */
 .tobi__slider__slide {
   -webkit-box-align: center;
@@ -207,6 +214,13 @@
   will-change: opacity;
 }
 
+@media screen and (prefers-reduced-motion: reduce) {
+  .tobi button {
+    -webkit-transition: none;
+    transition: none;
+  }
+}
+
 .tobi button svg {
   pointer-events: none;
   stroke: #fff;
@@ -221,6 +235,13 @@
   opacity: 1;
   -webkit-transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+  .tobi button:active, .tobi button:focus, .tobi button:hover {
+    -webkit-transition: none;
+    transition: none;
+  }
 }
 
 .tobi button.tobi__prev, .tobi button.tobi__next {
@@ -289,7 +310,6 @@
   position: absolute;
   top: 50%;
   width: 5em;
-  will-change: transform;
 }
 
 .tobi-loader::before {
