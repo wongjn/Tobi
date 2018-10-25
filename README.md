@@ -36,13 +36,15 @@ An accessible, simple and light-weight open source lightbox script with no depen
 - Accessible:
   - ARIA roles
   - Keyboard navigation:
-    - `Prev`/`Next` Keys: Navigate through items
+    - `Prev` / `Next` Keys: Navigate through items
     - `ESCAPE` Key: Close the lightbox
     - `TAB` Key: Focus elements within the lightbox, not outside
+  - User preference media features:
+    - 'prefers-reduced-motion' media query
   - When the lightbox opens, focus is set to the first focusable element in the lightbox
   - When the lightbox closes, focus returns to what was in focus before the lightbox opened
 - Touch & Mouse drag support:
-  - Drag/Swipe to navigate through items, close the lightbox with a vertical drag/swipe
+  - Drag / Swipe to navigate through items, close the lightbox with a vertical drag/swipe
 - light-weight
 - Responsive
 - Iframe support
@@ -182,14 +184,7 @@ In any case, the attribute `data-type` with the value `youtube` must be added.
 
 #### Optional attributes
 
-**`data-controls`**
-Indicates whether the video player controls are displayed: `0` do not display and `1` display controls in the player.
-
-**`data-height`**
-specify the height of the player.
-
-**`data-width`**
-specify the with of the player.
+`data-controls` indicates whether the video player controls are displayed: `0` do not display and `1` display controls in the player. You can also set the height with `data-height` and the width of the player with `data-width` but I recommend to use a external library for responsive iframes.
 
 ## Options
 
