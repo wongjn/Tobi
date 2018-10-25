@@ -52,6 +52,8 @@
       offset = null,
       offsetTmp = null,
       resizeTicking = false,
+      isYouTubeDependencieLoaded = false,
+      waitingEls = [],
       player = [],
       x = 0
 
@@ -385,6 +387,12 @@
       // Transform property supported by client
       transformProperty = transformSupport()
 
+      // Check if the lightbox already exists
+      if (!lightbox) {
+        // Create the lightbox
+        createLightbox()
+      }
+
       // Get a list of all elements within the document
       var els = document.querySelectorAll(config.selector)
 
@@ -392,25 +400,39 @@
         throw new Error('Ups, I can\'t find the selector ' + config.selector + '.')
       }
 
-      var allScriptsLoaded = function allScriptsLoaded () {
-        // Execute a few things once per element
-        Array.prototype.forEach.call(els, function (el) {
-          add(el)
-        })
-      }
+      // Execute a few things once per element
+      Array.prototype.forEach.call(els, function (el) {
+        checkDependencies(el)
+      })
+    }
 
-      if (document.querySelector('[data-type="youtube"]')) {
-        var tag = document.createElement('script')
+    /**
+     * Check dependencies
+     *
+     * @param {HTMLElement} el - Element to add
+     */
+    var checkDependencies = function checkDependencies (el) {
+      if (document.querySelector('[data-type="youtube"]') !== null && !isYouTubeDependencieLoaded) {
+        var tag = document.createElement('script'),
+          firstScriptTag = document.getElementsByTagName('script')[0]
 
         tag.src = 'https://www.youtube.com/iframe_api'
-        var firstScriptTag = document.getElementsByTagName('script')[0]
+
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
 
+        if (waitingEls.indexOf(el) === -1) {
+          waitingEls.push(el)
+        }
+
         window.onYouTubePlayerAPIReady = function () {
-          allScriptsLoaded()
+          Array.prototype.forEach.call(waitingEls, function (waitingEl) {
+            add(waitingEl)
+          })
+
+          isYouTubeDependencieLoaded = true
         }
       } else {
-        allScriptsLoaded()
+        add(el)
       }
     }
 
@@ -421,12 +443,6 @@
      * @param {function} callback - Optional callback to call after add
      */
     var add = function add (el, callback) {
-      // Check if the lightbox already exists
-      if (!lightbox) {
-        // Create the lightbox
-        createLightbox()
-      }
-
       // Check if element already exists
       if (gallery.indexOf(el) === -1) {
         gallery.push(el)
@@ -1231,7 +1247,7 @@
       prev: prev,
       next: next,
       close: close,
-      add: add,
+      add: checkDependencies,
       reset: reset,
       isOpen: isOpen,
       currentSlide: currentSlide

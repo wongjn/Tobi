@@ -152,6 +152,21 @@ $slideMaxWidth: 85vw;
     }
   }
 
+  &[data-type="html"] {
+    max-height: $slideMaxHeight;
+    max-width: $slideMaxWidth;
+    overflow: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    & video {
+      cursor: auto;
+      display: block !important;
+      max-height: $slideMaxHeight;
+      max-width: $slideMaxWidth;
+    }
+  }
+
   &[data-type="iframe"] {
     max-height: $slideMaxHeight;
     max-width: $slideMaxWidth;
@@ -166,18 +181,17 @@ $slideMaxWidth: 85vw;
     }
   }
 
-  &[data-type="html"] {
+  &[data-type="youtube"] {
     max-height: $slideMaxHeight;
     max-width: $slideMaxWidth;
     overflow: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
 
-    & video {
-      cursor: auto;
+    & iframe {
       display: block !important;
-      max-height: $slideMaxHeight;
-      max-width: $slideMaxWidth;
+      //height: $slideMaxHeight;
+      //width: $slideMaxWidth;
     }
   }
 }
