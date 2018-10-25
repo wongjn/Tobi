@@ -964,8 +964,8 @@
      *
      */
     var touchstartHandler = function touchstartHandler (event) {
-      // Prevent dragging / swiping on textareas inputs, selects and videos
-      if (isIgnoreElement(event.target)) {
+      // Prevent dragging / swiping on textareas inputs, selects and videos or outside the content
+      if (isIgnoreElement(event.target) || event.target.className === 'tobi__slider__slide') {
         return
       }
 
@@ -1018,8 +1018,8 @@
      *
      */
     var mousedownHandler = function mousedownHandler (event) {
-      // Prevent dragging / swiping on textareas inputs, selects and videos
-      if (isIgnoreElement(event.target)) {
+      // Prevent dragging / swiping on textareas inputs, selects and videos or outside the content
+      if (isIgnoreElement(event.target) || event.target.className === 'tobi__slider__slide') {
         return
       }
 
