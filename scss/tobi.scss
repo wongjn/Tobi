@@ -17,6 +17,8 @@ $loaderColor: #0437fd;
 $slideMaxHeight: 85vh;
 $slideMaxWidth: 85vw;
 
+$cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
+
 /* Link */
 .tobi-zoom {
   border: 0;
@@ -97,8 +99,15 @@ $slideMaxWidth: 85vw;
   position: absolute;
   right: 0;
   top: 0;
-  transition: transform .3s cubic-bezier(.19, 1, .22, 1);
+  transition: transform $cubicBezierTimingFunction;
   will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tobi__slider {
+    transition: none;
+    will-change: auto;
+  }
 }
 
 /* Slide */
@@ -197,9 +206,8 @@ $slideMaxWidth: 85vw;
   padding-right: .222em;
   padding-bottom: .222em;
   position: absolute;
-  transition: opacity .5s cubic-bezier(.19, 1, .22, 1);
+  transition: opacity $cubicBezierTimingFunction;
   will-change: opacity;
-
 
   & svg {
     pointer-events: none;
@@ -215,7 +223,6 @@ $slideMaxWidth: 85vw;
   &:focus,
   &:hover {
     opacity: 1;
-    transition: opacity .5s cubic-bezier(.19, 1, .22, 1);
   }
 
   &.tobi__prev,
@@ -303,13 +310,7 @@ $slideMaxWidth: 85vw;
 }
 
 @keyframes spin {
-
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
+  to {
     transform: rotate(360deg);
   }
-
 }
