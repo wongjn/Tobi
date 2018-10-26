@@ -1,10 +1,10 @@
-$zoomIconBackground: #0437fd;
+$zoomIconBackground: rgba(26, 42, 58, .94);
 $zoomIconColor: #fff;
 
-$lightboxBackground: rgba(0, 0, 0, .8);
+$lightboxBackground: rgba(26, 42, 58, .94);
 
-$figcaptionBackground: rgba(0, 0, 0, .8);
-$figcaptionColor: #fff;
+$figcaptionBackground: #fff;
+$figcaptionColor: #1a2a3a;
 
 $counterBackground: transparent;
 $counterColor: #fff;
@@ -12,10 +12,12 @@ $counterColor: #fff;
 $buttonBackground: transparent;
 $buttonColor: #fff;
 
-$loaderColor: #0437fd;
+$loaderColor: #fff;
 
 $slideMaxHeight: 85vh;
 $slideMaxWidth: 85vw;
+
+$slideContentBorder: .2222222222222222em solid #fff;
 
 /* Link */
 .tobi-zoom {
@@ -43,19 +45,19 @@ $slideMaxWidth: 85vw;
 
 
     & svg {
-      height: 1.111em;
-      padding-bottom: .222em;
-      padding-left: .222em;
-      padding-right: .222em;
-      padding-top: .222em;
+      color: $zoomIconColor;
+      fill: none;
+      height: 1.1111111111111112em;
+      padding-bottom: .2222222222222222em;
+      padding-left: .2222222222222222em;
+      padding-right: .2222222222222222em;
+      padding-top: .2222222222222222em;
       pointer-events: none;
-      width: 1.111em;
-      stroke: $zoomIconColor;
-      stroke-width: 1.8;
       stroke-linecap: square;
       stroke-linejoin: miter;
-      fill: none;
-      color: $zoomIconColor;
+      stroke-width: 2;
+      stroke: $zoomIconColor;
+      width: 1.1111111111111112em;
     }
   }
 }
@@ -73,11 +75,13 @@ $slideMaxWidth: 85vw;
   contain: strict;
   font-size: 18px;
   left: 0;
+  line-height: 1.5555555555555556;
   overflow: hidden;
   position: fixed;
   right: 0;
   top: 0;
   z-index: 1337;
+
 
   &[aria-hidden="true"] {
     display: none;
@@ -116,8 +120,12 @@ $slideMaxWidth: 85vw;
 
 /* Slide content */
 .tobi__slider__slide__content {
+  border: $slideContentBorder;
+
+
   &.draggable {
     cursor: grab;
+
 
     &:active {
       cursor: grabbing;
@@ -127,6 +135,7 @@ $slideMaxWidth: 85vw;
   > figure {
     margin: 0;
     position: relative;
+
 
     > img {
       display: block;
@@ -142,10 +151,10 @@ $slideMaxWidth: 85vw;
       color: $figcaptionColor;
       display: block;
       left: 0;
-      padding-bottom: .222em;
-      padding-left: .5em;
-      padding-right: .5em;
-      padding-top: .222em;
+      padding-bottom: 0;
+      padding-left: 0;
+      padding-right: 0;
+      padding-top: .2222222222222222em;
       position: absolute;
       white-space: pre-wrap;
       width: 100%;
@@ -158,6 +167,7 @@ $slideMaxWidth: 85vw;
     overflow: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
+
 
     & video {
       cursor: auto;
@@ -174,6 +184,7 @@ $slideMaxWidth: 85vw;
     overflow-y: auto;
     overscroll-behavior: contain;
 
+
     & iframe {
       display: block !important;
       height: $slideMaxHeight;
@@ -188,10 +199,9 @@ $slideMaxWidth: 85vw;
     overflow-y: auto;
     overscroll-behavior: contain;
 
+
     & iframe {
       display: block !important;
-      //height: $slideMaxHeight;
-      //width: $slideMaxWidth;
     }
   }
 }
@@ -201,7 +211,7 @@ $slideMaxWidth: 85vw;
   align-items: center;
   appearance: none;
   background-color: $buttonBackground;
-  border: .056em solid transparent;
+  border: .05555555555555555em solid transparent;
   color: $buttonColor;
   cursor: pointer;
   display: flex;
@@ -210,10 +220,10 @@ $slideMaxWidth: 85vw;
   line-height: 1;
   margin: 0;
   opacity: .5;
-  padding-top: .222em;
-  padding-left: .222em;
-  padding-right: .222em;
-  padding-bottom: .222em;
+  padding-top: .2222222222222222em;
+  padding-left: .2222222222222222em;
+  padding-right: .2222222222222222em;
+  padding-bottom: .2222222222222222em;
   position: absolute;
   transition: opacity .5s cubic-bezier(.19, 1, .22, 1);
   will-change: opacity;
@@ -226,7 +236,7 @@ $slideMaxWidth: 85vw;
   & svg {
     pointer-events: none;
     stroke: #fff;
-    stroke-width: .8;
+    stroke-width: 1;
     stroke-linecap: square;
     stroke-linejoin: miter;
     fill: none;
@@ -247,12 +257,12 @@ $slideMaxWidth: 85vw;
   &.tobi__prev,
   &.tobi__next {
     top: 50%;
-    top: calc(50% - (4em / 2));
+    top: calc(50% - (4.444444444444445em / 2));
 
 
     & svg {
-      height: 4em;
-      width: 4em;
+      height: 3.888888888888889em;
+      width: 3.888888888888889em;
     }
   }
 
@@ -265,13 +275,13 @@ $slideMaxWidth: 85vw;
   }
 
   &.tobi__close {
-    right: .5em;
+    right: .2777777777777778em;
     top: 1em;
 
 
     & svg {
-      height: 3em;
-      width: 3em;
+      height: 3.3333333333333335em;
+      width: 3.3333333333333335em;
     }
   }
 
@@ -287,12 +297,12 @@ $slideMaxWidth: 85vw;
   background-color: $counterBackground;
   color: $counterColor;
   display: flex;
-  font-size: 1.111em;
-  height: 2em;
+  font-size: 1.1111111111111112em;
   justify-content: center;
   left: 1em;
+  line-height: 1;
   position: absolute;
-  top: 1em;
+  top: 2.2222222222222223em;
 
 
   &[aria-hidden="true"] {
@@ -303,19 +313,17 @@ $slideMaxWidth: 85vw;
 /* Loader */
 .tobi-loader {
   display: inline-block;
-  height: 5em;
-  left: 50%;
-  margin-left: -2.5em;
-  margin-top: -2.5em;
+  height: 5.555555555555555em;
+  left: calc(50% - (5.555555555555555em / 2));
   position: absolute;
-  top: 50%;
-  width: 5em;
+  top: calc(50% - (5.555555555555555em / 2));
+  width: 5.555555555555555em;
 
 
   &::before {
     animation: spin 1s infinite;
     border-radius: 100%;
-    border: .222em solid #fff;
+    border: .2222222222222222em solid #949ba3;
     border-top-color: $loaderColor;
     bottom: 0;
     content: "";
