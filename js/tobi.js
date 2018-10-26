@@ -55,6 +55,7 @@
       isYouTubeDependencieLoaded = false,
       waitingEls = [],
       player = [],
+      playerId = 0,
       x = 0
 
     /**
@@ -339,7 +340,7 @@
           // Add iframePlaceholder to container
           container.appendChild(iframePlaceholder)
 
-          player[elementsLength] = new window.YT.Player(iframePlaceholder, {
+          player[playerId] = new window.YT.Player(iframePlaceholder, {
             host: 'https://www.youtube-nocookie.com',
             height: el.getAttribute('data-height') || '360',
             width: el.getAttribute('data-width') || '640',
@@ -350,8 +351,13 @@
             }
           })
 
+          // Set player ID
+          container.setAttribute('data-player', playerId)
+
           // Register type
           container.setAttribute('data-type', 'youtube')
+
+          playerId++
         },
 
         onPreload: function (container) {
@@ -360,18 +366,20 @@
 
         onLoad: function (container) {
           if (config.autoplayVideo) {
-            player[currentIndex + 1].playVideo()
+            player[container.getAttribute('data-player')].playVideo()
           }
         },
 
         onLeave: function (container) {
           if (config.autoplayVideo) {
-            player[currentIndex + 1].pauseVideo()
+            player[container.getAttribute('data-player')].pauseVideo()
           }
         },
 
         onCleanup: function (container) {
-          // Nothing
+          if (config.autoplayVideo) {
+            player[container.getAttribute('data-player')].pauseVideo()
+          }
         }
       }
     }
@@ -412,13 +420,17 @@
      * @param {HTMLElement} el - Element to add
      */
     var checkDependencies = function checkDependencies (el) {
+      // Check if there is a YouTube video and if the YouTube iframe-API is ready
       if (document.querySelector('[data-type="youtube"]') !== null && !isYouTubeDependencieLoaded) {
-        var tag = document.createElement('script'),
-          firstScriptTag = document.getElementsByTagName('script')[0]
+        if (document.getElementById('iframe_api') === null) {
+          var tag = document.createElement('script'),
+            firstScriptTag = document.getElementsByTagName('script')[0]
 
-        tag.src = 'https://www.youtube.com/iframe_api'
+          tag.id = 'iframe_api'
+          tag.src = 'https://www.youtube.com/iframe_api'
 
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
+          firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
+        }
 
         if (waitingEls.indexOf(el) === -1) {
           waitingEls.push(el)
