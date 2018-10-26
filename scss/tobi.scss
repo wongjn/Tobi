@@ -1,21 +1,5 @@
-$zoomIconBackground: rgba(26, 42, 58, .94);
-$zoomIconColor: #fff;
-
-$lightboxBackground: rgba(26, 42, 58, .94);
-
-$figcaptionBackground: rgba(255, 255, 255, .94);
-$figcaptionColor: #1a2a3a;
-
-$counterBackground: transparent;
-$counterColor: #fff;
-
-$buttonBackground: transparent;
-$buttonColor: #fff;
-
-$loaderColor: #fff;
-
-$slideMaxHeight: 85vh;
-$slideMaxWidth: 85vw;
+@import '_variables.scss';
+@import '_functions.scss';
 
 /* Link */
 .tobi-zoom {
@@ -45,17 +29,17 @@ $slideMaxWidth: 85vw;
     & svg {
       color: $zoomIconColor;
       fill: none;
-      height: 1.1111111111111112em;
-      padding-bottom: .2222222222222222em;
-      padding-left: .2222222222222222em;
-      padding-right: .2222222222222222em;
-      padding-top: .2222222222222222em;
+      height: em(20);
+      padding-bottom: em(4);
+      padding-left: em(4);
+      padding-right: em(4);
+      padding-top: em(4);
       pointer-events: none;
       stroke-linecap: square;
       stroke-linejoin: miter;
       stroke-width: 2;
       stroke: $zoomIconColor;
-      width: 1.1111111111111112em;
+      width: em(20);
     }
   }
 }
@@ -71,7 +55,7 @@ $slideMaxWidth: 85vw;
   bottom: 0;
   box-sizing: border-box;
   contain: strict;
-  font-size: 18px;
+  font-size: $baseFontSize;
   left: 0;
   line-height: 1.5555555555555556;
   overflow: hidden;
@@ -149,10 +133,10 @@ $slideMaxWidth: 85vw;
       color: $figcaptionColor;
       display: block;
       left: 0;
-      padding-bottom: .2222222222222222em;
-      padding-left: .4444444444444444em;
-      padding-right: .4444444444444444em;
-      padding-top: .2222222222222222em;
+      padding-bottom: em(4);
+      padding-left: em(8);
+      padding-right: em(8);
+      padding-top: em(4);
       position: absolute;
       white-space: pre-wrap;
       width: 100%;
@@ -209,7 +193,7 @@ $slideMaxWidth: 85vw;
   align-items: center;
   appearance: none;
   background-color: $buttonBackground;
-  border: .05555555555555555em solid transparent;
+  border: em(1) solid transparent;
   color: $buttonColor;
   cursor: pointer;
   display: flex;
@@ -218,10 +202,10 @@ $slideMaxWidth: 85vw;
   line-height: 1;
   margin: 0;
   opacity: .5;
-  padding-top: .2222222222222222em;
-  padding-left: .2222222222222222em;
-  padding-right: .2222222222222222em;
-  padding-bottom: .2222222222222222em;
+  padding-top: em(4);
+  padding-left: em(4);
+  padding-right: em(4);
+  padding-bottom: em(4);
   position: absolute;
   transition: opacity .5s cubic-bezier(.19, 1, .22, 1);
   will-change: opacity;
@@ -255,12 +239,12 @@ $slideMaxWidth: 85vw;
   &.tobi__prev,
   &.tobi__next {
     top: 50%;
-    top: calc(50% - (4.444444444444445em / 2));
+    top: calc(50% - #{em(40)});
 
 
     & svg {
-      height: 3.888888888888889em;
-      width: 3.888888888888889em;
+      height: em(70);
+      width: em(70);
     }
   }
 
@@ -273,13 +257,13 @@ $slideMaxWidth: 85vw;
   }
 
   &.tobi__close {
-    right: .2777777777777778em;
-    top: 1em;
+    right: em(5);
+    top: em(18);
 
 
     & svg {
-      height: 3.3333333333333335em;
-      width: 3.3333333333333335em;
+      height: em(60);
+      width: em(60);
     }
   }
 
@@ -295,12 +279,12 @@ $slideMaxWidth: 85vw;
   background-color: $counterBackground;
   color: $counterColor;
   display: flex;
-  font-size: 1.1111111111111112em;
+  font-size: em(20);
   justify-content: center;
-  left: 1em;
+  left: em(18);
   line-height: 1;
   position: absolute;
-  top: 2.2222222222222223em;
+  top: em(40);
 
 
   &[aria-hidden="true"] {
@@ -311,17 +295,17 @@ $slideMaxWidth: 85vw;
 /* Loader */
 .tobi-loader {
   display: inline-block;
-  height: 5.555555555555555em;
-  left: calc(50% - (5.555555555555555em / 2));
+  height: em(100);
+  left: calc(50% - #{em(50)});
   position: absolute;
-  top: calc(50% - (5.555555555555555em / 2));
-  width: 5.555555555555555em;
+  top: calc(50% - #{em(50)});
+  width: em(100);
 
 
   &::before {
     animation: spin 1s infinite;
     border-radius: 100%;
-    border: .2222222222222222em solid #949ba3;
+    border: em(4) solid #949ba3;
     border-top-color: $loaderColor;
     bottom: 0;
     content: "";
