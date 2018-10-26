@@ -92,7 +92,8 @@
         threshold: 100,
         rtl: false, // TODO
         loop: false, // TODO
-        autoplayVideo: false
+        autoplayVideo: false,
+        theme: 'dark'
       }
 
       if (userOptions) {
@@ -498,7 +499,7 @@
       lightbox = document.createElement('div')
       lightbox.setAttribute('role', 'dialog')
       lightbox.setAttribute('aria-hidden', 'true')
-      lightbox.className = 'tobi'
+      lightbox.className = 'tobi tobi--theme-' + config.theme
 
       // Create slider container
       slider = document.createElement('div')
