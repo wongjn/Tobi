@@ -16,7 +16,7 @@
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  background-color: #0437fd;
+  background-color: rgba(26, 42, 58, 0.94);
   bottom: 0;
   color: #fff;
   display: -webkit-box;
@@ -31,19 +31,19 @@
 }
 
 .tobi-zoom__icon svg {
-  height: 1.111em;
-  padding-bottom: .222em;
-  padding-left: .222em;
-  padding-right: .222em;
-  padding-top: .222em;
+  color: #fff;
+  fill: none;
+  height: 1.11111em;
+  padding-bottom: 0.22222em;
+  padding-left: 0.22222em;
+  padding-right: 0.22222em;
+  padding-top: 0.22222em;
   pointer-events: none;
-  width: 1.111em;
-  stroke: #fff;
-  stroke-width: 1.8;
   stroke-linecap: square;
   stroke-linejoin: miter;
-  fill: none;
-  color: #fff;
+  stroke-width: 2;
+  stroke: #fff;
+  width: 1.11111em;
 }
 
 /* Hide scrollbar if lightbox is displayed */
@@ -53,13 +53,14 @@
 
 /* Lightbox */
 .tobi {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(26, 42, 58, 0.94);
   bottom: 0;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   contain: strict;
-  font-size: 18px;
+  font-size: 18;
   left: 0;
+  line-height: 1.5555555555555556;
   overflow: hidden;
   position: fixed;
   right: 0;
@@ -90,6 +91,13 @@
   transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1), -webkit-transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   will-change: transform;
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+  .tobi__slider {
+    -webkit-transition: none;
+    transition: none;
+  }
 }
 
 /* Slide */
@@ -132,32 +140,18 @@
 }
 
 .tobi__slider__slide__content > figure > figcaption {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(255, 255, 255, 0.94);
   bottom: 0;
-  color: #fff;
+  color: #1a2a3a;
   display: block;
   left: 0;
-  padding-bottom: .222em;
-  padding-left: .5em;
-  padding-right: .5em;
-  padding-top: .222em;
+  padding-bottom: 0.22222em;
+  padding-left: 0.44444em;
+  padding-right: 0.44444em;
+  padding-top: 0.22222em;
   position: absolute;
   white-space: pre-wrap;
   width: 100%;
-}
-
-.tobi__slider__slide__content[data-type="iframe"] {
-  max-height: 85vh;
-  max-width: 85vw;
-  overflow: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
-.tobi__slider__slide__content[data-type="iframe"] iframe {
-  display: block !important;
-  height: 85vh;
-  width: 85vw;
 }
 
 .tobi__slider__slide__content[data-type="html"] {
@@ -175,6 +169,32 @@
   max-width: 85vw;
 }
 
+.tobi__slider__slide__content[data-type="iframe"] {
+  max-height: 85vh;
+  max-width: 85vw;
+  overflow: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.tobi__slider__slide__content[data-type="iframe"] iframe {
+  display: block !important;
+  height: 85vh;
+  width: 85vw;
+}
+
+.tobi__slider__slide__content[data-type="youtube"] {
+  max-height: 85vh;
+  max-width: 85vw;
+  overflow: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.tobi__slider__slide__content[data-type="youtube"] iframe {
+  display: block !important;
+}
+
 /* Buttons */
 .tobi button {
   -webkit-box-align: center;
@@ -184,7 +204,7 @@
      -moz-appearance: none;
           appearance: none;
   background-color: transparent;
-  border: .056em solid transparent;
+  border: 0.05556em solid transparent;
   color: #fff;
   cursor: pointer;
   display: -webkit-box;
@@ -197,20 +217,27 @@
   line-height: 1;
   margin: 0;
   opacity: .5;
-  padding-top: .222em;
-  padding-left: .222em;
-  padding-right: .222em;
-  padding-bottom: .222em;
+  padding-top: 0.22222em;
+  padding-left: 0.22222em;
+  padding-right: 0.22222em;
+  padding-bottom: 0.22222em;
   position: absolute;
   -webkit-transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   will-change: opacity;
 }
 
+@media screen and (prefers-reduced-motion: reduce) {
+  .tobi button {
+    -webkit-transition: none;
+    transition: none;
+  }
+}
+
 .tobi button svg {
   pointer-events: none;
   stroke: #fff;
-  stroke-width: .8;
+  stroke-width: 1;
   stroke-linecap: square;
   stroke-linejoin: miter;
   fill: none;
@@ -223,14 +250,21 @@
   transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
+@media screen and (prefers-reduced-motion: reduce) {
+  .tobi button:active, .tobi button:focus, .tobi button:hover {
+    -webkit-transition: none;
+    transition: none;
+  }
+}
+
 .tobi button.tobi__prev, .tobi button.tobi__next {
   top: 50%;
-  top: calc(50% - (4em / 2));
+  top: calc(50% - 2.22222em);
 }
 
 .tobi button.tobi__prev svg, .tobi button.tobi__next svg {
-  height: 4em;
-  width: 4em;
+  height: 3.88889em;
+  width: 3.88889em;
 }
 
 .tobi button.tobi__prev {
@@ -242,13 +276,13 @@
 }
 
 .tobi button.tobi__close {
-  right: .5em;
+  right: 0.27778em;
   top: 1em;
 }
 
 .tobi button.tobi__close svg {
-  height: 3em;
-  width: 3em;
+  height: 3.33333em;
+  width: 3.33333em;
 }
 
 .tobi button:disabled, .tobi button[aria-hidden="true"] {
@@ -265,14 +299,14 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  font-size: 1.111em;
-  height: 2em;
+  font-size: 1.11111em;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
   left: 1em;
+  line-height: 1;
   position: absolute;
-  top: 1em;
+  top: 2.22222em;
 }
 
 .tobi__counter[aria-hidden="true"] {
@@ -282,22 +316,19 @@
 /* Loader */
 .tobi-loader {
   display: inline-block;
-  height: 5em;
-  left: 50%;
-  margin-left: -2.5em;
-  margin-top: -2.5em;
+  height: 5.55556em;
+  left: calc(50% - 2.77778em);
   position: absolute;
-  top: 50%;
-  width: 5em;
-  will-change: transform;
+  top: calc(50% - 2.77778em);
+  width: 5.55556em;
 }
 
 .tobi-loader::before {
   -webkit-animation: spin 1s infinite;
           animation: spin 1s infinite;
   border-radius: 100%;
-  border: .222em solid #fff;
-  border-top-color: #0437fd;
+  border: 0.22222em solid #949ba3;
+  border-top-color: #fff;
   bottom: 0;
   content: "";
   left: 0;

@@ -1,21 +1,5 @@
-$zoomIconBackground: #0437fd;
-$zoomIconColor: #fff;
-
-$lightboxBackground: rgba(0, 0, 0, .8);
-
-$figcaptionBackground: rgba(0, 0, 0, .8);
-$figcaptionColor: #fff;
-
-$counterBackground: transparent;
-$counterColor: #fff;
-
-$buttonBackground: transparent;
-$buttonColor: #fff;
-
-$loaderColor: #0437fd;
-
-$slideMaxHeight: 85vh;
-$slideMaxWidth: 85vw;
+@import '_variables.scss';
+@import '_functions.scss';
 
 $cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
 
@@ -45,19 +29,19 @@ $cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
 
 
     & svg {
-      height: 1.111em;
-      padding-bottom: .222em;
-      padding-left: .222em;
-      padding-right: .222em;
-      padding-top: .222em;
+      color: $zoomIconColor;
+      fill: none;
+      height: em(20);
+      padding-bottom: em(4);
+      padding-left: em(4);
+      padding-right: em(4);
+      padding-top: em(4);
       pointer-events: none;
-      width: 1.111em;
-      stroke: $zoomIconColor;
-      stroke-width: 1.8;
       stroke-linecap: square;
       stroke-linejoin: miter;
-      fill: none;
-      color: $zoomIconColor;
+      stroke-width: 2;
+      stroke: $zoomIconColor;
+      width: em(20);
     }
   }
 }
@@ -73,13 +57,15 @@ $cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
   bottom: 0;
   box-sizing: border-box;
   contain: strict;
-  font-size: 18px;
+  font-size: $baseFontSize;
   left: 0;
+  line-height: 1.5555555555555556;
   overflow: hidden;
   position: fixed;
   right: 0;
   top: 0;
   z-index: 1337;
+
 
   &[aria-hidden="true"] {
     display: none;
@@ -101,6 +87,10 @@ $cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
   top: 0;
   transition: transform $cubicBezierTimingFunction;
   will-change: transform;
+
+  @media screen and (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -121,8 +111,12 @@ $cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
 
 /* Slide content */
 .tobi__slider__slide__content {
+
+
+
   &.draggable {
     cursor: grab;
+
 
     &:active {
       cursor: grabbing;
@@ -132,6 +126,7 @@ $cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
   > figure {
     margin: 0;
     position: relative;
+
 
     > img {
       display: block;
@@ -147,27 +142,13 @@ $cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
       color: $figcaptionColor;
       display: block;
       left: 0;
-      padding-bottom: .222em;
-      padding-left: .5em;
-      padding-right: .5em;
-      padding-top: .222em;
+      padding-bottom: em(4);
+      padding-left: em(8);
+      padding-right: em(8);
+      padding-top: em(4);
       position: absolute;
       white-space: pre-wrap;
       width: 100%;
-    }
-  }
-
-  &[data-type="iframe"] {
-    max-height: $slideMaxHeight;
-    max-width: $slideMaxWidth;
-    overflow: hidden;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-
-    & iframe {
-      display: block !important;
-      height: $slideMaxHeight;
-      width: $slideMaxWidth;
     }
   }
 
@@ -178,11 +159,40 @@ $cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
     overflow-y: auto;
     overscroll-behavior: contain;
 
+
     & video {
       cursor: auto;
       display: block !important;
       max-height: $slideMaxHeight;
       max-width: $slideMaxWidth;
+    }
+  }
+
+  &[data-type="iframe"] {
+    max-height: $slideMaxHeight;
+    max-width: $slideMaxWidth;
+    overflow: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+
+    & iframe {
+      display: block !important;
+      height: $slideMaxHeight;
+      width: $slideMaxWidth;
+    }
+  }
+
+  &[data-type="youtube"] {
+    max-height: $slideMaxHeight;
+    max-width: $slideMaxWidth;
+    overflow: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+
+    & iframe {
+      display: block !important;
     }
   }
 }
@@ -192,7 +202,7 @@ $cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
   align-items: center;
   appearance: none;
   background-color: $buttonBackground;
-  border: .056em solid transparent;
+  border: em(1) solid transparent;
   color: $buttonColor;
   cursor: pointer;
   display: flex;
@@ -201,18 +211,23 @@ $cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
   line-height: 1;
   margin: 0;
   opacity: .5;
-  padding-top: .222em;
-  padding-left: .222em;
-  padding-right: .222em;
-  padding-bottom: .222em;
+  padding-top: em(4);
+  padding-left: em(4);
+  padding-right: em(4);
+  padding-bottom: em(4);
   position: absolute;
   transition: opacity $cubicBezierTimingFunction;
   will-change: opacity;
 
+  @media screen and (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+
+
   & svg {
     pointer-events: none;
     stroke: #fff;
-    stroke-width: .8;
+    stroke-width: 1;
     stroke-linecap: square;
     stroke-linejoin: miter;
     fill: none;
@@ -228,12 +243,12 @@ $cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
   &.tobi__prev,
   &.tobi__next {
     top: 50%;
-    top: calc(50% - (4em / 2));
+    top: calc(50% - #{em(40)});
 
 
     & svg {
-      height: 4em;
-      width: 4em;
+      height: em(70);
+      width: em(70);
     }
   }
 
@@ -246,13 +261,13 @@ $cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
   }
 
   &.tobi__close {
-    right: .5em;
-    top: 1em;
+    right: em(5);
+    top: em(18);
 
 
     & svg {
-      height: 3em;
-      width: 3em;
+      height: em(60);
+      width: em(60);
     }
   }
 
@@ -268,12 +283,12 @@ $cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
   background-color: $counterBackground;
   color: $counterColor;
   display: flex;
-  font-size: 1.111em;
-  height: 2em;
+  font-size: em(20);
   justify-content: center;
-  left: 1em;
+  left: em(18);
+  line-height: 1;
   position: absolute;
-  top: 1em;
+  top: em(40);
 
 
   &[aria-hidden="true"] {
@@ -284,20 +299,17 @@ $cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
 /* Loader */
 .tobi-loader {
   display: inline-block;
-  height: 5em;
-  left: 50%;
-  margin-left: -2.5em;
-  margin-top: -2.5em;
+  height: em(100);
+  left: calc(50% - #{em(50)});
   position: absolute;
-  top: 50%;
-  width: 5em;
-  will-change: transform;
+  top: calc(50% - #{em(50)});
+  width: em(100);
 
 
   &::before {
     animation: spin 1s infinite;
     border-radius: 100%;
-    border: .222em solid #fff;
+    border: em(4) solid #949ba3;
     border-top-color: $loaderColor;
     bottom: 0;
     content: "";

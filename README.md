@@ -1,8 +1,9 @@
 # Tobi
 
-[![Version](https://img.shields.io/badge/version-1.7.4-0000ff.svg)](https://github.com/rqrauhvmra/Tobi/releases)
-[![License](https://img.shields.io/badge/license-MIT-0000ff.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
-![Dependecies](https://img.shields.io/badge/dependencies-none-0000ff.svg)
+[![Version](https://img.shields.io/badge/version-1.8.0-1a2a3a.svg)](https://github.com/rqrauhvmra/Tobi/releases)
+[![License](https://img.shields.io/badge/license-MIT-1a2a3a.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
+![Dependecies](https://img.shields.io/badge/dependencies-none-1a2a3a.svg)
+[![Donate](https://img.shields.io/badge/Support_me_on_Ko--fi-0366d6.svg)](https://ko-fi.com/rqrauhvmra)
 
 An accessible, simple and light-weight open source lightbox script with no dependencies.
 
@@ -21,6 +22,7 @@ An accessible, simple and light-weight open source lightbox script with no depen
   - [Image](#image)
   - [Inline HTML](#inline-html)
   - [Iframe](#iframe)
+  - [YouTube](#youtube)
 - [Options](#options)
 - [API](#api)
 - [Browser support](#browser-support)
@@ -35,13 +37,15 @@ An accessible, simple and light-weight open source lightbox script with no depen
 - Accessible:
   - ARIA roles
   - Keyboard navigation:
-    - `Prev`/`Next` Keys: Navigate through items
+    - `Prev` / `Next` Keys: Navigate through items
     - `ESCAPE` Key: Close the lightbox
     - `TAB` Key: Focus elements within the lightbox, not outside
+  - User preference media features:
+    - 'prefers-reduced-motion' media query
   - When the lightbox opens, focus is set to the first focusable element in the lightbox
   - When the lightbox closes, focus returns to what was in focus before the lightbox opened
 - Touch & Mouse drag support:
-  - Drag/Swipe to navigate through items, close the lightbox with a vertical drag/swipe
+  - Drag / Swipe to navigate through items, close the lightbox with a vertical drag/swipe
 - light-weight
 - Responsive
 - Iframe support
@@ -159,7 +163,29 @@ or a button with the class name `lightbox` and a `data-target` attribute:
 </button>
 ```
 
-In any case, the attribute `data-type` with the value `iframe` must be added. The iframe dimensions can be controlled by CSS.
+### YouTube
+
+For an YouTube video, create a link with the class name `lightbox` and a `data-id` attribute with the YouTube video ID:
+
+```html
+<a href="#" data-type="youtube" data-id="KU2sSZ_90PY" class="lightbox">
+  Open YouTube video
+</a>
+```
+
+or a button with the class name `lightbox` and a `data-id` attribute with the YouTube video ID:
+
+```html
+<button type="button" data-type="youtube" data-id="KU2sSZ_90PY" class="lightbox">
+  Open YouTube video
+</button>
+```
+
+In any case, the attribute `data-type` with the value `youtube` must be added.
+
+#### Optional attributes
+
+`data-controls` indicates whether the video player controls are displayed: `0` do not display and `1` display controls in the player. You can also set the height with `data-height` and the width of the player with `data-width` but I recommend to use a external library for responsive iframes.
 
 ## Options
 

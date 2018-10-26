@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.7.4
+ * @version 1.8.0
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -45,8 +45,6 @@
       drag = {},
       draggingX = false,
       draggingY = false,
-      swipingX = false,
-      swipingY = false,
       pointerDown = false,
       lastFocus = null,
       firstFocusableEl = null,
@@ -54,6 +52,10 @@
       offset = null,
       offsetTmp = null,
       resizeTicking = false,
+      isYouTubeDependencieLoaded = false,
+      waitingEls = [],
+      player = [],
+      playerId = 0,
       x = 0
 
     /**
@@ -82,7 +84,7 @@
         downloadLabel: 'Download', // TODO
         keyboard: true,
         zoom: true,
-        zoomText: '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4,20 L9.58788778,14.4121122"></path><path d="M14,16 C10.6862915,16 8,13.3137085 8,10 C8,6.6862915 10.6862915,4 14,4 C17.3137085,4 20,6.6862915 20,10 C20,13.3137085 17.3137085,16 14,16 Z"></path><path d="M16.6666667 10L11.3333333 10M14 7.33333333L14 12.6666667"></path></svg>',
+        zoomText: '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><polyline points="21 16 21 21 16 21"/><polyline points="8 21 3 21 3 16"/><polyline points="16 3 21 3 21 8"/><polyline points="3 8 3 3 8 3"/></svg>',
         docClose: true,
         swipeClose: true,
         scroll: false,
@@ -90,7 +92,8 @@
         threshold: 100,
         rtl: false, // TODO
         loop: false, // TODO
-        autoplayVideo: false
+        autoplayVideo: false,
+        theme: 'dark'
       }
 
       if (userOptions) {
@@ -117,15 +120,15 @@
      */
     var supportedElements = {
       image: {
-        checkSupport: function (element) {
-          return !element.hasAttribute('data-type') && element.href.match(/\.(png|jpe?g|tiff|tif|gif|bmp|webp|svg|ico)$/)
+        checkSupport: function (el) {
+          return !el.hasAttribute('data-type') && el.href.match(/\.(png|jpe?g|tiff|tif|gif|bmp|webp|svg|ico)$/)
         },
 
-        init: function (element, container) {
+        init: function (el, container) {
           var figure = document.createElement('figure'),
             figcaption = document.createElement('figcaption'),
             image = document.createElement('img'),
-            thumbnail = element.querySelector('img'),
+            thumbnail = el.querySelector('img'),
             loadingIndicator = document.createElement('div')
 
           image.style.opacity = '0'
@@ -135,7 +138,7 @@
           }
 
           image.setAttribute('src', '')
-          image.setAttribute('data-src', element.href)
+          image.setAttribute('data-src', el.href)
 
           // Add image to figure
           figure.appendChild(image)
@@ -144,8 +147,8 @@
           if (config.captions) {
             figcaption.style.opacity = '0'
 
-            if (config.captionsSelector === 'self' && element.getAttribute(config.captionAttribute)) {
-              figcaption.textContent = element.getAttribute(config.captionAttribute)
+            if (config.captionsSelector === 'self' && el.getAttribute(config.captionAttribute)) {
+              figcaption.textContent = el.getAttribute(config.captionAttribute)
             } else if (config.captionsSelector === 'img' && thumbnail && thumbnail.getAttribute(config.captionAttribute)) {
               figcaption.textContent = thumbnail.getAttribute(config.captionAttribute)
             }
@@ -212,78 +215,13 @@
         }
       },
 
-      youtube: {
-        checkSupport: function (element) {
-          return checkType(element, 'youtube')
-        },
-
-        init: function (element, container) {
-          // TODO
-        },
-
-        onPreload: function (container) {
-          // Nothing
-        },
-
-        onLoad: function (container) {
-          // TODO
-        },
-
-        onLeave: function (container) {
-          // TODO
-        },
-
-        onCleanup: function (container) {
-          // Nothing
-        }
-      },
-
-      iframe: {
-        checkSupport: function (element) {
-          return checkType(element, 'iframe')
-        },
-
-        init: function (element, container) {
-          var iframe = document.createElement('iframe'),
-            href = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target')
-
-          iframe.setAttribute('frameborder', '0')
-          iframe.setAttribute('src', '')
-          iframe.setAttribute('data-src', href)
-
-          // Add iframe to container
-          container.appendChild(iframe)
-
-          // Register type
-          container.setAttribute('data-type', 'iframe')
-        },
-
-        onPreload: function (container) {
-          // Nothing
-        },
-
-        onLoad: function (container) {
-          var iframe = container.querySelector('iframe')
-
-          iframe.setAttribute('src', iframe.getAttribute('data-src'))
-        },
-
-        onLeave: function (container) {
-          // Nothing
-        },
-
-        onCleanup: function (container) {
-          // Nothing
-        }
-      },
-
       html: {
-        checkSupport: function (element) {
-          return checkType(element, 'html')
+        checkSupport: function (el) {
+          return checkType(el, 'html')
         },
 
-        init: function (element, container) {
-          var targetSelector = element.hasAttribute('href') ? element.getAttribute('href') : element.getAttribute('data-target'),
+        init: function (el, container) {
+          var targetSelector = el.hasAttribute('href') ? el.getAttribute('href') : el.getAttribute('data-target'),
             target = document.querySelector(targetSelector)
 
           if (!target) {
@@ -351,6 +289,95 @@
             }
           }
         }
+      },
+
+      iframe: {
+        checkSupport: function (el) {
+          return checkType(el, 'iframe')
+        },
+
+        init: function (el, container) {
+          var iframe = document.createElement('iframe'),
+            href = el.hasAttribute('href') ? el.getAttribute('href') : el.getAttribute('data-target')
+
+          iframe.setAttribute('frameborder', '0')
+          iframe.setAttribute('src', '')
+          iframe.setAttribute('data-src', href)
+
+          // Add iframe to container
+          container.appendChild(iframe)
+
+          // Register type
+          container.setAttribute('data-type', 'iframe')
+        },
+
+        onPreload: function (container) {
+          // Nothing
+        },
+
+        onLoad: function (container) {
+          var iframe = container.querySelector('iframe')
+
+          iframe.setAttribute('src', iframe.getAttribute('data-src'))
+        },
+
+        onLeave: function (container) {
+          // Nothing
+        },
+
+        onCleanup: function (container) {
+          // Nothing
+        }
+      },
+
+      youtube: {
+        checkSupport: function (el) {
+          return checkType(el, 'youtube')
+        },
+
+        init: function (el, container) {
+          var iframePlaceholder = document.createElement('div')
+
+          // Add iframePlaceholder to container
+          container.appendChild(iframePlaceholder)
+
+          player[playerId] = new window.YT.Player(iframePlaceholder, {
+            host: 'https://www.youtube-nocookie.com',
+            height: el.getAttribute('data-height') || '360',
+            width: el.getAttribute('data-width') || '640',
+            videoId: el.getAttribute('data-id'),
+            playerVars: {
+              'controls': el.getAttribute('data-controls') || 1,
+              'rel': 0
+            }
+          })
+
+          // Set player ID
+          container.setAttribute('data-player', playerId)
+
+          // Register type
+          container.setAttribute('data-type', 'youtube')
+
+          playerId++
+        },
+
+        onPreload: function (container) {
+          // Nothing
+        },
+
+        onLoad: function (container) {
+          if (config.autoplayVideo) {
+            player[container.getAttribute('data-player')].playVideo()
+          }
+        },
+
+        onLeave: function (container) {
+          player[container.getAttribute('data-player')].pauseVideo()
+        },
+
+        onCleanup: function (container) {
+          player[container.getAttribute('data-player')].pauseVideo()
+        }
       }
     }
 
@@ -365,57 +392,91 @@
       // Transform property supported by client
       transformProperty = transformSupport()
 
-      // Get a list of all elements within the document
-      var elements = document.querySelectorAll(config.selector)
-
-      if (!elements) {
-        throw new Error('Ups, I can\'t find the selector ' + config.selector + '.')
-      }
-
-      // Execute a few things once per element
-      Array.prototype.forEach.call(elements, function (element) {
-        add(element)
-      })
-    }
-
-    /**
-     * Add element
-     *
-     * @param {HTMLElement} element - Element to add
-     * @param {function} callback - Optional callback to call after add
-     */
-    var add = function add (element, callback) {
       // Check if the lightbox already exists
       if (!lightbox) {
         // Create the lightbox
         createLightbox()
       }
 
+      // Get a list of all elements within the document
+      var els = document.querySelectorAll(config.selector)
+
+      if (!els) {
+        throw new Error('Ups, I can\'t find the selector ' + config.selector + '.')
+      }
+
+      // Execute a few things once per element
+      Array.prototype.forEach.call(els, function (el) {
+        checkDependencies(el)
+      })
+    }
+
+    /**
+     * Check dependencies
+     *
+     * @param {HTMLElement} el - Element to add
+     */
+    var checkDependencies = function checkDependencies (el) {
+      // Check if there is a YouTube video and if the YouTube iframe-API is ready
+      if (document.querySelector('[data-type="youtube"]') !== null && !isYouTubeDependencieLoaded) {
+        if (document.getElementById('iframe_api') === null) {
+          var tag = document.createElement('script'),
+            firstScriptTag = document.getElementsByTagName('script')[0]
+
+          tag.id = 'iframe_api'
+          tag.src = 'https://www.youtube.com/iframe_api'
+
+          firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
+        }
+
+        if (waitingEls.indexOf(el) === -1) {
+          waitingEls.push(el)
+        }
+
+        window.onYouTubePlayerAPIReady = function () {
+          Array.prototype.forEach.call(waitingEls, function (waitingEl) {
+            add(waitingEl)
+          })
+
+          isYouTubeDependencieLoaded = true
+        }
+      } else {
+        add(el)
+      }
+    }
+
+    /**
+     * Add element
+     *
+     * @param {HTMLElement} el - Element to add
+     * @param {function} callback - Optional callback to call after add
+     */
+    var add = function add (el, callback) {
       // Check if element already exists
-      if (gallery.indexOf(element) === -1) {
-        gallery.push(element)
+      if (gallery.indexOf(el) === -1) {
+        gallery.push(el)
         elementsLength++
 
         // Set zoom icon if necessary
-        if (config.zoom && element.querySelector('img')) {
+        if (config.zoom && el.querySelector('img')) {
           var tobiZoom = document.createElement('div')
 
           tobiZoom.className = 'tobi-zoom__icon'
           tobiZoom.innerHTML = config.zoomText
 
-          element.classList.add('tobi-zoom')
-          element.appendChild(tobiZoom)
+          el.classList.add('tobi-zoom')
+          el.appendChild(tobiZoom)
         }
 
         // Bind click event handler
-        element.addEventListener('click', function (event) {
+        el.addEventListener('click', function (event) {
           event.preventDefault()
 
           open(gallery.indexOf(this))
         })
 
         // Create the slide
-        createLightboxSlide(element)
+        createLightboxSlide(el)
 
         if (isOpen()) {
           updateLightbox()
@@ -438,7 +499,7 @@
       lightbox = document.createElement('div')
       lightbox.setAttribute('role', 'dialog')
       lightbox.setAttribute('aria-hidden', 'true')
-      lightbox.className = 'tobi'
+      lightbox.className = 'tobi tobi--theme-' + config.theme
 
       // Create slider container
       slider = document.createElement('div')
@@ -492,11 +553,11 @@
      * Create a lightbox slide
      *
      */
-    var createLightboxSlide = function createLightboxSlide (element) {
+    var createLightboxSlide = function createLightboxSlide (el) {
       // Detect type
       for (var index in supportedElements) {
         if (supportedElements.hasOwnProperty(index)) {
-          if (supportedElements[index].checkSupport(element)) {
+          if (supportedElements[index].checkSupport(el)) {
             // Create slide elements
             var sliderElement = document.createElement('div'),
               sliderElementContent = document.createElement('div')
@@ -511,7 +572,7 @@
             }
 
             // Create type elements
-            supportedElements[index].init(element, sliderElementContent)
+            supportedElements[index].init(el, sliderElementContent)
 
             // Add slide content container to slider element
             sliderElement.appendChild(sliderElementContent)
@@ -559,7 +620,7 @@
       }
 
       // Hide buttons if necessary
-      if (!config.nav || elementsLength === 1 || (config.nav === 'auto' && 'ontouchstart' in window)) {
+      if (!config.nav || elementsLength === 1 || (config.nav === 'auto' && isTouchDevice())) {
         prevButton.setAttribute('aria-hidden', 'true')
         nextButton.setAttribute('aria-hidden', 'true')
       } else {
@@ -912,10 +973,8 @@
      *
      */
     var touchstartHandler = function touchstartHandler (event) {
-      // Prevent dragging / swiping on textareas inputs, selects and videos
-      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1
-
-      if (ignoreElements) {
+      // Prevent dragging / swiping on textareas inputs, selects and videos or outside the content
+      if (isIgnoreElement(event.target) || event.target.className === 'tobi__slider__slide') {
         return
       }
 
@@ -940,19 +999,7 @@
         drag.endX = event.touches[0].pageX
         drag.endY = event.touches[0].pageY
 
-        if (Math.abs(drag.startX - drag.endX) > 0 && !swipingY && config.swipeClose) {
-          // Horizontal swipe
-          slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
-
-          swipingX = true
-          swipingY = false
-        } else if (Math.abs(drag.startY - drag.endY) > 0 && !swipingX) {
-          // Vertical swipe
-          slider.style[transformProperty] = 'translate3d(' + (offsetTmp + 'px, -' + Math.round(drag.startY - drag.endY)) + 'px, 0)'
-
-          swipingX = false
-          swipingY = true
-        }
+        doSwipe()
       }
     }
 
@@ -966,8 +1013,8 @@
       pointerDown = false
 
       if (drag.endX) {
-        swipingX = false
-        swipingY = false
+        draggingX = false
+        draggingY = false
 
         updateAfterDrag()
       }
@@ -980,10 +1027,8 @@
      *
      */
     var mousedownHandler = function mousedownHandler (event) {
-      // Prevent dragging / swiping on textareas inputs, selects and videos
-      var ignoreElements = ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(event.target.nodeName) !== -1
-
-      if (ignoreElements) {
+      // Prevent dragging / swiping on textareas inputs, selects and videos or outside the content
+      if (isIgnoreElement(event.target) || event.target.className === 'tobi__slider__slide') {
         return
       }
 
@@ -1006,19 +1051,7 @@
         drag.endX = event.pageX
         drag.endY = event.pageY
 
-        if (Math.abs(drag.startX - drag.endX) > 0 && !draggingY && config.swipeClose) {
-          // Horizontal drag
-          slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
-
-          draggingX = true
-          draggingY = false
-        } else if (Math.abs(drag.startY - drag.endY) > 0 && !draggingX) {
-          // Vertical drag
-          slider.style[transformProperty] = 'translate3d(' + (offsetTmp + 'px, -' + Math.round(drag.startY - drag.endY)) + 'px, 0)'
-
-          draggingX = false
-          draggingY = true
-        }
+        doSwipe()
       }
     }
 
@@ -1042,6 +1075,26 @@
     }
 
     /**
+     * Decide whether to do horizontal of vertical swipe
+     *
+     */
+    var doSwipe = function doSwipe () {
+      if (Math.abs(drag.startX - drag.endX) > 0 && !draggingY && config.swipeClose) {
+        // Horizontal swipe
+        slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
+
+        draggingX = true
+        draggingY = false
+      } else if (Math.abs(drag.startY - drag.endY) > 0 && !draggingX) {
+        // Vertical swipe
+        slider.style[transformProperty] = 'translate3d(' + (offsetTmp + 'px, -' + Math.round(drag.startY - drag.endY)) + 'px, 0)'
+
+        draggingX = false
+        draggingY = true
+      }
+    }
+
+    /**
      * Bind events
      *
      */
@@ -1060,10 +1113,12 @@
       closeButton.addEventListener('click', clickHandler)
 
       if (config.draggable) {
-        // Touch events
-        lightbox.addEventListener('touchstart', touchstartHandler)
-        lightbox.addEventListener('touchmove', touchmoveHandler)
-        lightbox.addEventListener('touchend', touchendHandler)
+        if (isTouchDevice()) {
+          // Touch events
+          lightbox.addEventListener('touchstart', touchstartHandler)
+          lightbox.addEventListener('touchmove', touchmoveHandler)
+          lightbox.addEventListener('touchend', touchendHandler)
+        }
 
         // Mouse events
         lightbox.addEventListener('mousedown', mousedownHandler)
@@ -1091,6 +1146,12 @@
       closeButton.removeEventListener('click', clickHandler)
 
       if (config.draggable) {
+        if (isTouchDevice()) {
+          // Touch events
+          lightbox.addEventListener('touchstart', touchstartHandler)
+          lightbox.addEventListener('touchmove', touchmoveHandler)
+          lightbox.addEventListener('touchend', touchendHandler)
+        }
         // Touch events
         lightbox.removeEventListener('touchstart', touchstartHandler)
         lightbox.removeEventListener('touchmove', touchmoveHandler)
@@ -1107,17 +1168,17 @@
      * Checks whether element has requested data-type value
      *
      */
-    var checkType = function checkType (element, type) {
-      return element.getAttribute('data-type') === type
+    var checkType = function checkType (el, type) {
+      return el.getAttribute('data-type') === type
     }
 
     /**
      * Remove all `src` attributes
      *
-     * @param {HTMLElement} element - Element to remove all `src` attributes
+     * @param {HTMLElement} el - Element to remove all `src` attributes
      */
-    var removeSources = function setVideoSources (element) {
-      var sources = element.querySelectorAll('src')
+    var removeSources = function setVideoSources (el) {
+      var sources = el.querySelectorAll('src')
 
       if (sources) {
         Array.prototype.forEach.call(sources, function (source) {
@@ -1165,6 +1226,22 @@
     }
 
     /**
+     * Detect whether device is touch capable
+     *
+     */
+    var isTouchDevice = function isTouchDevice () {
+      return 'ontouchstart' in window
+    }
+
+    /**
+     * Checks whether element's nodeName is part of array
+     *
+     */
+    var isIgnoreElement = function isIgnoreElement (el) {
+      return ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(el.nodeName) !== -1
+    }
+
+    /**
      * Return current index
      *
      */
@@ -1179,7 +1256,7 @@
       prev: prev,
       next: next,
       close: close,
-      add: add,
+      add: checkDependencies,
       reset: reset,
       isOpen: isOpen,
       currentSlide: currentSlide
