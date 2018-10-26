@@ -116,10 +116,6 @@
 }
 
 /* Slide content */
-.tobi__slider__slide__content {
-  border: 0.22222em solid #fff;
-}
-
 .tobi__slider__slide__content.draggable {
   cursor: -webkit-grab;
   cursor: grab;
@@ -144,14 +140,14 @@
 }
 
 .tobi__slider__slide__content > figure > figcaption {
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.94);
   bottom: 0;
   color: #1a2a3a;
   display: block;
   left: 0;
-  padding-bottom: 0;
-  padding-left: 0;
-  padding-right: 0;
+  padding-bottom: .2222222222222222em;
+  padding-left: .4444444444444444em;
+  padding-right: .4444444444444444em;
   padding-top: .2222222222222222em;
   position: absolute;
   white-space: pre-wrap;

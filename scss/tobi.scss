@@ -3,7 +3,7 @@ $zoomIconColor: #fff;
 
 $lightboxBackground: rgba(26, 42, 58, .94);
 
-$figcaptionBackground: #fff;
+$figcaptionBackground: rgba(255, 255, 255, .94);
 $figcaptionColor: #1a2a3a;
 
 $counterBackground: transparent;
@@ -16,8 +16,6 @@ $loaderColor: #fff;
 
 $slideMaxHeight: 85vh;
 $slideMaxWidth: 85vw;
-
-$slideContentBorder: .2222222222222222em solid #fff;
 
 /* Link */
 .tobi-zoom {
@@ -120,7 +118,7 @@ $slideContentBorder: .2222222222222222em solid #fff;
 
 /* Slide content */
 .tobi__slider__slide__content {
-  border: $slideContentBorder;
+
 
 
   &.draggable {
@@ -151,9 +149,9 @@ $slideContentBorder: .2222222222222222em solid #fff;
       color: $figcaptionColor;
       display: block;
       left: 0;
-      padding-bottom: 0;
-      padding-left: 0;
-      padding-right: 0;
+      padding-bottom: .2222222222222222em;
+      padding-left: .4444444444444444em;
+      padding-right: .4444444444444444em;
       padding-top: .2222222222222222em;
       position: absolute;
       white-space: pre-wrap;
