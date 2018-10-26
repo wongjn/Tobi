@@ -371,15 +371,11 @@
         },
 
         onLeave: function (container) {
-          if (config.autoplayVideo) {
-            player[container.getAttribute('data-player')].pauseVideo()
-          }
+          player[container.getAttribute('data-player')].pauseVideo()
         },
 
         onCleanup: function (container) {
-          if (config.autoplayVideo) {
-            player[container.getAttribute('data-player')].pauseVideo()
-          }
+          player[container.getAttribute('data-player')].pauseVideo()
         }
       }
     }
