@@ -1,6 +1,8 @@
 @import '_variables.scss';
 @import '_functions.scss';
 
+$cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
+
 /* Link */
 .tobi-zoom {
   border: 0;
@@ -83,11 +85,18 @@
   position: absolute;
   right: 0;
   top: 0;
-  transition: transform .3s cubic-bezier(.19, 1, .22, 1);
+  transition: transform $cubicBezierTimingFunction;
   will-change: transform;
 
   @media screen and (prefers-reduced-motion: reduce) {
     transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tobi__slider {
+    transition: none;
+    will-change: auto;
   }
 }
 
@@ -207,7 +216,7 @@
   padding-right: em(4);
   padding-bottom: em(4);
   position: absolute;
-  transition: opacity .5s cubic-bezier(.19, 1, .22, 1);
+  transition: opacity $cubicBezierTimingFunction;
   will-change: opacity;
 
   @media screen and (prefers-reduced-motion: reduce) {
@@ -229,11 +238,6 @@
   &:focus,
   &:hover {
     opacity: 1;
-    transition: opacity .5s cubic-bezier(.19, 1, .22, 1);
-
-    @media screen and (prefers-reduced-motion: reduce) {
-      transition: none;
-    }
   }
 
   &.tobi__prev,
@@ -318,13 +322,7 @@
 }
 
 @keyframes spin {
-
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
+  to {
     transform: rotate(360deg);
   }
-
 }
