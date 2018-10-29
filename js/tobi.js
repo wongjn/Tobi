@@ -1268,7 +1268,7 @@
      *
      */
     var isIgnoreElement = function isIgnoreElement (el) {
-      return ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(el.nodeName) !== -1
+      return ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(el.nodeName) !== -1 || el === prevButton || el === nextButton || el === closeButton
     }
 
     /**
