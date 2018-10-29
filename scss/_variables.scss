@@ -1,3 +1,7 @@
+$baseFontSize: 18;
+
+$cubicBezierTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
+
 $zoomIconBackground: rgba(26, 42, 58, .94);
 $zoomIconColor: #fff;
 
@@ -16,5 +20,3 @@ $loaderColor: #fff;
 
 $slideMaxHeight: 85vh;
 $slideMaxWidth: 85vw;
-
-$baseFontSize: 18;
