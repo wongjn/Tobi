@@ -83,11 +83,17 @@
   position: absolute;
   right: 0;
   top: 0;
-  transition: transform $transitionTimingFunction;
   will-change: transform;
 
-  @media screen and (prefers-reduced-motion: reduce) {
-    transition: none;
+
+  &:not(.tobi--is-dragging) {
+    transition-duration: $transitionDuration;
+    transition-property: transform;
+    transition-timing-function: $transitionTimingFunction;
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
   }
 }
 
@@ -202,13 +208,16 @@
   line-height: 1;
   margin: 0;
   opacity: .5;
-  padding-top: em(4);
+  padding-bottom: em(4);
   padding-left: em(4);
   padding-right: em(4);
-  padding-bottom: em(4);
+  padding-top: em(4);
   position: absolute;
-  transition: opacity $transitionTimingFunction, transform $transitionTimingFunction;
-  will-change: opacity;
+  touch-action: manipulation;
+  transition-duration: $transitionDuration;
+  transition-property: opacity, transform;
+  transition-timing-function: $transitionTimingFunction;
+  will-change: opacity, transform;
 
   @media screen and (prefers-reduced-motion: reduce) {
     transition: none;

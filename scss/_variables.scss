@@ -1,6 +1,7 @@
 $baseFontSize: 18;
 
-$transitionTimingFunction: .5s cubic-bezier(.19, 1, .22, 1);
+$transitionDuration: .25s;
+$transitionTimingFunction: cubic-bezier(.19, 1, .22, 1);
 
 $zoomIconBackground: rgba(26, 42, 58, .94);
 $zoomIconColor: #fff;

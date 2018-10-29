@@ -86,15 +86,22 @@
   position: absolute;
   right: 0;
   top: 0;
-  -webkit-transition: -webkit-transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-  transition: -webkit-transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), -webkit-transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   will-change: transform;
 }
 
+.tobi__slider:not(.tobi--is-dragging) {
+  -webkit-transition-duration: 0.25s;
+          transition-duration: 0.25s;
+  -webkit-transition-property: -webkit-transform;
+  transition-property: -webkit-transform;
+  transition-property: transform;
+  transition-property: transform, -webkit-transform;
+  -webkit-transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+          transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
 @media screen and (prefers-reduced-motion: reduce) {
-  .tobi__slider {
+  .tobi__slider:not(.tobi--is-dragging) {
     -webkit-transition: none;
     transition: none;
   }
@@ -217,16 +224,22 @@
   line-height: 1;
   margin: 0;
   opacity: .5;
-  padding-top: 0.22222em;
+  padding-bottom: 0.22222em;
   padding-left: 0.22222em;
   padding-right: 0.22222em;
-  padding-bottom: 0.22222em;
+  padding-top: 0.22222em;
   position: absolute;
-  -webkit-transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1), -webkit-transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-  transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1), -webkit-transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-  transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1), transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-  transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1), transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), -webkit-transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-  will-change: opacity;
+  -ms-touch-action: manipulation;
+      touch-action: manipulation;
+  -webkit-transition-duration: 0.25s;
+          transition-duration: 0.25s;
+  -webkit-transition-property: opacity, -webkit-transform;
+  transition-property: opacity, -webkit-transform;
+  transition-property: opacity, transform;
+  transition-property: opacity, transform, -webkit-transform;
+  -webkit-transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+          transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  will-change: opacity, transform;
 }
 
 @media screen and (prefers-reduced-motion: reduce) {

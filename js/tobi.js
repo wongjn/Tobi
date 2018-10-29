@@ -991,6 +991,8 @@
 
       drag.startX = event.touches[0].pageX
       drag.startY = event.touches[0].pageY
+
+      slider.classList.add('tobi--is-dragging')
     }
 
     /**
@@ -1030,6 +1032,8 @@
         isDraggingX = false
         isDraggingY = false
 
+        slider.classList.remove('tobi--is-dragging')
+
         updateAfterDrag()
       }
 
@@ -1050,8 +1054,11 @@
       event.stopPropagation()
 
       pointerDown = true
+
       drag.startX = event.pageX
       drag.startY = event.pageY
+
+      slider.classList.add('tobi--is-dragging')
     }
 
     /**
@@ -1088,6 +1095,8 @@
       if (drag.endX) {
         isDraggingX = false
         isDraggingY = false
+
+        slider.classList.remove('tobi--is-dragging')
 
         updateAfterDrag()
       }
