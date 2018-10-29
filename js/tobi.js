@@ -43,8 +43,8 @@
       counter = null,
       currentIndex = 0,
       drag = {},
-      draggingX = false,
-      draggingY = false,
+      isDraggingX = false,
+      isDraggingY = false,
       pointerDown = false,
       lastFocus = null,
       firstFocusableEl = null,
@@ -52,6 +52,8 @@
       offset = null,
       offsetTmp = null,
       resizeTicking = false,
+      touchmoveTicking = false,
+      mousemoveTicking = false,
       isYouTubeDependencieLoaded = false,
       waitingEls = [],
       player = [],
@@ -348,7 +350,8 @@
             videoId: el.getAttribute('data-id'),
             playerVars: {
               'controls': el.getAttribute('data-controls') || 1,
-              'rel': 0
+              'rel': 0,
+              'playsinline': 1
             }
           })
 
@@ -372,11 +375,15 @@
         },
 
         onLeave: function (container) {
-          player[container.getAttribute('data-player')].pauseVideo()
+          if (player[container.getAttribute('data-player')].getPlayerState() === 1) {
+            player[container.getAttribute('data-player')].pauseVideo()
+          }
         },
 
         onCleanup: function (container) {
-          player[container.getAttribute('data-player')].pauseVideo()
+          if (player[container.getAttribute('data-player')].getPlayerState() === 1) {
+            player[container.getAttribute('data-player')].pauseVideo()
+          }
         }
       }
     }
@@ -999,7 +1006,14 @@
         drag.endX = event.touches[0].pageX
         drag.endY = event.touches[0].pageY
 
-        doSwipe()
+        if (!touchmoveTicking) {
+          touchmoveTicking = true
+
+          browserWindow.requestAnimationFrame(function () {
+            doSwipe()
+            touchmoveTicking = false
+          })
+        }
       }
     }
 
@@ -1013,8 +1027,8 @@
       pointerDown = false
 
       if (drag.endX) {
-        draggingX = false
-        draggingY = false
+        isDraggingX = false
+        isDraggingY = false
 
         updateAfterDrag()
       }
@@ -1051,7 +1065,14 @@
         drag.endX = event.pageX
         drag.endY = event.pageY
 
-        doSwipe()
+        if (!mousemoveTicking) {
+          mousemoveTicking = true
+
+          browserWindow.requestAnimationFrame(function () {
+            doSwipe()
+            mousemoveTicking = false
+          })
+        }
       }
     }
 
@@ -1065,8 +1086,8 @@
       pointerDown = false
 
       if (drag.endX) {
-        draggingX = false
-        draggingY = false
+        isDraggingX = false
+        isDraggingY = false
 
         updateAfterDrag()
       }
@@ -1079,18 +1100,18 @@
      *
      */
     var doSwipe = function doSwipe () {
-      if (Math.abs(drag.startX - drag.endX) > 0 && !draggingY && config.swipeClose) {
+      if (Math.abs(drag.startX - drag.endX) > 0 && !isDraggingY && config.swipeClose) {
         // Horizontal swipe
         slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
 
-        draggingX = true
-        draggingY = false
-      } else if (Math.abs(drag.startY - drag.endY) > 0 && !draggingX) {
+        isDraggingX = true
+        isDraggingY = false
+      } else if (Math.abs(drag.startY - drag.endY) > 0 && !isDraggingX) {
         // Vertical swipe
         slider.style[transformProperty] = 'translate3d(' + (offsetTmp + 'px, -' + Math.round(drag.startY - drag.endY)) + 'px, 0)'
 
-        draggingX = false
-        draggingY = true
+        isDraggingX = false
+        isDraggingY = true
       }
     }
 

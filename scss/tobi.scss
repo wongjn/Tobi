@@ -83,7 +83,7 @@
   position: absolute;
   right: 0;
   top: 0;
-  transition: transform $cubicBezierTimingFunction;
+  transition: transform $transitionTimingFunction;
   will-change: transform;
 
   @media screen and (prefers-reduced-motion: reduce) {
@@ -207,7 +207,7 @@
   padding-right: em(4);
   padding-bottom: em(4);
   position: absolute;
-  transition: opacity $cubicBezierTimingFunction, transform $cubicBezierTimingFunction;
+  transition: opacity $transitionTimingFunction, transform $transitionTimingFunction;
   will-change: opacity;
 
   @media screen and (prefers-reduced-motion: reduce) {
