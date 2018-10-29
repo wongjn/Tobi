@@ -3,7 +3,8 @@
 [![Version](https://img.shields.io/badge/version-1.8.0-1a2a3a.svg)](https://github.com/rqrauhvmra/Tobi/releases)
 [![License](https://img.shields.io/badge/license-MIT-1a2a3a.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
 ![Dependecies](https://img.shields.io/badge/dependencies-none-1a2a3a.svg)
-[![Donate](https://img.shields.io/badge/Support_me_on_Ko--fi-0366d6.svg)](https://ko-fi.com/rqrauhvmra)
+[![Support me on Ko-fi](https://img.shields.io/badge/Support_me_on_Ko--fi-0366d6.svg)](https://ko-fi.com/rqrauhvmra)
+[![Amazon wishlist](https://img.shields.io/badge/Amazon_wishlist-0366d6.svg)](https://www.amazon.de/hz/wishlist/ls/29WXITO63O0BX)
 
 An accessible, simple and light-weight open source lightbox script with no dependencies.
 
@@ -220,7 +221,7 @@ The following options are available:
 | zoomText | string | "inline svg" | Text or HTML for the zoom icon |
 | docClose | bool | true | Closes the lightbox when clicking outside |
 | swipeClose | bool | true | Swipe up to close lightbox |
-| scroll | bool | false | Hide scrollbars if lightbox is displayed |
+| hideScrollbar | bool | true | Hide browser scrollbars if lightbox is displayed |
 | draggable | bool | true | Use dragging and touch swiping |
 | threshold | number | 100 | Touch and mouse dragging threshold (in px) |
 | autoplayVideo | bool | false | Videos will automatically start playing as soon as they can do so without stopping to finish loading the data

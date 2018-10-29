@@ -87,7 +87,7 @@
         zoomText: '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><polyline points="21 16 21 21 16 21"/><polyline points="8 21 3 21 3 16"/><polyline points="16 3 21 3 21 8"/><polyline points="3 8 3 3 8 3"/></svg>',
         docClose: true,
         swipeClose: true,
-        scroll: false,
+        hideScrollbar: true,
         draggable: true,
         threshold: 100,
         rtl: false, // TODO
@@ -614,7 +614,7 @@
         throw new Error('Ups, I can\'t find slide ' + index + '.')
       }
 
-      if (!config.scroll) {
+      if (config.hideScrollbar) {
         document.documentElement.classList.add('tobi-is-open')
         document.body.classList.add('tobi-is-open')
       }
@@ -681,7 +681,7 @@
         throw new Error('Tobi is already closed.')
       }
 
-      if (!config.scroll) {
+      if (config.hideScrollbar) {
         document.documentElement.classList.remove('tobi-is-open')
         document.body.classList.remove('tobi-is-open')
       }

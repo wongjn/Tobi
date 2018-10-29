@@ -222,8 +222,10 @@
   padding-right: 0.22222em;
   padding-bottom: 0.22222em;
   position: absolute;
-  -webkit-transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-  transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  -webkit-transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1), -webkit-transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1), -webkit-transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1), transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1), transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), -webkit-transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   will-change: opacity;
 }
 
@@ -246,6 +248,8 @@
 
 .tobi button:active, .tobi button:focus, .tobi button:hover {
   opacity: 1;
+  -webkit-transform: scale(0.84);
+          transform: scale(0.84);
 }
 
 .tobi button.tobi__prev, .tobi button.tobi__next {

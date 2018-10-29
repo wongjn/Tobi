@@ -207,7 +207,7 @@
   padding-right: em(4);
   padding-bottom: em(4);
   position: absolute;
-  transition: opacity $cubicBezierTimingFunction;
+  transition: opacity $cubicBezierTimingFunction, transform $cubicBezierTimingFunction;
   will-change: opacity;
 
   @media screen and (prefers-reduced-motion: reduce) {
@@ -229,6 +229,7 @@
   &:focus,
   &:hover {
     opacity: 1;
+    transform: scale(.84);
   }
 
   &.tobi__prev,
