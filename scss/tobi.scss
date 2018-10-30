@@ -221,6 +221,7 @@
 
   @media screen and (prefers-reduced-motion: reduce) {
     transition: none;
+    will-change: opacity;
   }
 
 
@@ -239,6 +240,10 @@
   &:hover {
     opacity: 1;
     transform: scale(.84);
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
   }
 
   &.tobi__prev,

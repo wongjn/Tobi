@@ -246,6 +246,7 @@
   .tobi button {
     -webkit-transition: none;
     transition: none;
+    will-change: opacity;
   }
 }
 
@@ -263,6 +264,13 @@
   opacity: 1;
   -webkit-transform: scale(0.84);
           transform: scale(0.84);
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+  .tobi button:active, .tobi button:focus, .tobi button:hover {
+    -webkit-transform: none;
+            transform: none;
+  }
 }
 
 .tobi button.tobi__prev, .tobi button.tobi__next {
