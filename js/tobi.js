@@ -994,7 +994,7 @@
       drag.startX = event.touches[0].pageX
       drag.startY = event.touches[0].pageY
 
-      slider.classList.add('tobi--is-dragging')
+      slider.classList.add('tobi__slider--is-dragging')
     }
 
     /**
@@ -1034,7 +1034,7 @@
         isDraggingX = false
         isDraggingY = false
 
-        slider.classList.remove('tobi--is-dragging')
+        slider.classList.remove('tobi__slider--is-dragging')
 
         updateAfterDrag()
       }
@@ -1060,7 +1060,7 @@
       drag.startX = event.pageX
       drag.startY = event.pageY
 
-      slider.classList.add('tobi--is-dragging')
+      slider.classList.add('tobi__slider--is-dragging')
     }
 
     /**
@@ -1098,7 +1098,7 @@
         isDraggingX = false
         isDraggingY = false
 
-        slider.classList.remove('tobi--is-dragging')
+        slider.classList.remove('tobi__slider--is-dragging')
 
         updateAfterDrag()
       }

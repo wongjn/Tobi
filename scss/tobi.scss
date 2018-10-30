@@ -86,7 +86,7 @@
   will-change: transform;
 
 
-  &:not(.tobi--is-dragging) {
+  &:not(&--is-dragging) {
     transition-duration: $transitionDuration;
     transition-property: transform;
     transition-timing-function: $transitionTimingFunction;
