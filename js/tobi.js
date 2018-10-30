@@ -546,8 +546,10 @@
       browserWindow.addEventListener('resize', function () {
         if (!resizeTicking) {
           resizeTicking = true
+
           browserWindow.requestAnimationFrame(function () {
             updateOffset()
+
             resizeTicking = false
           })
         }
@@ -933,7 +935,7 @@
         prev()
       } else if (event.target === nextButton) {
         next()
-      } else if (event.target === closeButton || event.target.className === 'tobi__slider__slide') {
+      } else if (event.target === closeButton || (event.target.className === 'tobi__slider__slide' && config.docClose)) {
         close()
       }
 
@@ -1133,14 +1135,8 @@
         document.addEventListener('keydown', keydownHandler)
       }
 
-      // Click events
-      if (config.docClose) {
-        lightbox.addEventListener('click', clickHandler)
-      }
-
-      prevButton.addEventListener('click', clickHandler)
-      nextButton.addEventListener('click', clickHandler)
-      closeButton.addEventListener('click', clickHandler)
+      // Click event
+      lightbox.addEventListener('click', clickHandler)
 
       if (config.draggable) {
         if (isTouchDevice()) {
@@ -1166,14 +1162,8 @@
         document.removeEventListener('keydown', keydownHandler)
       }
 
-      // Click events
-      if (config.docClose) {
-        lightbox.removeEventListener('click', clickHandler)
-      }
-
-      prevButton.removeEventListener('click', clickHandler)
-      nextButton.removeEventListener('click', clickHandler)
-      closeButton.removeEventListener('click', clickHandler)
+      // Click event
+      lightbox.removeEventListener('click', clickHandler)
 
       if (config.draggable) {
         if (isTouchDevice()) {
