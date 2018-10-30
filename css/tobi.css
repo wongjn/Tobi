@@ -107,6 +107,16 @@
   }
 }
 
+.tobi__slider--is-draggable .tobi__slider__slide__content {
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
+.tobi__slider--is-dragging .tobi__slider__slide__content {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+
 /* Slide */
 .tobi__slider__slide {
   -webkit-box-align: center;
@@ -123,16 +133,6 @@
 }
 
 /* Slide content */
-.tobi__slider--is-draggable .tobi__slider__slide__content {
-  cursor: -webkit-grab;
-  cursor: grab;
-}
-
-.tobi__slider--is-draggable .tobi__slider__slide__content:active {
-  cursor: -webkit-grabbing;
-  cursor: grabbing;
-}
-
 .tobi__slider__slide__content > figure {
   margin: 0;
   position: relative;

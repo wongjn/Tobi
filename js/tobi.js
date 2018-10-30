@@ -1013,11 +1013,11 @@
 
       pointerDown = false
 
+      slider.classList.remove('tobi__slider--is-dragging')
+
       if (drag.endX) {
         isDraggingX = false
         isDraggingY = false
-
-        slider.classList.remove('tobi__slider--is-dragging')
 
         updateAfterDrag()
       }
@@ -1077,11 +1077,11 @@
 
       pointerDown = false
 
+      slider.classList.remove('tobi__slider--is-dragging')
+
       if (drag.endX) {
         isDraggingX = false
         isDraggingY = false
-
-        slider.classList.remove('tobi__slider--is-dragging')
 
         updateAfterDrag()
       }

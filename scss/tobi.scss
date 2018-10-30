@@ -95,6 +95,14 @@
       transition: none;
     }
   }
+
+  &--is-draggable &__slide__content {
+    cursor: grab;
+  }
+
+  &--is-dragging &__slide__content {
+    cursor: grabbing;
+  }
 }
 
 /* Slide */
@@ -110,15 +118,6 @@
 .tobi__slider__slide__content {
 
 
-
-  .tobi__slider--is-draggable & {
-    cursor: grab;
-
-
-    &:active {
-      cursor: grabbing;
-    }
-  }
 
   > figure {
     margin: 0;
