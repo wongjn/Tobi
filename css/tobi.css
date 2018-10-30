@@ -123,12 +123,12 @@
 }
 
 /* Slide content */
-.tobi__slider__slide__content.draggable {
+.tobi__slider--is-draggable .tobi__slider__slide__content {
   cursor: -webkit-grab;
   cursor: grab;
 }
 
-.tobi__slider__slide__content.draggable:active {
+.tobi__slider--is-draggable .tobi__slider__slide__content:active {
   cursor: -webkit-grabbing;
   cursor: grabbing;
 }

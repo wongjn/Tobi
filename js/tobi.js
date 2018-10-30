@@ -576,10 +576,6 @@
             sliderElement.style.left = x * 100 + '%'
             sliderElementContent.className = 'tobi__slider__slide__content'
 
-            if (config.draggable) {
-              sliderElementContent.classList.add('draggable')
-            }
-
             // Create type elements
             supportedElements[index].init(el, sliderElementContent)
 
@@ -626,6 +622,10 @@
       if (config.hideScrollbar) {
         document.documentElement.classList.add('tobi-is-open')
         document.body.classList.add('tobi-is-open')
+      }
+
+      if (config.draggable && elementsLength > 1) {
+        slider.classList.add('tobi__slider--is-draggable')
       }
 
       // Hide buttons if necessary
@@ -1216,6 +1216,10 @@
       updateOffset()
       updateCounter()
       updateFocus(dir)
+
+      if (config.draggable && elementsLength > 1 && !slider.classList.contains('tobi__slider--is-draggable')) {
+        slider.classList.add('tobi__slider--is-draggable')
+      }
     }
 
     /**
@@ -1258,7 +1262,7 @@
      *
      */
     var isIgnoreElement = function isIgnoreElement (el) {
-      return ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(el.nodeName) !== -1 || el === prevButton || el === nextButton || el === closeButton
+      return ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(el.nodeName) !== -1 || el === prevButton || el === nextButton || el === closeButton || elementsLength === 1
     }
 
     /**
