@@ -42,7 +42,7 @@ An accessible, simple and light-weight open source lightbox script with no depen
     - `ESCAPE` Key: Close the lightbox
     - `TAB` Key: Focus elements within the lightbox, not outside
   - User preference media features:
-    - 'prefers-reduced-motion' media query
+    - `prefers-reduced-motion` media query
   - When the lightbox opens, focus is set to the first focusable element in the lightbox
   - When the lightbox closes, focus returns to what was in focus before the lightbox opened
 - Touch & Mouse drag support:
