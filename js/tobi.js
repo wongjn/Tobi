@@ -486,6 +486,7 @@
         createLightboxSlide(el)
 
         if (isOpen()) {
+          recheckConfig()
           updateLightbox()
         }
 
@@ -624,25 +625,7 @@
         document.body.classList.add('tobi-is-open')
       }
 
-      if (config.draggable && elementsLength > 1) {
-        slider.classList.add('tobi__slider--is-draggable')
-      }
-
-      // Hide buttons if necessary
-      if (!config.nav || elementsLength === 1 || (config.nav === 'auto' && isTouchDevice())) {
-        prevButton.setAttribute('aria-hidden', 'true')
-        nextButton.setAttribute('aria-hidden', 'true')
-      } else {
-        prevButton.setAttribute('aria-hidden', 'false')
-        nextButton.setAttribute('aria-hidden', 'false')
-      }
-
-      // Hide counter if necessary
-      if (!config.counter || elementsLength === 1) {
-        counter.setAttribute('aria-hidden', 'true')
-      } else {
-        counter.setAttribute('aria-hidden', 'false')
-      }
+      recheckConfig()
 
       // Hide close if necessary
       if (!config.close) {
@@ -1208,6 +1191,32 @@
     }
 
     /**
+     * Update Config
+     *
+     */
+    var recheckConfig = function recheckConfig () {
+      if (config.draggable && elementsLength > 1 && !slider.classList.contains('tobi__slider--is-draggable')) {
+        slider.classList.add('tobi__slider--is-draggable')
+      }
+
+      // Hide buttons if necessary
+      if (!config.nav || elementsLength === 1 || (config.nav === 'auto' && isTouchDevice())) {
+        prevButton.setAttribute('aria-hidden', 'true')
+        nextButton.setAttribute('aria-hidden', 'true')
+      } else {
+        prevButton.setAttribute('aria-hidden', 'false')
+        nextButton.setAttribute('aria-hidden', 'false')
+      }
+
+      // Hide counter if necessary
+      if (!config.counter || elementsLength === 1) {
+        counter.setAttribute('aria-hidden', 'true')
+      } else {
+        counter.setAttribute('aria-hidden', 'false')
+      }
+    }
+
+    /**
      * Update lightbox
      *
      * @param {string} dir - Current slide direction
@@ -1216,10 +1225,6 @@
       updateOffset()
       updateCounter()
       updateFocus(dir)
-
-      if (config.draggable && elementsLength > 1 && !slider.classList.contains('tobi__slider--is-draggable')) {
-        slider.classList.add('tobi__slider--is-draggable')
-      }
     }
 
     /**
