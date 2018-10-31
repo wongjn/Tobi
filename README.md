@@ -1,8 +1,8 @@
 # Tobi
 
-[![Version](https://img.shields.io/badge/version-1.8.0-1a2a3a.svg)](https://github.com/rqrauhvmra/Tobi/releases)
-[![License](https://img.shields.io/badge/license-MIT-1a2a3a.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
-![Dependecies](https://img.shields.io/badge/dependencies-none-1a2a3a.svg)
+[![Version](https://img.shields.io/badge/Version-1.8.0-1a2a3a.svg)](https://github.com/rqrauhvmra/Tobi/releases)
+[![License](https://img.shields.io/badge/License-MIT-1a2a3a.svg)](https://github.com/rqrauhvmra/tobi/blob/master/LICENSE.md)
+![Dependecies](https://img.shields.io/badge/Dependencies-none-1a2a3a.svg)
 [![Support me on Ko-fi](https://img.shields.io/badge/Support_me_on_Ko--fi-0366d6.svg)](https://ko-fi.com/rqrauhvmra)
 [![Amazon wishlist](https://img.shields.io/badge/Amazon_wishlist-0366d6.svg)](https://www.amazon.de/hz/wishlist/ls/29WXITO63O0BX)
 
@@ -30,7 +30,6 @@ An accessible, simple and light-weight open source lightbox script with no depen
 - [To do](#to-do)
 - [Contributing](#contributing)
 - [License](#license)
-- [Notes](#notes)
 
 ## Features
 
@@ -186,7 +185,9 @@ In any case, the attribute `data-type` with the value `youtube` must be added.
 
 #### Optional attributes
 
-`data-controls` indicates whether the video player controls are displayed: `0` do not display and `1` display controls in the player. You can also set the height with `data-height` and the width of the player with `data-width` but I recommend to use a external library for responsive iframes.
+`data-controls` indicates whether the video player controls are displayed: `0` do not display and `1` display controls in the player.
+
+`data-height` set the height and `data-width` the width of the player. I recommend to use a external library for responsive iframes.
 
 ## Options
 
@@ -206,48 +207,41 @@ The following options are available:
 | --- | --- | --- | --- |
 | selector | string | ".lightbox" | All elements with this class triggers the lightbox. |
 | captions | bool | true | Display captions, if available. |
-| captionsSelector | "self", "img" | "img" | Set the element where the caption is. Set it to "self" for the `a` tag itself |
+| captionsSelector | "self", "img" | "img" | Set the element where the caption is. Set it to "self" for the `a` tag itself. |
 | captionAttribute | string | "alt" | Get the caption from given attribute. |
 | nav | bool, "auto" | "auto" | Display navigation buttons. "auto" hides buttons on touch-enabled devices. |
 | navText | string | ["inline svg", "inline svg"] | Text or HTML for the navigation buttons. |
-| navLabel | string | ["Previous", "Next"] | ARIA label for screen readers |
+| navLabel | string | ["Previous", "Next"] | ARIA label for screen readers. |
 | close | bool | true | Display close button. |
 | closeText | string | "inline svg" | Text or HTML for the close button. |
 | closeLabel | string | "Close" | ARIA label for screen readers. |
 | loadingIndicatorLabel | string | "Image loading" | ARIA label for screen readers. |
-| counter | bool | true | Display current image index |
+| counter | bool | true | Display current image index. |
 | keyboard | bool | true | Allow keyboard navigation. |
 | zoom | bool | true | Display zoom icon. |
-| zoomText | string | "inline svg" | Text or HTML for the zoom icon |
-| docClose | bool | true | Closes the lightbox when clicking outside |
-| swipeClose | bool | true | Swipe up to close lightbox |
-| hideScrollbar | bool | true | Hide browser scrollbars if lightbox is displayed |
-| draggable | bool | true | Use dragging and touch swiping |
-| threshold | number | 100 | Touch and mouse dragging threshold (in px) |
-| autoplayVideo | bool | false | Videos will automatically start playing as soon as they can do so without stopping to finish loading the data
+| zoomText | string | "inline svg" | Text or HTML for the zoom icon. |
+| docClose | bool | true | Closes the lightbox when clicking outside. |
+| swipeClose | bool | true | Swipe up to close lightbox. |
+| hideScrollbar | bool | true | Hide browser scrollbars if lightbox is displayed. |
+| draggable | bool | true | Use dragging and touch swiping. |
+| threshold | number | 100 | Touch and mouse dragging threshold (in px). |
+| autoplayVideo | bool | false | Videos will automatically start playing as soon as they can do so without stopping to finish loading the data. |
 
 ## API
 
-**`open(index, callback)`**
-Opens the lightbox. Optional at specific `index` (number) and optional `callback` (function) as a second argument.
+`open(index, callback)` opens the lightbox. Optional at specific `index` (number) and optional `callback` (function) as a second argument.
 
-**`next(callback)`**
-Shows the next slide in the lightbox. Optional `callback` (function).
+`next(callback)` shows the next slide in the lightbox. Optional `callback` (function).
 
-**`prev(callback)`**
-Shows the previous slide in the lightbox. Optional `callback` (function).
+`prev(callback)` shows the previous slide in the lightbox. Optional `callback` (function).
 
-**`close(callback)`**
-Closes the lightbox. Optional `callback` (function).
+`close(callback)` closes the lightbox. Optional `callback` (function).
 
-**`add(element, callback)`**
-Adds an new `element` (DOM element) dynamically, even if the lightbox is open ([example on CodePen](https://codepen.io/rqrauhvmra/pen/vzbXxQ)). Optional `callback` (function) as a second argument ([example on CodePen](https://codepen.io/rqrauhvmra/pen/qyEmXR)).
+`add(element, callback)` adds an new `element` (DOM element) dynamically, even if the lightbox is open ([example on CodePen](https://codepen.io/rqrauhvmra/pen/vzbXxQ)). Optional `callback` (function) as a second argument ([example on CodePen](https://codepen.io/rqrauhvmra/pen/qyEmXR)).
 
-**`isOpen()`**
-Checks if the lightbox is open.
+`isOpen()` checks if the lightbox is open.
 
-**`currentSlide()`**
-Returns current slide index.
+`currentSlide()` returns the current slide index.
 
 ## Browser support
 
@@ -273,7 +267,3 @@ Tobi has been tested in the following browsers (all the latest versions):
 ## License
 
 Tobi is available under the MIT license. See the [LICENSE](https://github.com/rqrauhvmra/Tobi/blob/master/LICENSE.md) file for more info.
-
-## Notes
-
-If you do anything interesting with this code, please let me know. I'd love to see it.
