@@ -131,7 +131,7 @@ Then create a link with the class name `lightbox` and a `href` attribute that ma
 
 ```html
 <a href="#selector" data-type="html" class="lightbox">
-  Open HTML content / video or something else
+  Open HTML content
 </a>
 ```
 
@@ -139,7 +139,7 @@ or a button with the class name `lightbox` and a `data-target` attribute that ma
 
 ```html
 <button type="button" data-type="html" data-target="#selector" class="lightbox">
-  Open HTML content / video or something else
+  Open HTML content
 </button>
 ```
 
@@ -229,19 +229,15 @@ The following options are available:
 
 ## API
 
-`open(index, callback)` opens the lightbox. Optional at specific `index` (number) and optional `callback` (function) as a second argument.
-
-`next(callback)` shows the next slide in the lightbox. Optional `callback` (function).
-
-`prev(callback)` shows the previous slide in the lightbox. Optional `callback` (function).
-
-`close(callback)` closes the lightbox. Optional `callback` (function).
-
-`add(element, callback)` adds an new `element` (DOM element) dynamically, even if the lightbox is open ([example on CodePen](https://codepen.io/rqrauhvmra/pen/vzbXxQ)). Optional `callback` (function) as a second argument ([example on CodePen](https://codepen.io/rqrauhvmra/pen/qyEmXR)).
-
-`isOpen()` checks if the lightbox is open.
-
-`currentSlide()` returns the current slide index.
+| Function | Description |
+| --- | --- |
+| `open(index, callback)` | Opens the lightbox. Optional at specific `index` (number) and optional `callback` (function) as a second argument. |
+| `next(callback)` | Shows the next slide in the lightbox. Optional `callback` (function). |
+| `prev(callback)` | Shows the previous slide in the lightbox. Optional `callback` (function). |
+| `close(callback)` | Closes the lightbox. Optional `callback` (function). |
+| `add(element, callback)` | Adds an new `element` (DOM element) dynamically, even if the lightbox is open ([example on CodePen](https://codepen.io/rqrauhvmra/pen/vzbXxQ)). Optional `callback` (function) as a second argument ([example on CodePen](https://codepen.io/rqrauhvmra/pen/qyEmXR)). |
+| `isOpen()` | Checks if the lightbox is open. |
+| `currentSlide()` | Returns the current slide index. |
 
 ## Browser support
 
