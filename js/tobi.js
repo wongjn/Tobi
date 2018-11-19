@@ -965,7 +965,7 @@
      *
      */
     var touchstartHandler = function touchstartHandler (event) {
-      // Prevent dragging / swiping on textareas inputs, selects and videos
+      // Prevent dragging / swiping on textareas inputs and selects
       if (isIgnoreElement(event.target)) {
         return
       }
@@ -1030,7 +1030,7 @@
      *
      */
     var mousedownHandler = function mousedownHandler (event) {
-      // Prevent dragging / swiping on textareas inputs, selects and videos
+      // Prevent dragging / swiping on textareas inputs and selects
       if (isIgnoreElement(event.target)) {
         return
       }
@@ -1267,7 +1267,7 @@
      *
      */
     var isIgnoreElement = function isIgnoreElement (el) {
-      return ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT', 'VIDEO'].indexOf(el.nodeName) !== -1 || el === prevButton || el === nextButton || el === closeButton || elementsLength === 1
+      return ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT'].indexOf(el.nodeName) !== -1 || el === prevButton || el === nextButton || el === closeButton || elementsLength === 1
     }
 
     /**
