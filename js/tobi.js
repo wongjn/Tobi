@@ -219,6 +219,7 @@
 
     var onItemClick = function (event) {
       event.preventDefault()
+      event.stopPropagation();
       openLightbox(gallery.indexOf(this))
     }
 
