@@ -52,8 +52,6 @@
       offset = null,
       offsetTmp = null,
       resizeTicking = false,
-      touchmoveTicking = false,
-      mousemoveTicking = false,
       isYouTubeDependencieLoaded = false,
       waitingEls = [],
       player = [],
@@ -993,14 +991,7 @@
         drag.endX = event.touches[0].pageX
         drag.endY = event.touches[0].pageY
 
-        if (!touchmoveTicking) {
-          touchmoveTicking = true
-
-          browserWindow.requestAnimationFrame(function () {
-            doSwipe()
-            touchmoveTicking = false
-          })
-        }
+        doSwipe()
       }
     }
 
@@ -1057,14 +1048,7 @@
         drag.endX = event.pageX
         drag.endY = event.pageY
 
-        if (!mousemoveTicking) {
-          mousemoveTicking = true
-
-          browserWindow.requestAnimationFrame(function () {
-            doSwipe()
-            mousemoveTicking = false
-          })
-        }
+        doSwipe()
       }
     }
 
