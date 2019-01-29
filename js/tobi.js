@@ -1135,14 +1135,10 @@
       if (config.draggable) {
         if (isTouchDevice()) {
           // Touch events
-          lightbox.addEventListener('touchstart', touchstartHandler)
-          lightbox.addEventListener('touchmove', touchmoveHandler)
-          lightbox.addEventListener('touchend', touchendHandler)
+          lightbox.removeEventListener('touchstart', touchstartHandler)
+          lightbox.removeEventListener('touchmove', touchmoveHandler)
+          lightbox.removeEventListener('touchend', touchendHandler)
         }
-        // Touch events
-        lightbox.removeEventListener('touchstart', touchstartHandler)
-        lightbox.removeEventListener('touchmove', touchmoveHandler)
-        lightbox.removeEventListener('touchend', touchendHandler)
 
         // Mouse events
         lightbox.removeEventListener('mousedown', mousedownHandler)
