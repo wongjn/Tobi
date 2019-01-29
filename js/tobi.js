@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.8.0
+ * @version 1.8.1
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -52,8 +52,6 @@
       offset = null,
       offsetTmp = null,
       resizeTicking = false,
-      touchmoveTicking = false,
-      mousemoveTicking = false,
       isYouTubeDependencieLoaded = false,
       waitingEls = [],
       player = [],
@@ -993,14 +991,7 @@
         drag.endX = event.touches[0].pageX
         drag.endY = event.touches[0].pageY
 
-        if (!touchmoveTicking) {
-          touchmoveTicking = true
-
-          browserWindow.requestAnimationFrame(function () {
-            doSwipe()
-            touchmoveTicking = false
-          })
-        }
+        doSwipe()
       }
     }
 
@@ -1057,14 +1048,7 @@
         drag.endX = event.pageX
         drag.endY = event.pageY
 
-        if (!mousemoveTicking) {
-          mousemoveTicking = true
-
-          browserWindow.requestAnimationFrame(function () {
-            doSwipe()
-            mousemoveTicking = false
-          })
-        }
+        doSwipe()
       }
     }
 
@@ -1151,14 +1135,10 @@
       if (config.draggable) {
         if (isTouchDevice()) {
           // Touch events
-          lightbox.addEventListener('touchstart', touchstartHandler)
-          lightbox.addEventListener('touchmove', touchmoveHandler)
-          lightbox.addEventListener('touchend', touchendHandler)
+          lightbox.removeEventListener('touchstart', touchstartHandler)
+          lightbox.removeEventListener('touchmove', touchmoveHandler)
+          lightbox.removeEventListener('touchend', touchendHandler)
         }
-        // Touch events
-        lightbox.removeEventListener('touchstart', touchstartHandler)
-        lightbox.removeEventListener('touchmove', touchmoveHandler)
-        lightbox.removeEventListener('touchend', touchendHandler)
 
         // Mouse events
         lightbox.removeEventListener('mousedown', mousedownHandler)

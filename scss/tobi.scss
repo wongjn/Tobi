@@ -1,5 +1,6 @@
-@import '_variables.scss';
-@import '_functions.scss';
+@import
+  '_variables.scss',
+  '_functions.scss';
 
 /* Link */
 .tobi-zoom {
@@ -194,7 +195,7 @@
 }
 
 /* Buttons */
-.tobi button {
+.tobi > button {
   align-items: center;
   appearance: none;
   background-color: $buttonBackground;
