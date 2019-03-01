@@ -1,11 +1,23 @@
 {
   "name": "tobi",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "An accessible, simple and light-weight open source lightbox script with no dependencies.",
   "author": "wongjn",
   "license": "MIT",
   "main": "js/tobi.js",
   "style": "css/tobi.css",
+  "devDependencies": {
+    "standard": "*",
+    "autoprefixer": "*"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "Firefox ESR"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/wongjn/Tobi.git"

@@ -2,7 +2,7 @@
  * Tobi
  *
  * @author rqrauhvmra
- * @version 1.7.1
+ * @version 1.8.1
  * @url https://github.com/rqrauhvmra/Tobi
  *
  * MIT License
@@ -33,9 +33,8 @@
       transformProperty = null,
       gallery = [],
       figcaptionId = 0,
-      elementsLength = null,
+      elementsLength = 0,
       lightbox = null,
-      overlay = null,
       slider = null,
       sliderElements = [],
       prevButton = null,
@@ -44,6 +43,8 @@
       counter = null,
       currentIndex = 0,
       drag = {},
+      isDraggingX = false,
+      isDraggingY = false,
       pointerDown = false,
       lastFocus = null,
       firstFocusableEl = null,
@@ -56,7 +57,7 @@
     /**
      * Merge default options with user options
      *
-     * @param {Object} userOptions - User options
+     * @param {Object} userOptions - Optional user options
      * @returns {Object} - Custom options
      */
     var mergeOptions = function mergeOptions (userOptions) {
@@ -67,23 +68,21 @@
         captionsSelector: 'img',
         captionAttribute: 'alt',
         nav: 'auto',
-        navText: ['<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6" /></svg>', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6" /></svg>'],
+        navText: ['<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><polyline points="14 18 8 12 14 6 14 6"></polyline></svg>', '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><polyline points="10 6 16 12 10 18 10 18"></polyline></svg>'],
         navLabel: ['Previous', 'Next'],
         close: true,
-        closeText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>',
+        closeText: '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24"><path d="M6.34314575 6.34314575L17.6568542 17.6568542M6.34314575 17.6568542L17.6568542 6.34314575"></path></svg>',
         closeLabel: 'Close',
+        loadingIndicatorLabel: 'Image loading',
         counter: true,
-        download: false,
-        downloadText: '',
-        downloadLabel: 'Download',
         keyboard: true,
         zoom: true,
-        zoomText: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>',
+        zoomText: '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><polyline points="21 16 21 21 16 21"/><polyline points="8 21 3 21 3 16"/><polyline points="16 3 21 3 21 8"/><polyline points="3 8 3 3 8 3"/></svg>',
         docClose: true,
         swipeClose: true,
-        scroll: false,
+        hideScrollbar: true,
         draggable: true,
-        threshold: 100
+        theme: 'dark'
       }
 
       if (userOptions) {
@@ -105,16 +104,16 @@
     }
 
     var supported = {
-      checkSupport: function (element) {
-        return !element.hasAttribute('data-type') && element.href.match(/\.(png|jpe?g|tiff|tif|gif|bmp|webp|svg|ico)$/)
+      checkSupport: function (el) {
+        return !el.hasAttribute('data-type') && el.href.match(/\.(png|jpe?g|tiff|tif|gif|bmp|webp|svg|ico)$/)
       },
 
-      init: function (element, container) {
+      init: function (el, container) {
         var figure = document.createElement('figure'),
           figcaption = document.createElement('figcaption'),
           image = document.createElement('img'),
-          thumbnail = element.querySelector('img'),
-          loader = document.createElement('div')
+          thumbnail = el.querySelector('img'),
+          loadingIndicator = document.createElement('div')
 
         image.style.opacity = '0'
 
@@ -123,7 +122,7 @@
         }
 
         image.setAttribute('src', '')
-        image.setAttribute('data-src', element.href)
+        image.setAttribute('data-src', el.href)
 
         // Add image to figure
         figure.appendChild(image)
@@ -132,8 +131,8 @@
         if (config.captions) {
           figcaption.style.opacity = '0'
 
-          if (config.captionsSelector === 'self' && element.getAttribute(config.captionAttribute)) {
-            figcaption.textContent = element.getAttribute(config.captionAttribute)
+          if (config.captionsSelector === 'self' && el.getAttribute(config.captionAttribute)) {
+            figcaption.textContent = el.getAttribute(config.captionAttribute)
           } else if (config.captionsSelector === 'img' && thumbnail && thumbnail.getAttribute(config.captionAttribute)) {
             figcaption.textContent = thumbnail.getAttribute(config.captionAttribute)
           }
@@ -151,11 +150,13 @@
         // Add figure to container
         container.appendChild(figure)
 
-        //  Create loader
-        loader.classList.add('tobi-loader')
+        // Create loading indicator
+        loadingIndicator.className = 'tobi-loader'
+        loadingIndicator.setAttribute('role', 'progressbar')
+        loadingIndicator.setAttribute('aria-label', config.loadingIndicatorLabel)
 
-        // Add loader to container
-        container.appendChild(loader)
+        // Add loading indicator to container
+        container.appendChild(loadingIndicator)
 
         // Register type
         container.setAttribute('data-type', 'image')
@@ -174,10 +175,10 @@
         }
 
         var figcaption = container.querySelector('figcaption'),
-          loader = container.querySelector('.tobi-loader')
+          loadingIndicator = container.querySelector('.tobi-loader')
 
         image.onload = function () {
-          container.removeChild(loader)
+          container.removeChild(loadingIndicator)
           image.style.opacity = '1'
 
           if (figcaption) {
@@ -190,6 +191,10 @@
       },
 
       onLeave: function (container) {
+        // Nothing
+      },
+
+      onCleanup: function (container) {
         // Nothing
       }
     };
@@ -205,67 +210,63 @@
       // Transform property supported by client
       transformProperty = transformSupport()
 
-      // Saves the number of elements
-      elementsLength = config.items.length
-
-      // Create lightbox
-      createLightbox()
-
-      // Execute a few things once per element
-      config.items.forEach(function (element) {
-        initElement(element)
-      })
-    }
-
-    var onItemClick = function (event) {
-      event.preventDefault()
-      event.stopPropagation();
-      openLightbox(gallery.indexOf(this))
-    }
-
-    /**
-     * Init element
-     *
-     */
-    var initElement = function initElement (element, isNewDynamicElement) {
       // Check if the lightbox already exists
       if (!lightbox) {
         // Create the lightbox
         createLightbox()
       }
 
+      // Execute a few things once per element
+      config.items.forEach(function (el) {
+        add(el)
+      })
+    }
+
+    var onItemClick = function (event) {
+      event.preventDefault()
+      event.stopPropagation();
+      open(gallery.indexOf(this))
+    }
+
+    /**
+     * Add element
+     *
+     * @param {HTMLElement} el - Element to add
+     * @param {function} callback - Optional callback to call after add
+     */
+    var add = function add (el, callback) {
       // Check if element already exists
-      if (gallery.indexOf(element) === -1) {
-        gallery.push(element)
+      if (gallery.indexOf(el) === -1) {
+        gallery.push(el)
+        elementsLength++
 
         // Set zoom icon if necessary
-        if (config.zoom && element.querySelector('img')) {
+        if (config.zoom && el.querySelector('img')) {
           var tobiZoom = document.createElement('div')
 
-          tobiZoom.classList.add('tobi-zoom__icon')
+          tobiZoom.className = 'tobi-zoom__icon'
           tobiZoom.innerHTML = config.zoomText
 
-          element.classList.add('tobi-zoom')
-          element.appendChild(tobiZoom)
+          el.classList.add('tobi-zoom')
+          el.appendChild(tobiZoom)
         }
 
         // Bind click event handler
-        element.addEventListener('click', onItemClick);
+        el.addEventListener('click', onItemClick);
 
         // Create the slide
-        createLightboxSlide(element)
+        createLightboxSlide(el)
 
-        if (isNewDynamicElement) {
-          elementsLength++
+        if (isOpen()) {
+          recheckConfig()
+          updateLightbox()
+        }
 
-          if (isOpen()) {
-            updateCounter()
-            updateOffset()
-            updateFocus()
-          }
+        if (callback) {
+          callback.call(this)
         }
       } else {
-        return console.log('Element already added to the lightbox.')
+        throw new Error('Ups, element already added to the lightbox.')
       }
     }
 
@@ -288,21 +289,16 @@
       lightbox = document.createElement('div')
       lightbox.setAttribute('role', 'dialog')
       lightbox.setAttribute('aria-hidden', 'true')
-      lightbox.classList.add('tobi')
-
-      // Create overlay container
-      overlay = document.createElement('div')
-      overlay.classList.add('tobi__overlay')
-      lightbox.appendChild(overlay)
+      lightbox.className = 'tobi tobi--theme-' + config.theme
 
       // Create slider container
       slider = document.createElement('div')
-      slider.classList.add('tobi__slider')
+      slider.className = 'tobi__slider'
       lightbox.appendChild(slider)
 
       // Create previous button
       prevButton = document.createElement('button')
-      prevButton.classList.add('tobi__prev')
+      prevButton.className = 'tobi__prev'
       prevButton.setAttribute('type', 'button')
       prevButton.setAttribute('aria-label', config.navLabel[0])
       prevButton.innerHTML = config.navText[0]
@@ -310,7 +306,7 @@
 
       // Create next button
       nextButton = document.createElement('button')
-      nextButton.classList.add('tobi__next')
+      nextButton.className = 'tobi__next'
       nextButton.setAttribute('type', 'button')
       nextButton.setAttribute('aria-label', config.navLabel[1])
       nextButton.innerHTML = config.navText[1]
@@ -318,7 +314,7 @@
 
       // Create close button
       closeButton = document.createElement('button')
-      closeButton.classList.add('tobi__close')
+      closeButton.className = 'tobi__close'
       closeButton.setAttribute('type', 'button')
       closeButton.setAttribute('aria-label', config.closeLabel)
       closeButton.innerHTML = config.closeText
@@ -326,7 +322,7 @@
 
       // Create counter
       counter = document.createElement('div')
-      counter.classList.add('tobi__counter')
+      counter.className = 'tobi__counter'
       lightbox.appendChild(counter)
 
       browserWindow.addEventListener('resize', onResize);
@@ -338,19 +334,19 @@
      * Create a lightbox slide
      *
      */
-    var createLightboxSlide = function createLightboxSlide (element) {
-      if (supported.checkSupport(element)) {
+    var createLightboxSlide = function createLightboxSlide (el) {
+      if (supported.checkSupport(el)) {
         // Create slide elements
         var sliderElement = document.createElement('div'),
           sliderElementContent = document.createElement('div')
 
-        sliderElement.classList.add('tobi__slider__slide')
+        sliderElement.className = 'tobi__slider__slide'
         sliderElement.style.position = 'absolute'
         sliderElement.style.left = x * 100 + '%'
-        sliderElementContent.classList.add('tobi__slider__slide__content')
+        sliderElementContent.className = 'tobi__slider__slide__content'
 
         // Create type elements
-        supported.init(element, sliderElementContent)
+        supported.init(el, sliderElementContent)
 
         // Add slide content container to slider element
         sliderElement.appendChild(sliderElementContent)
@@ -366,46 +362,39 @@
     /**
      * Open the lightbox
      *
-     * @param {number} index - Item index to load
+     * @param {number} index - Index to load
+     * @param {function} callback - Optional callback to call after open
      */
-    var openLightbox = function openLightbox (index) {
-      if (lightbox.getAttribute('aria-hidden') === 'false') {
-        return console.log('Tobi is already open.')
+    var open = function open (index, callback) {
+      if (!isOpen() && !index) {
+        index = 0
       }
 
-      if (!config.scroll) {
+      if (isOpen()) {
+        if (!index) {
+          throw new Error('Ups, Tobi is aleady open.')
+        }
+
+        if (index === currentIndex) {
+          throw new Error('Ups, slide ' + index + ' is already selected.')
+        }
+      }
+
+      if (index === -1 || index >= elementsLength) {
+        throw new Error('Ups, I can\'t find slide ' + index + '.')
+      }
+
+      if (config.hideScrollbar) {
         document.documentElement.classList.add('tobi-is-open')
         document.body.classList.add('tobi-is-open')
       }
 
-      if (!index) {
-        index = 0
-      }
-
-      // Hide buttons if necessary
-      if (!config.nav || elementsLength === 1 || (config.nav === 'auto' && 'ontouchstart' in window)) {
-        prevButton.setAttribute('aria-hidden', 'true')
-        nextButton.setAttribute('aria-hidden', 'true')
-      } else {
-        prevButton.setAttribute('aria-hidden', 'false')
-        nextButton.setAttribute('aria-hidden', 'false')
-      }
-
-      // Hide counter if necessary
-      if (!config.counter || elementsLength === 1) {
-        counter.setAttribute('aria-hidden', 'true')
-      } else {
-        counter.setAttribute('aria-hidden', 'false')
-      }
+      recheckConfig()
 
       // Hide close if necessary
       if (!config.close) {
         closeButton.disabled = false
         closeButton.setAttribute('aria-hidden', 'true')
-      }
-
-      if (config.draggable) {
-        slider.style.cursor = '-webkit-grab'
       }
 
       // Save the user’s focus
@@ -422,26 +411,33 @@
 
       // Load slide
       load(currentIndex)
+
+      // Makes lightbox appear, too
+      lightbox.setAttribute('aria-hidden', 'false')
+
+      // Update lightbox
+      updateLightbox()
+
+      // Preload late
       preload(currentIndex + 1)
       preload(currentIndex - 1)
 
-      updateOffset()
-      updateCounter()
-      lightbox.setAttribute('aria-hidden', 'false')
-
-      updateFocus()
+      if (callback) {
+        callback.call(this)
+      }
     }
 
     /**
      * Close the lightbox
      *
+     * @param {function} callback - Optional callback to call after close
      */
-    var closeLightbox = function closeLightbox () {
-      if (lightbox.getAttribute('aria-hidden') === 'true') {
-        return console.log('Tobi is already closed')
+    var close = function close (callback) {
+      if (!isOpen()) {
+        throw new Error('Tobi is already closed.')
       }
 
-      if (!config.scroll) {
+      if (config.hideScrollbar) {
         document.documentElement.classList.remove('tobi-is-open')
         document.body.classList.remove('tobi-is-open')
       }
@@ -449,17 +445,28 @@
       // Unbind events
       unbindEvents()
 
-      leave()
+      // Reenable the user’s focus
+      lastFocus.focus()
+
+      // Don't forget to cleanup our current element
+      var container = sliderElements[currentIndex].querySelector('.tobi__slider__slide__content')
+      supported.onLeave(container)
+      supported.onCleanup(container)
 
       lightbox.setAttribute('aria-hidden', 'true')
 
-      // Reenable the user’s focus
-      lastFocus.focus()
+      // Reset current index
+      currentIndex = 0
+
+      if (callback) {
+        callback.call(this)
+      }
     }
 
     /**
      * Preload slide
      *
+     * @param {number} index - Index to preload
      */
     var preload = function preload (index) {
       if (sliderElements[index] === undefined) {
@@ -475,6 +482,7 @@
      * Load slide
      * Will be called when opening the lightbox or moving index
      *
+     * @param {number} index - Index to load
      */
     var load = function load (index) {
       if (sliderElements[index] === undefined) {
@@ -486,60 +494,73 @@
     }
 
     /**
-     * Navigate to the next slide
+     * Navigate to the previous slide
      *
+     * @param {function} callback - Optional callback function
      */
-    var next = function next () {
-      // If not last
-      if (currentIndex !== elementsLength - 1) {
-        leave()
-      }
+    var prev = function prev (callback) {
+      if (currentIndex > 0) {
+        leave(currentIndex)
+        load(--currentIndex)
+        updateLightbox('left')
+        cleanup(currentIndex + 1)
+        preload(currentIndex - 1)
 
-      if (currentIndex < elementsLength - 1) {
-        currentIndex++
-
-        updateOffset()
-        updateCounter()
-        updateFocus('right')
-
-        load(currentIndex)
-        preload(currentIndex + 1)
+        if (callback) {
+          callback.call(this)
+        }
       }
     }
 
     /**
-     * Navigate to the previous slide
+     * Navigate to the next slide
      *
+     * @param {function} callback - Optional callback function
      */
-    var prev = function prev () {
-      // If not first
-      if (currentIndex > 0) {
-        leave()
-      }
+    var next = function next (callback) {
+      if (currentIndex < elementsLength - 1) {
+        leave(currentIndex)
+        load(++currentIndex)
+        updateLightbox('right')
+        cleanup(currentIndex - 1)
+        preload(currentIndex + 1)
 
-      if (currentIndex > 0) {
-        currentIndex--
-
-        updateOffset()
-        updateCounter()
-        updateFocus('left')
-
-        load(currentIndex)
-        preload(currentIndex - 1)
+        if (callback) {
+          callback.call(this)
+        }
       }
     }
 
     /**
      * Leave slide
-     * Will be called when closing the lightbox or moving index
+     * Will be called before moving index
      *
+     * @param {number} index - Index to leave
      */
-    var leave = function leave () {
-      for (var index = 0; index < elementsLength; index++) {
-        var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
-
-        supported.onLeave(container)
+    var leave = function leave (index) {
+      if (sliderElements[index] === undefined) {
+        return
       }
+
+      var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
+
+      supported.onLeave(container)
+    }
+
+    /**
+     * Cleanup slide
+     * Will be called after moving index
+     *
+     * @param {number} index - Index to cleanup
+     */
+    var cleanup = function cleanup (index) {
+      if (sliderElements[index] === undefined) {
+        return
+      }
+
+      var container = sliderElements[index].querySelector('.tobi__slider__slide__content')
+
+      supported.onCleanup(container)
     }
 
     /**
@@ -564,8 +585,9 @@
     /**
      * Set the focus to the next element
      *
+     * @param {string} dir - Current slide direction
      */
-    var updateFocus = function updateFocus (direction) {
+    var updateFocus = function updateFocus (dir) {
       var focusableEls = null
 
       if (config.nav) {
@@ -589,17 +611,17 @@
           nextButton.disabled = true
         }
 
-        if (!direction && !nextButton.disabled) {
+        if (!dir && !nextButton.disabled) {
           nextButton.focus()
-        } else if (!direction && nextButton.disabled && !prevButton.disabled) {
+        } else if (!dir && nextButton.disabled && !prevButton.disabled) {
           prevButton.focus()
-        } else if (!nextButton.disabled && direction === 'right') {
+        } else if (!nextButton.disabled && dir === 'right') {
           nextButton.focus()
-        } else if (nextButton.disabled && direction === 'right' && !prevButton.disabled) {
+        } else if (nextButton.disabled && dir === 'right' && !prevButton.disabled) {
           prevButton.focus()
-        } else if (!prevButton.disabled && direction === 'left') {
+        } else if (!prevButton.disabled && dir === 'left') {
           prevButton.focus()
-        } else if (prevButton.disabled && direction === 'left' && !nextButton.disabled) {
+        } else if (prevButton.disabled && dir === 'left' && !nextButton.disabled) {
           nextButton.focus()
         }
       } else if (config.close) {
@@ -612,7 +634,7 @@
     }
 
     /**
-     * Clear drag after touchend
+     * Clear drag after touchend and mousup event
      *
      */
     var clearDrag = function clearDrag () {
@@ -625,7 +647,7 @@
     }
 
     /**
-     * Recalculate drag event
+     * Recalculate drag / swipe event
      *
      */
     var updateAfterDrag = function updateAfterDrag () {
@@ -639,7 +661,7 @@
       } else if (movementX < 0 && movementXDistance > config.threshold && currentIndex !== elementsLength - 1) {
         next()
       } else if (movementY < 0 && movementYDistance > config.threshold && config.swipeClose) {
-        closeLightbox()
+        close()
       } else {
         updateOffset()
       }
@@ -654,8 +676,8 @@
         prev()
       } else if (event.target === nextButton) {
         next()
-      } else if (event.target === closeButton || (event.target.classList.contains('tobi__slider__slide') && !event.target.classList.contains('tobi__slider__slide__content'))) {
-        closeLightbox()
+      } else if (event.target === closeButton || (event.target.className === 'tobi__slider__slide' && config.docClose)) {
+        close()
       }
 
       event.stopPropagation()
@@ -684,7 +706,7 @@
       } else if (event.keyCode === 27) {
         // `ESC` Key: Close the lightbox
         event.preventDefault()
-        closeLightbox()
+        close()
       } else if (event.keyCode === 37) {
         // `PREV` Key: Navigate to the previous slide
         event.preventDefault()
@@ -701,12 +723,19 @@
      *
      */
     var touchstartHandler = function touchstartHandler (event) {
+      // Prevent dragging / swiping on textareas inputs and selects
+      if (isIgnoreElement(event.target)) {
+        return
+      }
+
       event.stopPropagation()
 
       pointerDown = true
 
       drag.startX = event.touches[0].pageX
       drag.startY = event.touches[0].pageY
+
+      slider.classList.add('tobi__slider--is-dragging')
     }
 
     /**
@@ -714,14 +743,15 @@
      *
      */
     var touchmoveHandler = function touchmoveHandler (event) {
-      event.preventDefault()
       event.stopPropagation()
 
       if (pointerDown) {
+        event.preventDefault()
+
         drag.endX = event.touches[0].pageX
         drag.endY = event.touches[0].pageY
 
-        slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
+        doSwipe()
       }
     }
 
@@ -734,7 +764,12 @@
 
       pointerDown = false
 
+      slider.classList.remove('tobi__slider--is-dragging')
+
       if (drag.endX) {
+        isDraggingX = false
+        isDraggingY = false
+
         updateAfterDrag()
       }
 
@@ -746,12 +781,20 @@
      *
      */
     var mousedownHandler = function mousedownHandler (event) {
+      // Prevent dragging / swiping on textareas inputs and selects
+      if (isIgnoreElement(event.target)) {
+        return
+      }
+
       event.preventDefault()
       event.stopPropagation()
 
       pointerDown = true
+
       drag.startX = event.pageX
-      slider.style.cursor = '-webkit-grabbing'
+      drag.startY = event.pageY
+
+      slider.classList.add('tobi__slider--is-dragging')
     }
 
     /**
@@ -763,7 +806,9 @@
 
       if (pointerDown) {
         drag.endX = event.pageX
-        slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
+        drag.endY = event.pageY
+
+        doSwipe()
       }
     }
 
@@ -775,13 +820,37 @@
       event.stopPropagation()
 
       pointerDown = false
-      slider.style.cursor = '-webkit-grab'
+
+      slider.classList.remove('tobi__slider--is-dragging')
 
       if (drag.endX) {
+        isDraggingX = false
+        isDraggingY = false
+
         updateAfterDrag()
       }
 
       clearDrag()
+    }
+
+    /**
+     * Decide whether to do horizontal of vertical swipe
+     *
+     */
+    var doSwipe = function doSwipe () {
+      if (Math.abs(drag.startX - drag.endX) > 0 && !isDraggingY && config.swipeClose) {
+        // Horizontal swipe
+        slider.style[transformProperty] = 'translate3d(' + (offsetTmp - Math.round(drag.startX - drag.endX)) + 'px, 0, 0)'
+
+        isDraggingX = true
+        isDraggingY = false
+      } else if (Math.abs(drag.startY - drag.endY) > 0 && !isDraggingX) {
+        // Vertical swipe
+        slider.style[transformProperty] = 'translate3d(' + (offsetTmp + 'px, -' + Math.round(drag.startY - drag.endY)) + 'px, 0)'
+
+        isDraggingX = false
+        isDraggingY = true
+      }
     }
 
     /**
@@ -793,20 +862,16 @@
         document.addEventListener('keydown', keydownHandler)
       }
 
-      // Click events
-      if (config.docClose) {
-        lightbox.addEventListener('click', clickHandler)
-      }
-
-      prevButton.addEventListener('click', clickHandler)
-      nextButton.addEventListener('click', clickHandler)
-      closeButton.addEventListener('click', clickHandler)
+      // Click event
+      lightbox.addEventListener('click', clickHandler)
 
       if (config.draggable) {
-        // Touch events
-        lightbox.addEventListener('touchstart', touchstartHandler)
-        lightbox.addEventListener('touchmove', touchmoveHandler)
-        lightbox.addEventListener('touchend', touchendHandler)
+        if (isTouchDevice()) {
+          // Touch events
+          lightbox.addEventListener('touchstart', touchstartHandler)
+          lightbox.addEventListener('touchmove', touchmoveHandler)
+          lightbox.addEventListener('touchend', touchendHandler)
+        }
 
         // Mouse events
         lightbox.addEventListener('mousedown', mousedownHandler)
@@ -824,20 +889,16 @@
         document.removeEventListener('keydown', keydownHandler)
       }
 
-      // Click events
-      if (config.docClose) {
-        lightbox.removeEventListener('click', clickHandler)
-      }
-
-      prevButton.removeEventListener('click', clickHandler)
-      nextButton.removeEventListener('click', clickHandler)
-      closeButton.removeEventListener('click', clickHandler)
+      // Click event
+      lightbox.removeEventListener('click', clickHandler)
 
       if (config.draggable) {
-        // Touch events
-        lightbox.removeEventListener('touchstart', touchstartHandler)
-        lightbox.removeEventListener('touchmove', touchmoveHandler)
-        lightbox.removeEventListener('touchend', touchendHandler)
+        if (isTouchDevice()) {
+          // Touch events
+          lightbox.removeEventListener('touchstart', touchstartHandler)
+          lightbox.removeEventListener('touchmove', touchmoveHandler)
+          lightbox.removeEventListener('touchend', touchendHandler)
+        }
 
         // Mouse events
         lightbox.removeEventListener('mousedown', mousedownHandler)
@@ -846,19 +907,51 @@
       }
     }
 
+
+
     /**
-     * Add an element dynamically to the lightbox
+     * Update Config
      *
      */
-    var add = function add (element) {
-      initElement(element, true)
+    var recheckConfig = function recheckConfig () {
+      if (config.draggable && elementsLength > 1 && !slider.classList.contains('tobi__slider--is-draggable')) {
+        slider.classList.add('tobi__slider--is-draggable')
+      }
+
+      // Hide buttons if necessary
+      if (!config.nav || elementsLength === 1 || (config.nav === 'auto' && isTouchDevice())) {
+        prevButton.setAttribute('aria-hidden', 'true')
+        nextButton.setAttribute('aria-hidden', 'true')
+      } else {
+        prevButton.setAttribute('aria-hidden', 'false')
+        nextButton.setAttribute('aria-hidden', 'false')
+      }
+
+      // Hide counter if necessary
+      if (!config.counter || elementsLength === 1) {
+        counter.setAttribute('aria-hidden', 'true')
+      } else {
+        counter.setAttribute('aria-hidden', 'false')
+      }
+    }
+
+    /**
+     * Update lightbox
+     *
+     * @param {string} dir - Current slide direction
+     */
+    var updateLightbox = function updateLightbox (dir) {
+      updateOffset()
+      updateCounter()
+      updateFocus(dir)
     }
 
     /**
      * Destroy the lightbox.
      */
     var remove = function remove() {
-      lightbox.parentElement.removeChild(lightbox);
+      unbindEvents();
+      lightbox.remove();
 
       config.items.forEach(function (element) {
         element.removeEventListener('click', onItemClick);
@@ -875,16 +968,41 @@
       return lightbox.getAttribute('aria-hidden') === 'false'
     }
 
+    /**
+     * Detect whether device is touch capable
+     *
+     */
+    var isTouchDevice = function isTouchDevice () {
+      return 'ontouchstart' in window
+    }
+
+    /**
+     * Checks whether element's nodeName is part of array
+     *
+     */
+    var isIgnoreElement = function isIgnoreElement (el) {
+      return ['TEXTAREA', 'OPTION', 'INPUT', 'SELECT'].indexOf(el.nodeName) !== -1 || el === prevButton || el === nextButton || el === closeButton || elementsLength === 1
+    }
+
+    /**
+     * Return current index
+     *
+     */
+    var currentSlide = function currentSlide () {
+      return currentIndex
+    }
+
     init(userOptions)
 
     return {
+      open: open,
       prev: prev,
       next: next,
-      open: openLightbox,
-      close: closeLightbox,
+      close: close,
       add: add,
       remove: remove,
       isOpen: isOpen,
+      currentSlide: currentSlide
     }
   }
 

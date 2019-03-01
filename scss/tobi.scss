@@ -1,21 +1,6 @@
-$zoomIconBackground: #0437fd;
-$zoomIconColor: #fff;
-
-$overlayBackground: rgba(0, 0, 0, .8);
-
-$figcaptionBackground: rgba(0, 0, 0, .8);
-$figcaptionColor: #fff;
-
-$counterBackground: transparent;
-$counterColor: #fff;
-
-$buttonBackground: transparent;
-$buttonColor: #fff;
-
-$loaderColor: #0437fd;
-
-$iframeHeight: 85vh;
-$iframeWidth: 85vw;
+@import
+  '_variables.scss',
+  '_functions.scss';
 
 /* Link */
 .tobi-zoom {
@@ -43,13 +28,19 @@ $iframeWidth: 85vw;
 
 
     & svg {
-      height: 1.111em;
-      padding-bottom: .222em;
-      padding-left: .222em;
-      padding-right: .222em;
-      padding-top: .222em;
+      color: $zoomIconColor;
+      fill: none;
+      height: em(20);
+      padding-bottom: em(4);
+      padding-left: em(4);
+      padding-right: em(4);
+      padding-top: em(4);
       pointer-events: none;
-      width: 1.111em;
+      stroke-linecap: square;
+      stroke-linejoin: miter;
+      stroke-width: 2;
+      stroke: $zoomIconColor;
+      width: em(20);
     }
   }
 }
@@ -61,11 +52,13 @@ $iframeWidth: 85vw;
 
 /* Lightbox */
 .tobi {
+  background-color: $lightboxBackground;
   bottom: 0;
   box-sizing: border-box;
   contain: strict;
-  font-size: 18px;
+  font-size: #{$baseFontSize}px;
   left: 0;
+  line-height: 1.5555555555555556;
   overflow: hidden;
   position: fixed;
   right: 0;
@@ -84,16 +77,6 @@ $iframeWidth: 85vw;
   }
 }
 
-/* Overlay */
-.tobi__overlay {
-  background-color: $overlayBackground;
-  bottom: 0;
-  left: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-}
-
 /* Slider */
 .tobi__slider {
   bottom: 0;
@@ -101,8 +84,26 @@ $iframeWidth: 85vw;
   position: absolute;
   right: 0;
   top: 0;
-  transition: transform .3s cubic-bezier(.19, 1, .22, 1);
   will-change: transform;
+
+
+  &:not(&--is-dragging) {
+    transition-duration: $transitionDuration;
+    transition-property: transform;
+    transition-timing-function: $transitionTimingFunction;
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  &--is-draggable &__slide__content {
+    cursor: grab;
+  }
+
+  &--is-dragging &__slide__content {
+    cursor: grabbing;
+  }
 }
 
 /* Slide */
@@ -112,66 +113,93 @@ $iframeWidth: 85vw;
   height: 100%;
   justify-content: center;
   width: 100%;
+}
+
+/* Slide content */
+.tobi__slider__slide__content {
 
 
-  & .tobi__slider__slide__content {
-    max-height: 85vh;
-    max-width: 85vw;
+
+  > figure {
+    margin: 0;
+    position: relative;
+
+
+    > img {
+      display: block;
+      height: auto;
+      max-height: $slideMaxHeight;
+      max-width: $slideMaxWidth;
+      width: auto;
+    }
+
+    > figcaption {
+      background-color: $figcaptionBackground;
+      bottom: 0;
+      color: $figcaptionColor;
+      display: block;
+      left: 0;
+      padding-bottom: em(4);
+      padding-left: em(8);
+      padding-right: em(8);
+      padding-top: em(4);
+      position: absolute;
+      white-space: pre-wrap;
+      width: 100%;
+    }
   }
 
-  & .tobi-html {
-    max-height: 85vh;
+  &[data-type="html"] {
+    max-height: $slideMaxHeight;
+    max-width: $slideMaxWidth;
     overflow: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
+
+
+    & video {
+      cursor: auto;
+      display: block !important;
+      max-height: $slideMaxHeight;
+      max-width: $slideMaxWidth;
+    }
   }
 
-  & figure {
-    margin: 0;
-    max-width: 100%;
-    position: relative;
+  &[data-type="iframe"] {
+    max-height: $slideMaxHeight;
+    max-width: $slideMaxWidth;
+    overflow: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+
+    & iframe {
+      display: block !important;
+      height: $slideMaxHeight;
+      width: $slideMaxWidth;
+    }
   }
 
-  & img {
-    display: block;
-    height: auto;
-    max-height: 85vh;
-    max-width: 85vw;
-    width: auto;
-  }
+  &[data-type="youtube"] {
+    max-height: $slideMaxHeight;
+    max-width: $slideMaxWidth;
+    overflow: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 
-  & iframe {
-    height: $iframeHeight;
-    width: $iframeWidth;
-  }
 
-  & video {
-    max-height: 85vh;
-    max-width: 85vw;
-  }
-
-  & figcaption {
-    background-color: $figcaptionBackground;
-    bottom: 0;
-    color: $figcaptionColor;
-    display: block;
-    left: 0;
-    padding-bottom: .222em;
-    padding-left: .5em;
-    padding-right: .5em;
-    padding-top: .222em;
-    position: absolute;
-    white-space: pre-wrap;
-    width: 100%;
+    & iframe {
+      display: block !important;
+    }
   }
 }
 
 /* Buttons */
-.tobi button {
+.tobi > button {
   align-items: center;
   appearance: none;
   background-color: $buttonBackground;
-  border: .056em solid transparent;
+  border: em(1) solid transparent;
   color: $buttonColor;
   cursor: pointer;
   display: flex;
@@ -180,36 +208,53 @@ $iframeWidth: 85vw;
   line-height: 1;
   margin: 0;
   opacity: .5;
-  padding-top: .222em;
-  padding-left: .222em;
-  padding-right: .222em;
-  padding-bottom: .222em;
+  padding-bottom: em(4);
+  padding-left: em(4);
+  padding-right: em(4);
+  padding-top: em(4);
   position: absolute;
-  transition: opacity .5s cubic-bezier(.19, 1, .22, 1);
-  will-change: opacity;
+  touch-action: manipulation;
+  transition-duration: $transitionDuration;
+  transition-property: opacity, transform;
+  transition-timing-function: $transitionTimingFunction;
+  will-change: opacity, transform;
+
+  @media screen and (prefers-reduced-motion: reduce) {
+    transition: none;
+    will-change: opacity;
+  }
 
 
   & svg {
     pointer-events: none;
+    stroke: #fff;
+    stroke-width: 1;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+    fill: none;
+    color: #fff;
   }
 
   &:active,
   &:focus,
   &:hover {
     opacity: 1;
-    transition: opacity .5s cubic-bezier(.19, 1, .22, 1);
-    will-change: opacity;
+    transform: scale(.84);
+
+    @media screen and (prefers-reduced-motion: reduce) {
+      transform: none;
+    }
   }
 
   &.tobi__prev,
   &.tobi__next {
     top: 50%;
-    top: calc(50% - (4em / 2));
+    top: calc(50% - #{em(40)});
 
 
     & svg {
-      height: 4em;
-      width: 4em;
+      height: em(70);
+      width: em(70);
     }
   }
 
@@ -222,13 +267,13 @@ $iframeWidth: 85vw;
   }
 
   &.tobi__close {
-    right: 1em;
-    top: 1em;
+    right: em(5);
+    top: em(18);
 
 
     & svg {
-      height: 2em;
-      width: 2em;
+      height: em(60);
+      width: em(60);
     }
   }
 
@@ -244,12 +289,12 @@ $iframeWidth: 85vw;
   background-color: $counterBackground;
   color: $counterColor;
   display: flex;
-  font-size: 1.111em;
-  height: 2em;
+  font-size: em(20);
   justify-content: center;
-  left: 1em;
+  left: em(18);
+  line-height: 1;
   position: absolute;
-  top: 1em;
+  top: em(40);
 
 
   &[aria-hidden="true"] {
@@ -260,19 +305,17 @@ $iframeWidth: 85vw;
 /* Loader */
 .tobi-loader {
   display: inline-block;
-  height: 5em;
-  left: 50%;
-  margin-left: -2.5em;
-  margin-top: -2.5em;
+  height: em(100);
+  left: calc(50% - #{em(50)});
   position: absolute;
-  top: 50%;
-  width: 5em;
+  top: calc(50% - #{em(50)});
+  width: em(100);
 
 
   &::before {
     animation: spin 1s infinite;
     border-radius: 100%;
-    border: .222em solid #fff;
+    border: em(4) solid #949ba3;
     border-top-color: $loaderColor;
     bottom: 0;
     content: "";
@@ -280,19 +323,12 @@ $iframeWidth: 85vw;
     position: absolute;
     right: 0;
     top: 0;
-    will-change: transform;
     z-index: 1;
   }
 }
 
 @keyframes spin {
-
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
+  to {
     transform: rotate(360deg);
   }
-
 }
