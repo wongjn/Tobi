@@ -80,6 +80,7 @@
         swipeClose: true,
         hideScrollbar: true,
         draggable: true,
+        threshold: 100,
         theme: 'dark'
       }
 
