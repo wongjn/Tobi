@@ -39,8 +39,6 @@ An accessible, simple and light-weight open source lightbox script with no depen
   - Drag / Swipe to navigate through items, close the lightbox with a vertical drag/swipe
 - light-weight
 - Responsive
-- Iframe support
-- Inline HTML support
 
 ## Get Tobi
 
@@ -123,7 +121,6 @@ The following options are available:
 | hideScrollbar | bool | true | Hide browser scrollbars if lightbox is displayed. |
 | draggable | bool | true | Use dragging and touch swiping. |
 | threshold | number | 100 | Touch and mouse dragging threshold (in px). |
-| autoplayVideo | bool | false | Videos will automatically start playing as soon as they can do so without stopping to finish loading the data. |
 
 ## API
 
