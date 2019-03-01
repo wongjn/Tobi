@@ -2,49 +2,6 @@
   '_variables.scss',
   '_functions.scss';
 
-/* Link */
-.tobi-zoom {
-  border: 0;
-  box-shadow: none;
-  display: block;
-  position: relative;
-  text-decoration: none;
-
-
-  & img {
-    display: block;
-  }
-
-  &__icon {
-    align-items: center;
-    background-color: $zoomIconBackground;
-    bottom: 0;
-    color: $zoomIconColor;
-    display: flex;
-    justify-content: center;
-    line-height: 1;
-    position: absolute;
-    right: 0;
-
-
-    & svg {
-      color: $zoomIconColor;
-      fill: none;
-      height: em(20);
-      padding-bottom: em(4);
-      padding-left: em(4);
-      padding-right: em(4);
-      padding-top: em(4);
-      pointer-events: none;
-      stroke-linecap: square;
-      stroke-linejoin: miter;
-      stroke-width: 2;
-      stroke: $zoomIconColor;
-      width: em(20);
-    }
-  }
-}
-
 /* Hide scrollbar if lightbox is displayed */
 .tobi-is-open {
   overflow-y: hidden;

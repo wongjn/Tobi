@@ -76,8 +76,6 @@
         loadingIndicatorLabel: 'Image loading',
         counter: true,
         keyboard: true,
-        zoom: true,
-        zoomText: '<svg role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><polyline points="21 16 21 21 16 21"/><polyline points="8 21 3 21 3 16"/><polyline points="16 3 21 3 21 8"/><polyline points="3 8 3 3 8 3"/></svg>',
         docClose: true,
         swipeClose: true,
         hideScrollbar: true,
@@ -239,17 +237,6 @@
       if (gallery.indexOf(el) === -1) {
         gallery.push(el)
         elementsLength++
-
-        // Set zoom icon if necessary
-        if (config.zoom && el.querySelector('img')) {
-          var tobiZoom = document.createElement('div')
-
-          tobiZoom.className = 'tobi-zoom__icon'
-          tobiZoom.innerHTML = config.zoomText
-
-          el.classList.add('tobi-zoom')
-          el.appendChild(tobiZoom)
-        }
 
         // Bind click event handler
         el.addEventListener('click', onItemClick);
